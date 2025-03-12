@@ -1,0 +1,34 @@
+{
+    "name": "milenmk/laravel-simple-datatables",
+    "description": "Simple Table component to create datatables for Livewire components",
+    "version": "1.0.0",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Milenmk\\LaravelSimpleDatatables\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Milen Karaganski",
+            "email": "milenmk@gmail.com"
+        }
+    ],
+    "repository": [
+        {
+            "type": "git",
+            "url": "https://github.com/milenmk/laravel-simple-datatables.git"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "suggest": {
+        "livewire/livewire": "^3.0"
+    },
+    "conflict": {
+        "laravel/framework": "<10.0"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
