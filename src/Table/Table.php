@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Table;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class Table
 {
