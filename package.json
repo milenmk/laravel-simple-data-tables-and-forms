@@ -4,12 +4,14 @@
   "scripts": {
     "format-app": "npx prettier --write app/",
     "format-resources": "npx prettier --write resources/",
+    "prepare": "husky install"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.20"
+    "autoprefixer": "^10.4.21"
   },
   "devDependencies": {
     "@prettier/plugin-php": "^0.22.4",
+    "husky": "^8.0.0",
     "lint-staged": "^15.4.3",
     "prettier": "^3.5.3",
     "prettier-plugin-blade": "^2.1.21",
