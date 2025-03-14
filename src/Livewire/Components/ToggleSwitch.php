@@ -34,6 +34,6 @@ class ToggleSwitch extends Component
 
     public function render(): View
     {
-        return View::make('livewire.components.toggle');
+        return View::make('laravel-simple-datatables::livewire.components.toggle');
     }
 }

@@ -6,5 +6,5 @@ namespace Milenmk\LaravelSimpleDatatables\Table\Columns;
 
 class ProgressColumn extends Column
 {
-    protected string $view = 'components.table.columns.progress';
+    protected string $view = 'laravel-simple-datatables::components.table.columns.progress';
 }

@@ -6,5 +6,5 @@ namespace Milenmk\LaravelSimpleDatatables\Table\Columns;
 
 class ToggleColumn extends Column
 {
-    protected string $view = 'components.table.columns.toggle';
+    protected string $view = 'laravel-simple-datatables::components.table.columns.toggle';
 }

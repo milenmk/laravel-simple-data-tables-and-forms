@@ -6,5 +6,5 @@ namespace Milenmk\LaravelSimpleDatatables\Table\Columns;
 
 class CheckBoxColumn extends Column
 {
-    protected string $view = 'components.table.columns.checkbox';
+    protected string $view = 'laravel-simple-datatables::components.table.columns.checkbox';
 }

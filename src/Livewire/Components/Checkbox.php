@@ -33,6 +33,6 @@ class Checkbox extends Component
 
     public function render(): View
     {
-        return View::make('livewire.components.checkbox');
+        return View::make('laravel-simple-datatables::livewire.components.checkbox');
     }
 }

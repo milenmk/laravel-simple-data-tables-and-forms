@@ -11,7 +11,7 @@ class TextColumn extends Column
     public bool $isBadge = false;
     public int $decimalPlaces = 2;
 
-    protected string $view = 'components.table.columns.text';
+    protected string $view = 'laravel-simple-datatables::components.table.columns.text';
 
     /**
      * Set the column to be numeric with a given number of decimal places.
