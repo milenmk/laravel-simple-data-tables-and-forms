@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelSimpleDatatables\Providers;
+namespace Milenmk\LaravelSimpleDatatables;
 
 use Illuminate\Support\ServiceProvider;
 
