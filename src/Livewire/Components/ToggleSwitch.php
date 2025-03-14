@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatables\Livewire\Components;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\View;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class ToggleSwitch extends Component

@@ -6,6 +6,7 @@ namespace Milenmk\LaravelSimpleDatatables\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
+use Illuminate\View\View;
 use Livewire\Attributes\Session;
 use Livewire\WithPagination;
 use Milenmk\LaravelSimpleDatatables\Table\Table;
@@ -33,7 +34,7 @@ trait HasTable
         }
     }
 
-    public function getTableProperty()
+    public function getTableProperty(): View
     {
         $table = new Table;
 

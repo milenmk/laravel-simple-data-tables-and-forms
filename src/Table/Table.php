@@ -6,7 +6,8 @@ namespace Milenmk\LaravelSimpleDatatables\Table;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\View as FacadesView;
+use Illuminate\View\View;
 
 class Table
 {
@@ -46,9 +47,9 @@ class Table
         return $this->columns;
     }
 
-    public function render()
+    public function render(): View
     {
-        return View::make('laravel-simple-datatables::components.table.table', [
+        return FacadesView::make('laravel-simple-datatables::components.table.table', [
             'data' => $this->data(),
             'columns' => $this->columns,
             'heading' => $this->heading,
