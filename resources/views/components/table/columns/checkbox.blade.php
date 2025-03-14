@@ -25,7 +25,7 @@
         ])
         style="text-align: {{ $column->align }}"
 >
-    <livewire:components.checkbox
+    <livewire:laravel-simple-datatables::checkbox
             :model="$item"
             field="{{ $column->key }}"
             :key="'toggle-'.$item->id"

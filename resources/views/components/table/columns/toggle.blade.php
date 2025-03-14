@@ -25,7 +25,7 @@
         ])
         style="text-align: {{ $column->align }}"
 >
-    <livewire:components.toggle-switch
+    <livewire:laravel-simple-datatables::toggle-switch
             :model="$item"
             field="{{ $column->key }}"
             :key="'toggle-'.$item->id"

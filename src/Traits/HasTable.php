@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Traits;
 
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
 use Livewire\Attributes\Session;
@@ -34,7 +33,7 @@ trait HasTable
         }
     }
 
-    public function getTableProperty(): View
+    public function getTableProperty()
     {
         $table = new Table;
 

@@ -46,7 +46,7 @@ class Table
         return $this->columns;
     }
 
-    public function render(): View
+    public function render()
     {
         return View::make('laravel-simple-datatables::components.table.table', [
             'data' => $this->data(),
