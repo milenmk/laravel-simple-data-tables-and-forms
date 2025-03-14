@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatables\Livewire\Components;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\View as FacadesView;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -33,6 +34,6 @@ class Checkbox extends Component
 
     public function render(): View
     {
-        return View::make('laravel-simple-datatables::livewire.components.checkbox');
+        return FacadesView::make('laravel-simple-datatables::livewire.components.checkbox');
     }
 }
