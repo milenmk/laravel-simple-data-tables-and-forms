@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Traits;
 
-use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
+use Livewire\Attributes\Session;
 use Livewire\WithPagination;
 use Milenmk\LaravelSimpleDatatables\Table\Table;
 
@@ -15,19 +18,21 @@ trait HasTable
     use WithSearch;
     use WithSorting;
 
+    #[Session]
     public array|object $visibleColumns;
+
+    public Stringable $componentName;
 
     public function mount(): void
     {
-        $this->visibleColumns = session(
-            'visible_columns',
-            collect($this->table(new Table)->getColumns())
-                ->mapWithKeys(fn ($column) => [$column->key => $column->visible])
-                ->toArray(),
-        );
-    }
+        $this->componentName = Str::of(class_basename($this))->snake();
 
-    abstract public function table(Table $table): Table;
+        if (empty($this->visibleColumns)) {
+            $this->visibleColumns = collect($this->columns)
+                ->mapWithKeys(fn ($column) => ["{$this->componentName}.{$column->key}" => $column->visible])
+                ->toArray();
+        }
+    }
 
     public function getTableProperty(): View
     {
@@ -59,12 +64,17 @@ trait HasTable
             ->schema(
                 collect($table->getColumns())
                     ->map(function ($column) {
-                        return $column->visible($this->visibleColumns[$column->key] ?? true);
+                        $column->visible =
+                            $this->visibleColumns["{$this->componentName}.{$column->key}"] ?? $column->visible;
+
+                        return $column;
                     })
                     ->toArray(),
             )
             ->render();
     }
+
+    abstract public function table(Table $table): Table;
 
     public function setSortBy($column): void
     {
@@ -80,7 +90,8 @@ trait HasTable
 
     public function toggleColumnVisibility(string $columnKey): void
     {
-        $this->visibleColumns[$columnKey] = ! ($this->visibleColumns[$columnKey] ?? true);
-        session(['visible_columns' => $this->visibleColumns]);
+        $prefixedKey = "{$this->componentName}.{$columnKey}";
+
+        $this->visibleColumns[$prefixedKey] = ! ($this->visibleColumns[$prefixedKey] ?? true);
     }
 }

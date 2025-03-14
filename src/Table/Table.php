@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Table;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\View;
 
 class Table
 {
@@ -48,7 +48,7 @@ class Table
 
     public function render(): View
     {
-        return view('components.table.table', [
+        return View::make('components.table.table', [
             'data' => $this->data(),
             'columns' => $this->columns,
             'heading' => $this->heading,
