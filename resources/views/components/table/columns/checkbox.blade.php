@@ -1,5 +1,8 @@
+@props(['item', 'column'])
+
 @php
-    $value = (bool) $column->getValue($item);
+    $field = $column->key;
+    $value = (bool) $item->{$field};
 @endphp
 
 <td
@@ -25,10 +28,14 @@
         ])
         style="text-align: {{ $column->align }}"
 >
-    <livewire:laravel-simple-datatables::checkbox
-            :model="$item"
-            field="{{ $column->key }}"
-            :key="'toggle-'.$item->id"
-            align="{{ $column->align }}"
-    />
+    <div
+            @class(['flex items-center', 'justify-start' => $column->align === 'left', 'justify-end' => $column->align === 'right', 'justify-center' => $column->align === 'center'])
+    >
+        <input
+                type="checkbox"
+                wire:click="toggleValue('{{ $item->id }}', '{{ $field }}')"
+                id="switch_{{ $item->id }}_{{ $field }}"
+                {{ $value ? 'checked' : '' }}
+        />
+    </div>
 </td>

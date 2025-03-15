@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
 use Illuminate\View\View;
@@ -13,6 +14,7 @@ use Milenmk\LaravelSimpleDatatables\Table\Table;
 
 trait HasTable
 {
+    use WithGrouping;
     use WithPagination;
     use WithPerPage;
     use WithSearch;
@@ -28,10 +30,39 @@ trait HasTable
         $this->componentName = Str::of(class_basename($this))->snake();
 
         if (empty($this->visibleColumns)) {
-            $this->visibleColumns = collect($this->columns)
+            $this->visibleColumns = collect($this->table(new Table)->getColumns())
                 ->mapWithKeys(fn ($column) => ["{$this->componentName}.{$column->key}" => $column->visible])
                 ->toArray();
         }
+
+        $this->mountWithGrouping();
+    }
+
+    public function toggleValue(string $itemId, string $field): void
+    {
+        // Find the model by ID
+        $model = $this->getModel($itemId);
+
+        if ($model) {
+            // Get the current value of the field
+            $currentValue = (bool) $model->{$field};
+
+            // Toggle the value
+            $newValue = ! $currentValue;
+
+            // Update the model's field in the database
+            $model->update([$field => $newValue]);
+
+            $this->dispatch('toggleUpdated', $model->id);
+        }
+    }
+
+    public function getModel(string $itemId): ?Model
+    {
+        $table = new Table;
+        $model = $this->table($table)->getModelInstance($itemId);
+
+        return $model;
     }
 
     public function getTableProperty(): View
@@ -52,12 +83,21 @@ trait HasTable
             });
         }
 
+        // Apply grouping
+        if ($this->selectedGroup) {
+            $query->groupBy('id', $this->selectedGroup);
+        }
+
+        // Apply sorting
         if (! empty($this->sortField)) {
             $query->orderBy($this->sortField, $this->sortDir);
         }
 
         // Ensure the query is paginated before passing it to the table
         $paginatedResults = $query->paginate($this->perPage);
+
+        $table->setSelectedGroupFromTrait($this->selectedGroup);
+        $table->setCollapsedGroupsFromTrait($this->collapsedGroups);
 
         return $this->table($table)
             ->query($paginatedResults)
@@ -71,6 +111,7 @@ trait HasTable
                     })
                     ->toArray(),
             )
+            ->groups($table->getGroups())
             ->render();
     }
 

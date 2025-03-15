@@ -62,6 +62,16 @@
 
         <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
             <div class="dataTable-top">
+                <div>
+                    <select wire:model.live="selectedGroup" class="form-select" key="grouping-select">
+                        <option value="">{{ __('No Grouping') }}</option>
+                        @if (isset($groups))
+                            @foreach ($groups as $group)
+                                <option value="{{ $group->key }}">{{ __($group->label) }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
                 <div class="dataTable-search">
                     <div x-data="{ search: @entangle("search").defer || '' }" class="relative w-full items-center">
                         <svg
@@ -134,32 +144,78 @@
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white">
-                    @forelse ($data as $item)
-                        <tr wire:key="{{ $item->id }}">
-                            @foreach ($columns as $column)
-                                @if ($column->visible)
-                                    @include(
-                                        $column->getView(),
-                                        [
-                                            "item" => $item,
-                                            "column" => $column,
-                                        ]
-                                    )
-                                @endif
-                            @endforeach
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="{{ count($columns) }}">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <img src="{{ asset("assets/images/empty.png") }}" alt="{{ __("noData") }}" />
-                                </div>
-                                <div class="flex items-center justify-center space-x-2 text-gray-400">
-                                    <p>{{ __("No Data") }}</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
+                    @if ($selectedGroup && isset($groups))
+                        @php
+                            $groupData = $data->groupBy($selectedGroup);
+                            $groupCollection = collect($groups);
+                        @endphp
+                        @foreach ($groupData as $groupKey => $items)
+                            <tr class="group-header">
+                                <td colspan="{{ count($columns) }}">
+                                    <button wire:click="toggleGroupVisibility('{{ $groupKey }}')" type="button">
+                                        {{ __($groupCollection->firstWhere('key', $selectedGroup)->label ?? '') }}
+                                        : @if ($groupKey === 1)
+                                            {{ __('Yes') }}
+                                        @elseif ($groupKey === 0)
+                                            {{ __('No') }}
+                                        @else
+                                            {{ __($groupKey) }}
+                                        @endif
+                                        @if (in_array($groupKey, $collapsedGroups))
+                                            <span>&#9654;</span> <!-- Right arrow when collapsed -->
+                                        @else
+                                            <span>&#9660;</span> <!-- Down arrow when expanded -->
+                                        @endif
+                                    </button>
+                                </td>
+                            </tr>
+                            @if (!in_array($groupKey, $collapsedGroups))
+                                @foreach ($items as $item)
+                                    <tr wire:key="{{ $item->id }}">
+                                        @foreach ($columns as $column)
+                                            @if ($column->visible)
+                                                @include(
+                                                    $column->getView(),
+                                                    [
+                                                        "item" => $item,
+                                                        "column" => $column,
+                                                    ]
+                                                )
+                                            @endif
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            @endif
+                        @endforeach
+                    @else
+                        <!-- Render normal rows -->
+                        @forelse ($data as $item)
+                            <tr wire:key="{{ $item->id }}">
+                                @foreach ($columns as $column)
+                                    @if ($column->visible)
+                                        @include(
+                                            $column->getView(),
+                                            [
+                                                "item" => $item,
+                                                "column" => $column,
+                                            ]
+                                        )
+                                    @endif
+                                @endforeach
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="{{ count($columns) }}">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <img src="{{ asset("assets/images/empty.png") }}" alt="{{ __("noData") }}"/>
+                                    </div>
+                                    <div class="flex items-center justify-center space-x-2 text-gray-400">
+                                        <p>{{ __("No Data") }}</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    @endif
                     </tbody>
                 </table>
 
@@ -167,13 +223,6 @@
                     {{ $data->links("pagination::tailwind") }}
                 </div>
             </div>
-        </div>
-    </div>
-    <div wire:loading.delay.longest>
-        <div
-                class="screen_loader animate__animated fixed inset-0 z-[60] grid place-content-center bg-[#fafafa] dark:bg-[#060818]"
-        >
-            <x-loader3 />
         </div>
     </div>
 </div>

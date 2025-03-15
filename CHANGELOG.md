@@ -1,3 +1,10 @@
+## v1.3.1
+#### Published at: 2025-03-15
+
+- Implement table grouping.
+- [BUG_FIX] `Uncaught Snapshot missing on Livewire component with id:` when sorting or show/hide column
+- Removed the dedicated Toggle and Checkbox Livewire component. The logic is now inside the HasTable trait.
+
 ## v1.3.0
 #### Published at: 2025-03-14
 
