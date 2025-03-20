@@ -14,6 +14,7 @@ use Milenmk\LaravelSimpleDatatables\Table\Table;
 
 trait HasTable
 {
+    use WithFilters;
     use WithGrouping;
     use WithPagination;
     use WithPerPage;
@@ -35,7 +36,17 @@ trait HasTable
                 ->toArray();
         }
 
+        // Initialize filters from session if persistFilterInSession is true
+        foreach ($this->table(new Table)->getFilters() as $filter) {
+            if ($filter->persistInSession && session()->has("filters.{$filter->name}")) {
+                $this->filters[$filter->name] = session("filters.{$filter->name}");
+            }
+        }
+
         $this->mountWithGrouping();
+
+        // Initialize filters
+        $this->initializeFilters();
     }
 
     public function toggleValue(string $itemId, string $field): void
@@ -93,11 +104,22 @@ trait HasTable
             $query->orderBy($this->sortField, $this->sortDir);
         }
 
+        // Apply filters to query
+        $this->applyFiltersToQuery($query);
+
         // Ensure the query is paginated before passing it to the table
         $paginatedResults = $query->paginate($this->perPage);
 
         $table->setSelectedGroupFromTrait($this->selectedGroup);
         $table->setCollapsedGroupsFromTrait($this->collapsedGroups);
+        $table->setShowFilters($this->getShowFilters());
+        $table->setTableFilters($this->getTableFilterViews());
+        $table->setFiltersValues($this->filters);
+
+        //Set the component
+        foreach ($table->getFilters() as $filter) {
+            $filter->setComponent($this);
+        }
 
         return $this->table($table)
             ->query($paginatedResults)

@@ -10,8 +10,8 @@ class Column
     public bool $sortable = false;
     public bool $searchable = false;
     public bool $visible = true;
-    public ?string $description = null;
-    public mixed $value;
+    public mixed $description = null;
+    public mixed $value = null;
     public ?string $weight = null;
     public ?string $wrap = null;
     public ?string $backgroundColor = null;
@@ -65,16 +65,20 @@ class Column
         return $this;
     }
 
-    public function value($value): self
+    public function value(mixed $value): self
     {
-        $this->value = $value;
+        $this->value ??= $value; // Only set if null
 
         return $this;
     }
 
     public function getValue($item): mixed
     {
-        return $this->value ?? ($item->{$this->key} ?? null);
+        return match (true) {
+            is_callable($this->value) => call_user_func($this->value, $item),
+            isset($this->value) => $this->value,
+            default => $item->{$this->key} ?? null
+        };
     }
 
     /**
@@ -139,11 +143,20 @@ class Column
     /**
      * Set a description for the column.
      */
-    public function description(string|callable $value): self
+    public function description(mixed $value): self
     {
-        $this->description = $value;
+        $this->description ??= $value; // Only set if null
 
         return $this;
+    }
+
+    public function getDescription($item): mixed
+    {
+        return match (true) {
+            is_callable($this->description) => call_user_func($this->description, $item),
+            isset($this->description) => $this->description,
+            default => $item->{$this->key} ?? null
+        };
     }
 
     public function align($value = 'left'): self

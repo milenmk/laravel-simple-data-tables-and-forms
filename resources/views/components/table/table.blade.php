@@ -1,4 +1,15 @@
-@props(["heading" => null, "columns" => null, "data" => null, "striped" => false])
+@props([
+    "heading" => null,
+    "columns" => null,
+    "data" => null,
+    "striped" => false,
+    "groups" => null,
+    "selectedGroup" => null,
+    "collapsedGroups" => [],
+    "showFilters" => false,
+    "tableFilters" => [],
+    "filters" => [],
+    ])
 
 <div class="panel">
     @if ($heading)
@@ -8,60 +19,61 @@
     @endif
 
     <div class="relative">
-        <div class="mb-5 sm:absolute sm:top-0 sm:mb-0 sm:ltr:right-60 sm:rtl:left-60">
-            <div class="flex items-center">
-                <div
-                        class="theme-dropdown relative"
-                        x-data="{ columnDropdown: false }"
-                        @click.outside="columnDropdown = false"
-                >
-                    <a
-                            href="javascript:"
-                            class="dark:text-white-dark flex items-center rounded-md border border-[#e0e6ed] px-4 py-2 text-sm font-semibold dark:border-[#253b5c] dark:bg-[#1b2e4b]"
-                            @click="columnDropdown = ! columnDropdown"
-                    >
-                        <span class="ltr:mr-1 rtl:ml-1">Columns</span>
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                    d="M19 9L12 15L5 9"
-                                    stroke="currentColor"
-                                    stroke-width="1.5"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                            ></path>
-                        </svg>
-                    </a>
-                    <div
-                            class="text-dark dark:text-white-light absolute top-11 z-[10] hidden w-[100px] min-w-[150px] rounded bg-white py-2 shadow ltr:left-0 rtl:right-0 dark:bg-[#1b2e4b]"
-                            :class="columnDropdown &amp;&amp; '!block'"
-                    >
-                        <ul class="space-y-2 px-4 font-semibold">
-                            @foreach ($columns as $column)
-                                <li>
-                                    <div>
-                                        <label class="flex cursor-pointer items-center">
-                                            <input
-                                                    type="checkbox"
-                                                    class="form-checkbox h-4 w-4"
-                                                    id="checkbox-{{ $column->key }}"
-                                                    wire:click="toggleColumnVisibility('{{ $column->key }}')"
-                                                    {{ $column->visible ? "checked" : "" }}
-                                            />
-                                            <span class="ltr:ml-2 rtl:mr-2" for="{{ $column->key }}">
-                                                {{ $column->label }}
-                                            </span>
-                                        </label>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div class="mb-5 sm:absolute sm:top-0 sm:mb-0">
+
         </div>
 
         <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
             <div class="dataTable-top">
+                <div class="flex items-center">
+                    <div
+                            class="theme-dropdown relative"
+                            x-data="{ columnDropdown: false }"
+                            @click.outside="columnDropdown = false"
+                    >
+                        <a
+                                href="javascript:"
+                                class="dark:text-white-dark flex items-center rounded-md border border-[#e0e6ed] px-4 py-2 text-sm font-semibold dark:border-[#253b5c] dark:bg-[#1b2e4b]"
+                                @click="columnDropdown = ! columnDropdown"
+                        >
+                            <span class="ltr:mr-1 rtl:ml-1">Columns</span>
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                        d="M19 9L12 15L5 9"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                ></path>
+                            </svg>
+                        </a>
+                        <div
+                                class="text-dark dark:text-white-light absolute top-11 z-[10] hidden w-[100px] min-w-[150px] rounded bg-white py-2 shadow ltr:left-0 rtl:right-0 dark:bg-[#1b2e4b]"
+                                :class="columnDropdown &amp;&amp; '!block'"
+                        >
+                            <ul class="space-y-2 px-4 font-semibold">
+                                @foreach ($columns as $column)
+                                    <li>
+                                        <div>
+                                            <label class="flex cursor-pointer items-center">
+                                                <input
+                                                        type="checkbox"
+                                                        class="form-checkbox h-4 w-4"
+                                                        id="checkbox-{{ $column->key }}"
+                                                        wire:click="toggleColumnVisibility('{{ $column->key }}')"
+                                                        {{ $column->visible ? "checked" : "" }}
+                                                />
+                                                <span class="ltr:ml-2 rtl:mr-2" for="{{ $column->key }}">
+                                                {{ $column->label }}
+                                            </span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <select wire:model.live="selectedGroup" class="form-select" key="grouping-select">
                         <option value="">{{ __('No Grouping') }}</option>
@@ -104,7 +116,94 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Filter Button -->
+                <button
+                        type="button"
+                        wire:click="$toggle('showFilters')"
+                        class="ml-2 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    {{ __('Filters') }} ({{ $this->getAppliedFiltersCount() }})
+                </button>
             </div>
+
+            <div class="dataTable-top">
+                <!-- Filters Panel -->
+                @if ($showFilters)
+                    <div class="w-full">
+                        <div class="mt-4 p-4 border rounded-md bg-gray-50">
+                            <div class="grid grid-cols-6 gap-4"> <!-- Add grid container -->
+                                @foreach ($tableFilters as $filter)
+                                    {!! $filter['view'] !!}
+                                @endforeach
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <!-- Reset Button -->
+                                <button
+                                        type="button"
+                                        wire:click="resetFilters"
+                                        class="mt-2 inline-flex items-center px-4 py-2 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                >
+                                    {{ __('Reset Filters') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Active Filters Display -->
+            @if (!empty($filters))
+                <div class="flex flex-wrap items-center mb-4">
+                    @foreach ($filters as $filterName => $filterValues)
+                        @if (!empty($filterValues))
+                            @php
+                                $filterItem = collect($tableFilters)->firstWhere('name', $filterName);
+                                $filterLabel = $filterItem['filterLabel'] ?? $filterName;
+                                $filterOptions = $filterItem['filterOptions'] ?? [];
+                            @endphp
+
+                            @if (is_array($filterValues))
+                                @foreach ($filterValues as $filterValue)
+                                    <div class="inline-flex items-center mr-2 mb-2 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">
+                                            <span class="mr-2">
+                                                {{ $filterLabel }}: {{ $filterOptions[$filterValue] ?? $filterValue }}
+                                            </span>
+                                        <button
+                                                wire:click="removeFilter('{{ $filterName }}', '{{ $filterValue }}')"
+                                                type="button"
+                                                class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                                        >
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                @endforeach
+                            @else
+                                @php
+                                    $boolValue = ($filterValues === true) ? 'Yes' : (($filterValues === false) ? 'No' : null);
+                                    $displayValue = $boolValue ?? $filterValues;
+                                @endphp
+                                <div class="inline-flex items-center mr-2 mb-2 px-3 py-1 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">
+                                        <span class="mr-2">
+                                            {{ $filterLabel }}: {{ $displayValue }}
+                                        </span>
+                                    <button
+                                            wire:click="removeFilter('{{ $filterName }}', '{{ $filterValues }}')"
+                                            type="button"
+                                            class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            @endif
+                        @endif
+                    @endforeach
+                </div>
+            @endif
 
             <div class="dataTable-container">
                 <table

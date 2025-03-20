@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Table;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\View as FacadesView;
 use Illuminate\View\View;
+use Milenmk\LaravelSimpleDatatables\Table\Filters\BaseFilter;
 use Milenmk\LaravelSimpleDatatables\Table\Grouping\Group;
 
 class Table
@@ -16,12 +18,18 @@ class Table
     public string|array|null $heading = '';
     public bool $striped = false;
 
+    public bool $showFilters = false;
+
     protected LengthAwarePaginator|Builder|null $query = null;
     protected array $columns = [];
 
     protected array $groups = [];
 
     protected ?string $modelClass = null;
+
+    protected array $filters = [];
+
+    protected array $tableFilters = [];
 
     public function query(Builder|LengthAwarePaginator $query): self
     {
@@ -63,6 +71,9 @@ class Table
             'groups' => $this->groups,
             'selectedGroup' => $this->getSelectedGroupFromTrait(),
             'collapsedGroups' => $this->getCollapsedGroupsFromTrait(),
+            'showFilters' => $this->showFilters,
+            'tableFilters' => $this->tableFilters,
+            'filters' => $this->getFiltersValues(),
         ]);
     }
 
@@ -148,5 +159,52 @@ class Table
         }
 
         return call_user_func([$modelClass, 'find'], $itemId);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function filters(array $filters): self
+    {
+        foreach ($filters as $filter) {
+            if (! $filter instanceof BaseFilter) {
+                throw new Exception('All filters must be instances of the Filter class.');
+            }
+
+            $this->filters[] = $filter;
+        }
+
+        return $this;
+    }
+
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    public function setShowFilters(bool $showFilters): self
+    {
+        $this->showFilters = $showFilters;
+
+        return $this;
+    }
+
+    public function setTableFilters(array $tableFilters): self
+    {
+        $this->tableFilters = $tableFilters;
+
+        return $this;
+    }
+
+    public function getFiltersValues(): array
+    {
+        return $this->filtersValues;
+    }
+
+    public function setFiltersValues(array $filtersValues): self
+    {
+        $this->filtersValues = $filtersValues;
+
+        return $this;
     }
 }

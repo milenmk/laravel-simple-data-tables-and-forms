@@ -1,3 +1,8 @@
+## v1.4.0
+#### Published at: 2025-03-20
+
+- Add filtering functionality
+
 ## v1.3.1
 #### Published at: 2025-03-15
 

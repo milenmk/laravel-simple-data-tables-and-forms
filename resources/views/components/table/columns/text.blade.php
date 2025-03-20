@@ -52,6 +52,8 @@
     @endif
 
     @if ($column->description)
-        <span class="text-sm">{{ $column->description }}</span>
+        <div>
+            <span class="text-sm">{{ $column->getDescription($item) }}</span>
+        </div>
     @endif
 </td>
