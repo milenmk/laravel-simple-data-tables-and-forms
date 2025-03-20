@@ -1,3 +1,13 @@
+## v1.4.2
+#### Published at: 2025-03-20
+
+- [FIX] Filters not showing
+
+## v1.4.1
+#### Published at: 2025-03-20
+
+- [FIX] Error Property type not supported in Livewire for property: [{}]
+
 ## v1.4.0
 #### Published at: 2025-03-20
 

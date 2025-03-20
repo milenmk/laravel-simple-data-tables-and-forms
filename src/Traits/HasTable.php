@@ -113,7 +113,7 @@ trait HasTable
         $table->setSelectedGroupFromTrait($this->selectedGroup);
         $table->setCollapsedGroupsFromTrait($this->collapsedGroups);
         $table->setShowFilters($this->getShowFilters());
-        $table->setTableFilters($this->getTableFilterViews());
+        $table->setTableFilters($this->prepareFilterViews());
         $table->setFiltersValues($this->filters);
 
         //Set the component
