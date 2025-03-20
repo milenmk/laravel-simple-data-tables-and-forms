@@ -2,6 +2,7 @@
 
 namespace Milenmk\LaravelSimpleDatatables\Traits;
 
+use Milenmk\LaravelSimpleDatatables\Table\Filters\SelectFilter;
 use Milenmk\LaravelSimpleDatatables\Table\Table;
 
 trait WithFilters
@@ -73,7 +74,7 @@ trait WithFilters
         $this->resetPage(); // Reset pagination
     }
 
-    protected function prepareFilterViews(): void
+    protected function prepareFilterViews(): array
     {
         $table = new Table;
         $filters = $this->table($table)->getFilters();
@@ -83,7 +84,7 @@ trait WithFilters
             $filter->modelClass = $modelClass;
         }
 
-        $this->tableFilterViews = collect($filters)->map(function ($filter) {
+        return collect($filters)->map(function ($filter) {
             $filterData = [
                 'name' => $filter->name,
                 'view' => $filter->render(),
