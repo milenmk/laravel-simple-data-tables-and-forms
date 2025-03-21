@@ -1,0 +1,43 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\{{ model }};
+use Exception;
+use Illuminate\View\View;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+use Illuminate\Database\Eloquent\Builder;
+use Milenmk\LaravelSimpleDatatables\Table\Table;
+use Milenmk\LaravelSimpleDatatables\Traits\HasTable;
+
+class {{ class }} extends Component
+{
+    use HasTable;
+
+    #[Title('{{ class }}')]
+    public function render(): ?View
+    {
+        return view('{{ view }}', ['title' => '{{ class }}']);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function table(Table $table): Table
+    {
+        return $table
+            ->model({{ modelClass }}::class)
+            ->query({{ modelClass }}::query())
+            ->schema([
+                {{ columns }}
+            ])
+            ->groups([
+                //
+            ])
+            ->filters([
+                //
+            ])
+            ->striped();
+    }
+}
