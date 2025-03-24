@@ -1,3 +1,9 @@
+## v1.6.3
+
+#### Published at: 2025-03-24
+
+- Add Tailwind CSS to generate package css file
+
 ## v1.6.2
 
 #### Published at: 2025-03-24
