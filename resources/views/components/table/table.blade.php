@@ -319,7 +319,7 @@
                 </table>
 
                 <div class="dataTable-bottom mt-4">
-                    {{ $data->links("pagination::tailwind") }}
+                    {{ $data->links("laravel-simple-datatables::components.pagination.tailwind") }}
                 </div>
             </div>
         </div>

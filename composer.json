@@ -1,7 +1,7 @@
 {
     "name": "milenmk/laravel-simple-datatables",
     "description": "Simple Table component to create datatables for Livewire components",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -34,7 +34,8 @@
         "illuminate/pagination": "^10.0|^11.0|^12.0",
         "livewire/livewire": "^3.0|dev-main",
         "illuminate/view": "^12.2",
-        "blade-ui-kit/blade-heroicons": "^2.6"
+        "blade-ui-kit/blade-heroicons": "^2.6",
+        "blade-ui-kit/blade-icons": "^1.8"
     },
     "require-dev": {
         "laravel/pint": "^1.10",

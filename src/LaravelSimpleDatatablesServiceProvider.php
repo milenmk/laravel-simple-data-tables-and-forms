@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables;
 
+use BladeUI\Icons\Exceptions\CannotRegisterIconSet;
 use BladeUI\Icons\Factory;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Milenmk\LaravelSimpleDatatables\Commands\MakeTableCommand;
 
 class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
 {
-    public function boot()
+    /**
+     * @throws BindingResolutionException
+     * @throws CannotRegisterIconSet
+     */
+    public function boot(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'laravel-simple-datatables');
 
@@ -19,21 +26,24 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
                 __DIR__ . '/../resources/views/components' => base_path(
                     'resources/views/vendor/laravel-simple-datatables/components',
                 ),
-                __DIR__ . '/../resources/views/livewire' => base_path(
-                    'resources/views/vendor/laravel-simple-datatables/livewire',
-                ),
             ],
             'laravel-simple-datatables-views',
         );
+
+        Blade::directive('SimpleDatatablesStyle', function () {
+            return @vite(['vendor/milenmk/laravel-simple-datatables/resources/css/simple-datatables.css']);
+        });
 
         $this->commands([MakeTableCommand::class]);
 
         $this->registerBladeIcons();
     }
 
-    public function register() {}
-
-    protected function registerBladeIcons()
+    /**
+     * @throws BindingResolutionException
+     * @throws CannotRegisterIconSet
+     */
+    protected function registerBladeIcons(): void
     {
         // Check if the Blade Icons package is installed
         if (! class_exists(Factory::class)) {
