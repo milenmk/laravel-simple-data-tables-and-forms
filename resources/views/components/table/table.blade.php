@@ -28,7 +28,7 @@
                 >
                     <a
                             href="javascript:"
-                            class="inline-flex items-center min-w-[100px] bg-white border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            class="inline-flex items-center min-w-[100px] bg-white border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             @click="columnDropdown = ! columnDropdown"
                     >
                         <span class="ltr:mr-1 rtl:ml-1">Columns</span>
@@ -129,7 +129,7 @@
                 <!-- Filters Panel -->
                 @if ($showFilters)
                     <div class="w-full mb-4">
-                        <div class="mt-4 p-4 border rounded-md bg-gray-50">
+                        <div class="mt-4 p-4 border rounded-md bg-gray-50 dark:bg-(--color-white-dark)">
                             <div class="grid grid-cols-6 gap-4"> <!-- Add grid container -->
                                 @foreach ($tableFilters as $filter)
                                     {!! $filter['view'] !!}

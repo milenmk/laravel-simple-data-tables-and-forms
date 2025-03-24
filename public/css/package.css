@@ -1019,6 +1019,11 @@
       border-color: var(--color-gray-600);
     }
   }
+  .dark\:bg-\(--color-white-dark\) {
+    &:where(.dark, .dark *) {
+      background-color: var(--color-white-dark);
+    }
+  }
   .dark\:bg-\[\#1b2e4b\] {
     &:where(.dark, .dark *) {
       background-color: #1b2e4b;

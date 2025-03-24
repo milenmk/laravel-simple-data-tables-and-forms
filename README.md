@@ -2,7 +2,8 @@
 
 This package provides simple Table component to create Datatables for Livewire components
 
-![Screenshot](resources/img/Screenshot.png)
+![Screenshot](resources/img/light.png)
+![Screenshot](resources/img/dark.png)
 
 ## Requirements
 
@@ -14,17 +15,12 @@ This package provides simple Table component to create Datatables for Livewire c
 
 Run ```composer require milenmk/laravel-simple-datatables``` to install the package
 
-Publish the package css files by running `php artisan vendor:publish --tag=laravel-simple-datatables-css`
-
-Add `@SimpleDatatablesStyle` in the `head` tag of your layout to include the package css
-
-If you want to edit the view files, run `php artisan vendor:publish --tag="laravel-simple-datatables-views"`
-
-The view files are now available in `/resources/views/vendor/laravel-simple-datatables`
-
 ## Tailwind CSS
 
-To make the classes in the package view files discovered when running `npm run dev` оr `npm run build`, add:
+Publish the package css files by running `php artisan vendor:publish --tag=laravel-simple-datatables-css` and add `@SimpleDatatablesStyle` 
+in the `head` tag of your layout to include the package css
+
+As an alternative, you can copy the content from `/vendor/milenmk/laravel-simple-datatables/resources/css/package.css` to your `app.css` file
 
 ### For Tailwind 4.x
 
@@ -33,6 +29,16 @@ Add `@source '../../vendor/milenmk/laravel-simple-datatables/resources/views/';`
 ### For Tailwind 3.x
 
 Add `'../../vendor/milenmk/laravel-simple-datatables/resources/views/'` inside `content: []` of `tailwind.config.js`
+
+### Editing assets
+
+If you want to edit the view files, run `php artisan vendor:publish --tag="laravel-simple-datatables-views"`
+
+The view files are now available in `/resources/views/vendor/laravel-simple-datatables`
+
+To make the classes in the package view files discovered when running `npm run dev` оr `npm run build`, add:
+
+Do not forget to update the `@source` directives in your `app.css`
 
 ## Usage
 
