@@ -1,3 +1,10 @@
+## v1.6.2
+
+#### Published at: 2025-03-24
+
+- Added custom package css for sorting
+- Updated pagination file
+
 ## v1.6.1
 
 #### Published at: 2025-03-24

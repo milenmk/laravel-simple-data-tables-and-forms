@@ -30,8 +30,19 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
             'laravel-simple-datatables-views',
         );
 
+        $this->publishes(
+            [
+                __DIR__ . '/../resources/css' => public_path('vendor/milenmk/laravel-simple-datatables/css'),
+            ],
+            'laravel-simple-datatables-css',
+        );
+
         Blade::directive('SimpleDatatablesStyle', function () {
-            return @vite(['vendor/milenmk/laravel-simple-datatables/resources/css/simple-datatables.css']);
+            $cssPath = asset('vendor/milenmk/laravel-simple-datatables/css/package.css'); // Example
+
+            $html = "<link rel=\"preload\" as=\"style\" href=\"{$cssPath}\" onload=\"this.onload=null;this.rel='stylesheet'\" crossorigin><noscript><link rel=\"stylesheet\" href=\"{$cssPath}\"></noscript>";
+
+            return $html;
         });
 
         $this->commands([MakeTableCommand::class]);

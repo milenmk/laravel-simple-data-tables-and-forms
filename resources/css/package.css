@@ -1,0 +1,66 @@
+.dataTable-sorter {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    width: max-content;
+    &:where(:dir(ltr), [dir="ltr"], [dir="ltr"] *) {
+        padding-right: calc(var(--spacing) * 7);
+    }
+    &:where(:dir(ltr), [dir="ltr"], [dir="ltr"] *) {
+        &::before {
+            content: var(--tw-content);
+            right: calc(var(--spacing) * 1);
+        }
+    }
+    &:where(:dir(ltr), [dir="ltr"], [dir="ltr"] *) {
+        &::after {
+            content: var(--tw-content);
+            right: calc(var(--spacing) * 1);
+        }
+    }
+    &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+        padding-left: calc(var(--spacing) * 7);
+    }
+    &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+        &::before {
+            content: var(--tw-content);
+            left: calc(var(--spacing) * 1);
+        }
+    }
+    &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+        &::after {
+            content: var(--tw-content);
+            left: calc(var(--spacing) * 1);
+        }
+    }
+}
+.dataTable-sorter::before, .dataTable-sorter::after {
+    content: '';
+    height: 0;
+    width: 0;
+    position: absolute;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    opacity: 0.2;
+}
+.dataTable-sorter::before {
+    border-top: 5px solid #0e1726;
+    bottom: 4px;
+}
+.dataTable-sorter::after {
+    border-bottom: 5px solid #0e1726;
+    border-top: 5px solid transparent;
+    top: -2px;
+}
+.dark .dataTable-sorter::after {
+    border-bottom-color: #ffffff;
+}
+.dark .dataTable-sorter::before {
+    border-top-color: #ffffff;
+}
+.asc .dataTable-sorter::after {
+    opacity: 100%;
+}
+.desc .dataTable-sorter::before {
+    opacity: 100%;
+}
