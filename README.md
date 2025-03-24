@@ -14,6 +14,8 @@ This package provides simple Table component to create Datatables for Livewire c
 
 Run ```composer require milenmk/laravel-simple-datatables``` to install the package
 
+Add `@SimpleDatatablesStyle` in the `head` tag of your layout to include the package css
+
 If you want to edit the view files, then run `php artisan vendor:publish --tag="laravel-simple-datatables-views"`
 
 The view files are now available in `/resources/views/vendor/laravel-simple-datatables`

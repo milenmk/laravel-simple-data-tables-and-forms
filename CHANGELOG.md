@@ -1,3 +1,9 @@
+## v1.6.1
+
+#### Published at: 2025-03-24
+
+- [FIX] Missing package custom pagination blade file
+
 ## v1.6.0
 
 #### Published at: 2025-03-24
@@ -6,8 +12,6 @@
 - Add `blade-ui-kit/blade-icons` to the required packages
 - Add package own pagination to avoid errors when using default Tailwind pagination
 - Add `@SimpleDatatablesStyle` blade directive to apply required styles
-
-
 
 ## v1.5.0
 
