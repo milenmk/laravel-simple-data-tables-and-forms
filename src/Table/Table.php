@@ -63,17 +63,38 @@ class Table
 
     public function render(): View
     {
+        // Get appearance settings from config
+        $config = config('simple-datatables.appearance', []);
+        $theme = $config['theme'] ?? 'light';
+        $striped = $this->striped ?? $config['striped'] ?? true;
+        $hover = $config['hover'] ?? true;
+        $borders = $config['borders'] ?? 'all';
+        $size = $config['size'] ?? 'md';
+
+        // Get security service
+        $securityService = app(\Milenmk\LaravelSimpleDatatables\Services\SecurityService::class);
+
+        // Generate CSRF field if enabled
+        $csrfField = $securityService->getCsrfField();
+
         return FacadesView::make('laravel-simple-datatables::components.table.table', [
             'data' => $this->data(),
             'columns' => $this->columns,
             'heading' => $this->heading,
-            'striped' => $this->striped,
+            'striped' => $striped,
+            'hover' => $hover,
+            'borders' => $borders,
+            'size' => $size,
+            'theme' => $theme,
             'groups' => $this->groups,
             'selectedGroup' => $this->getSelectedGroupFromTrait(),
             'collapsedGroups' => $this->getCollapsedGroupsFromTrait(),
             'showFilters' => $this->showFilters,
             'tableFilters' => $this->tableFilters,
             'filters' => $this->getFiltersValues(),
+            'csrfField' => $csrfField,
+            'exportEnabled' => config('simple-datatables.export.enable', true),
+            'exportFormats' => config('simple-datatables.export.formats', ['csv', 'excel', 'pdf']),
         ]);
     }
 

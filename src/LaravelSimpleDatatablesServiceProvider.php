@@ -8,19 +8,38 @@ use BladeUI\Icons\Exceptions\CannotRegisterIconSet;
 use BladeUI\Icons\Factory;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Milenmk\LaravelSimpleDatatables\Commands\MakeTableCommand;
+use Milenmk\LaravelSimpleDatatables\Commands\PublishAssetsCommand;
+use Milenmk\LaravelSimpleDatatables\Services\AssetService;
 
 class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        // Merge config
+        $this->mergeConfigFrom(__DIR__ . '/../config/simple-datatables.php', 'simple-datatables');
+
+        // Register the asset service
+        $this->app->singleton(AssetService::class, function ($app) {
+            return new AssetService;
+        });
+    }
+
     /**
      * @throws BindingResolutionException
      * @throws CannotRegisterIconSet
      */
     public function boot(): void
     {
+        // Load views
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'laravel-simple-datatables');
 
+        // Publish views
         $this->publishes(
             [
                 __DIR__ . '/../resources/views/components' => base_path(
@@ -30,22 +49,41 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
             'laravel-simple-datatables-views',
         );
 
+        // Publish CSS and JS
         $this->publishes(
             [
                 __DIR__ . '/../public/css' => public_path('vendor/milenmk/laravel-simple-datatables/css'),
+                __DIR__ . '/../public/js' => public_path('vendor/milenmk/laravel-simple-datatables/js'),
             ],
-            'laravel-simple-datatables-css',
+            'laravel-simple-datatables-assets',
         );
 
+        // Publish config
+        $this->publishes(
+            [
+                __DIR__ . '/../config/simple-datatables.php' => config_path('simple-datatables.php'),
+            ],
+            'laravel-simple-datatables-config',
+        );
+
+        // Register Blade directive for CSS
         Blade::directive('SimpleDatatablesStyle', function () {
-            $cssPath = asset('vendor/milenmk/laravel-simple-datatables/css/package.css');
+            $assetService = app(AssetService::class);
 
-            return "<link rel=\"preload\" as=\"style\" href=\"{$cssPath}\" onload=\"this.onload=null;this.rel='stylesheet'\" crossorigin><noscript><link rel=\"stylesheet\" href=\"{$cssPath}\"></noscript>";
-
+            return $assetService->getCssTag();
         });
 
-        $this->commands([MakeTableCommand::class]);
+        // Register Blade directive for JavaScript
+        Blade::directive('SimpleDatatablesScript', function () {
+            $assetService = app(AssetService::class);
 
+            return $assetService->getJsTag();
+        });
+
+        // Register commands
+        $this->commands([MakeTableCommand::class, PublishAssetsCommand::class]);
+
+        // Register Blade icons
         $this->registerBladeIcons();
     }
 

@@ -3,12 +3,19 @@
     "columns" => null,
     "data" => null,
     "striped" => false,
+    "hover" => true,
+    "borders" => 'all',
+    "size" => 'md',
+    "theme" => 'light',
     "groups" => null,
     "selectedGroup" => null,
     "collapsedGroups" => [],
     "showFilters" => false,
     "tableFilters" => [],
     "filters" => [],
+    "csrfField" => '',
+    "exportEnabled" => true,
+    "exportFormats" => ['csv'],
     ])
 
 <div class="panel">
@@ -19,9 +26,9 @@
     @endif
 
     <div class="relative">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-wrap items-center justify-between mb-4">
             <div
-                    class="relative mr-2"
+                    class="relative mr-2 mb-2 sm:mb-0"
                     x-data="{ columnDropdown: false }"
                     @click.outside="columnDropdown = false"
             >
@@ -54,7 +61,7 @@
                                                 type="checkbox"
                                                 class="form-checkbox h-4 w-4"
                                                 id="checkbox-{{ $column->key }}"
-                                                wire:click="toggleColumnVisibility('{{ $column->key }}')"
+                                                wire:change="toggleColumnVisibility('{{ $column->key }}')"
                                                 {{ $column->visible ? "checked" : "" }}
                                         />
                                         <span class="ltr:ml-2 rtl:mr-2" for="{{ $column->key }}">
@@ -67,7 +74,8 @@
                     </ul>
                 </div>
             </div>
-            <div class="flex space-x-2">
+
+            <div class="flex space-x-2 mb-2 sm:mb-0">
                 <select wire:model.live="selectedGroup" key="grouping-select" class="bg-white border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option value="">{{ __('No Grouping') }}</option>
                     @if (isset($groups))
@@ -78,9 +86,15 @@
                 </select>
             </div>
 
-            <div class="flex ml-auto">
-                <div class="dataTable-search">
-                    <div x-data="{ search: @entangle("search").defer || '' }" class="relative w-full items-center">
+            <div class="flex flex-wrap ml-auto">
+                @if ($exportEnabled)
+                    <div class="mr-2 mb-2 sm:mb-0">
+                        <x-laravel-simple-datatables::export :formats="$exportFormats" />
+                    </div>
+                @endif
+
+                <div class="dataTable-search mb-2 sm:mb-0">
+                    <div x-data="{ search: @entangle('search').defer || '', debounceTime: {{ $this->searchDebounceTime ?? 300 }}, minChars: {{ $this->searchMinCharacters ?? 2 }} }" class="relative w-full items-center">
                         <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -95,7 +109,8 @@
                         </svg>
                         <input
                                 x-model="search"
-                                @input.debounce.300ms="$wire.set('search', search)"
+                                x-on:input.debounce="$wire.set('search', search)"
+                                x-bind:input.debounce="debounceTime + 'ms'"
                                 class="dataTable-input ease w-full rounded-md border border-slate-200 bg-transparent py-2 pr-10 pl-10 text-sm text-slate-700 shadow-sm transition duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:shadow focus:outline-none"
                                 placeholder="Search..."
                                 type="text"
@@ -103,22 +118,30 @@
                         />
                         <button
                                 type="button"
-                                @click="search = ''; $wire.set('search', '')"
+                                x-on:click="search = ''; $wire.set('search', '')"
                                 x-show="search.length > 0"
                                 class="absolute inset-y-0 right-0 flex items-center pr-3 text-xl text-gray-500 hover:text-gray-700 focus:outline-none"
                         >
                             &times;
                         </button>
+
+                        <div class="absolute right-0 mt-1 flex space-x-1 text-xs" x-show="search.length > 0 && search.length < minChars">
+                            <span class="text-red-500" x-show="search.length > 0 && search.length < minChars">
+                                Min <span x-text="minChars"></span> characters
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                <button
-                        type="button"
-                        wire:click="$toggle('showFilters')"
-                        class="ml-2 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    {{ __('Filters') }} ({{ $this->getAppliedFiltersCount() }})
-                </button>
+                <div class="ml-2">
+                    <button
+                            type="button"
+                            wire:click="toggleFilters"
+                            class="mb-2 sm:mb-0 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        {{ __('Filters') }} ({{ $this->getAppliedFiltersCount() }})
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -202,11 +225,21 @@
             @endif
 
             <div class="dataTable-container">
+                <div class="overflow-x-auto">
                 <table
                         id="myTable"
                         @class([
                             "dataTable-table min-w-full divide-y divide-gray-200",
                             "table-striped" => $striped,
+                            "hover:bg-gray-50" => $hover,
+                            "border-collapse border border-gray-200" => $borders == 'all',
+                            "border-collapse border-x border-gray-200" => $borders == 'horizontal',
+                            "border-collapse border-y border-gray-200" => $borders == 'vertical',
+                            "border-collapse border-0" => $borders == 'none',
+                            "text-xs" => $size == 'sm',
+                            "text-sm" => $size == 'md',
+                            "text-base" => $size == 'lg',
+                            "dark:bg-gray-800 dark:text-gray-100" => $theme == 'dark',
                         ])
                 >
                     <thead class="bg-gray-50">
@@ -313,10 +346,17 @@
                     @endif
                     </tbody>
                 </table>
+                </div>
 
                 <div class="dataTable-bottom mt-4">
                     {{ $data->links("laravel-simple-datatables::components.pagination.tailwind") }}
                 </div>
+
+                @if (!empty($csrfField))
+                    <div class="mt-4">
+                        {!! $csrfField !!}
+                    </div>
+                @endif
             </div>
         </div>
     </div>

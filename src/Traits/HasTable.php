@@ -12,8 +12,12 @@ use Livewire\Attributes\Session;
 use Livewire\WithPagination;
 use Milenmk\LaravelSimpleDatatables\Table\Table;
 
+/**
+ * @see \Milenmk\LaravelSimpleDatatables\Contracts\HasTableInterface
+ */
 trait HasTable
 {
+    use WithExport;
     use WithFilters;
     use WithGrouping;
     use WithPagination;
@@ -78,20 +82,23 @@ trait HasTable
 
     public function getTableProperty(): View
     {
-        $table = new Table;
+        // Use dependency injection through app() helper
+        $searchService = app(\Milenmk\LaravelSimpleDatatables\Services\SearchService::class);
+        $cacheService = app(\Milenmk\LaravelSimpleDatatables\Services\CacheService::class);
+        $securityService = app(\Milenmk\LaravelSimpleDatatables\Services\SecurityService::class);
+
+        // Create table instance
+        $table = app(Table::class);
 
         // Start with the base query defined in the component
         $query = $this->table($table)->getQuery();
 
-        // Apply search filter if there's any input
-        if (! empty($this->search)) {
-            $query->where(function ($q) use ($table) {
-                foreach ($table->getColumns() as $column) {
-                    if ($column->searchable) {
-                        $q->orWhere($column->key, 'LIKE', "%{$this->search}%");
-                    }
-                }
-            });
+        // Sanitize search input
+        $sanitizedSearch = $securityService->sanitizeInput($this->search);
+
+        // Apply search filter if there's any input using the search service
+        if (! empty($sanitizedSearch)) {
+            $query = $searchService->applySearch($query, $sanitizedSearch, $table);
         }
 
         // Apply grouping
@@ -99,13 +106,29 @@ trait HasTable
             $query->groupBy('id', $this->selectedGroup);
         }
 
-        // Apply sorting
+        // Apply sorting with validation
         if (! empty($this->sortField)) {
-            $query->orderBy($this->sortField, $this->sortDir);
+            $allowedFields = collect($table->getColumns())->pluck('key')->toArray();
+            if ($securityService->validateSortField($this->sortField, $allowedFields) &&
+                $securityService->validateSortDirection($this->sortDir)) {
+                $query->orderBy($this->sortField, $this->sortDir);
+            }
         }
 
         // Apply filters to query
         $this->applyFiltersToQuery($query);
+
+        // Cache the column configuration
+        $columns = $cacheService->remember('columns_' . $this->componentName, function () use ($table) {
+            return collect($table->getColumns())
+                ->map(function ($column) {
+                    $column->visible =
+                        $this->visibleColumns["{$this->componentName}.{$column->key}"] ?? $column->visible;
+
+                    return $column;
+                })
+                ->toArray();
+        });
 
         // Ensure the query is paginated before passing it to the table
         $paginatedResults = $query->paginate($this->perPage);
@@ -116,45 +139,28 @@ trait HasTable
         $table->setTableFilters($this->prepareFilterViews());
         $table->setFiltersValues($this->filters);
 
-        //Set the component
+        // Set the component
         foreach ($table->getFilters() as $filter) {
             $filter->setComponent($this);
         }
 
         return $this->table($table)
             ->query($paginatedResults)
-            ->schema(
-                collect($table->getColumns())
-                    ->map(function ($column) {
-                        $column->visible =
-                            $this->visibleColumns["{$this->componentName}.{$column->key}"] ?? $column->visible;
-
-                        return $column;
-                    })
-                    ->toArray(),
-            )
+            ->schema($columns)
             ->groups($table->getGroups())
             ->render();
     }
 
     abstract public function table(Table $table): Table;
 
-    public function setSortBy($column): void
-    {
-        if ($this->sortField === $column) {
-            $this->sortDir = $this->sortDir === 'ASC' ? 'DESC' : 'ASC';
-
-            return;
-        }
-
-        $this->sortField = $column;
-        $this->sortDir = 'ASC';
-    }
-
     public function toggleColumnVisibility(string $columnKey): void
     {
         $prefixedKey = "{$this->componentName}.{$columnKey}";
 
         $this->visibleColumns[$prefixedKey] = ! ($this->visibleColumns[$prefixedKey] ?? true);
+
+        // Clear the cache to ensure the updated visibility is reflected
+        $cacheService = app(\Milenmk\LaravelSimpleDatatables\Services\CacheService::class);
+        $cacheService->forget('columns_' . $this->componentName);
     }
 }

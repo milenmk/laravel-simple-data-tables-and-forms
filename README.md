@@ -1,9 +1,22 @@
-## About
+# Laravel Simple Datatables
 
-This package provides simple Table component to create Datatables for Livewire components
+A lightweight, easy-to-use Laravel package for creating interactive data tables with sorting, filtering, searching, and exporting capabilities.
 
 ![Screenshot](resources/img/light.png)
 ![Screenshot](resources/img/dark.png)
+
+## Features
+
+- 🔍 Advanced search with debouncing and minimum character requirements
+- 🔄 Column sorting
+- 🧹 Filtering with multiple filter types
+- 📊 Data grouping
+- 📱 Responsive design
+- 🎨 Customizable appearance
+- 📤 Export to CSV, Excel, and PDF
+- 🔒 Security features
+- ⚡ Performance optimizations with caching
+- 🧩 Livewire integration
 
 ## Requirements
 
@@ -11,16 +24,49 @@ This package provides simple Table component to create Datatables for Livewire c
 - Laravel 10.x or higher
 - Livewire 3.x or higher
 
-## Install
+## Installation
 
-Run ```composer require milenmk/laravel-simple-datatables``` to install the package
+You can install the package via composer:
 
-## Tailwind CSS
+```
+composer require milenmk/laravel-simple-datatables
+```
 
-Publish the package css files by running `php artisan vendor:publish --tag=laravel-simple-datatables-css` and add `@SimpleDatatablesStyle` 
-in the `head` tag of your layout to include the package css
+## Publishing Assets
 
-As an alternative, you can copy the content from `/vendor/milenmk/laravel-simple-datatables/resources/css/package.css` to your `app.css` file
+Publish the package assets:
+
+```
+php artisan simple-datatables:publish-assets
+```
+
+Optionally, you can publish the configuration file:
+
+```
+php artisan vendor:publish --tag=laravel-simple-datatables-config
+```
+
+## Including Assets
+
+Add the following directives to your layout file:
+
+```blade
+<head>
+    <!-- Other head elements -->
+    @SimpleDatatablesStyle
+</head>
+
+<body>
+    <!-- Your content -->
+    
+    <!-- Scripts -->
+    @SimpleDatatablesScript
+</body>
+```
+
+### Tailwind CSS Integration
+
+As an alternative to the assets publishing command, you can copy the content from `/vendor/milenmk/laravel-simple-datatables/resources/css/package.css` to your `app.css` file. Then:
 
 ### For Tailwind 4.x
 
@@ -85,20 +131,86 @@ public function table(Table $table): Table
 
 3. In the view file of the Livewire component add `{{ $this->table }}` to render the table
 
-## Additional Information
+## Advanced Usage
 
-- Available columns: TextColumn, ToggleColumn, CheckBoxColumn, ProgressColumn and IconColumn
-- Available column options/settings:
-    - label (string|array|callable)
-    - value
-    - color (Full value e.g. text-gray-500, text-primary, text-danger etc.)
-    - background (Full value e.g. bg-gray-500, bg-danger)
-    - visible (true|false, default true)
-    - weight (font weight of the text (e.g., bold, thin, medium))
-    - wrap (true|false, default true)
-    - description (string|callable)
-    - align (left|center|right, default left)
-    - model (Specify custom value for the wire:model of the field. Default is the column key inside make())
+### Adding Filters
+
+```php
+use Milenmk\LaravelSimpleDatatables\Table\Filters\SelectFilter;
+use Milenmk\LaravelSimpleDatatables\Table\Filters\DateFilter;
+
+public function table(Table $table): Table
+{
+    return $table
+        ->query(User::query())
+        ->heading('Users')
+        ->striped()
+        ->schema([
+            // Columns...
+        ])
+        ->filters([
+            SelectFilter::make('role')
+                ->options([
+                    'admin' => 'Admin',
+                    'user' => 'User',
+                ])
+                ->label('Role'),
+                
+            DateFilter::make('created_at')
+                ->label('Created Date'),
+        ]);
+}
+```
+
+### Grouping Data
+
+```php
+use Milenmk\LaravelSimpleDatatables\Table\Group;
+
+public function table(Table $table): Table
+{
+    return $table
+        ->query(User::query())
+        ->heading('Users')
+        ->schema([
+            // Columns...
+        ])
+        ->groups([
+            Group::make('role')
+                ->label('Role'),
+        ]);
+}
+```
+
+### Exporting Data
+
+The export functionality is automatically included when you use the `HasTable` trait. Users can export data to CSV, Excel, or PDF formats.
+
+### Available Columns
+
+- TextColumn
+- ToggleColumn
+- CheckBoxColumn
+- ProgressColumn
+- IconColumn
+- ActionColumn
+
+### Column Options/Settings
+
+- `label` (string|array|callable) - The column header label
+- `value` - Custom value for the column
+- `color` (Full value e.g. text-gray-500, text-primary, text-danger etc.)
+- `background` (Full value e.g. bg-gray-500, bg-danger)
+- `visible` (true|false, default true)
+- `weight` (font weight of the text (e.g., bold, thin, medium))
+- `wrap` (true|false, default true)
+- `description` (string|callable)
+- `align` (left|center|right, default left)
+- `headerAlign` (left|center|right, default left)
+- `model` (Specify custom value for the wire:model of the field. Default is the column key inside make())
+- `searchable` (true|false, default false)
+- `sortable` (true|false, default false)
+- `format` (callable) - Format the value before display
 
 ## DISCLAIMER
 
@@ -120,6 +232,13 @@ You can review the source code, report bugs, or contribute to the project by vis
 [GitHub Repository](https://github.com/milenmk/laravel-simple-datatables)
 
 Feel free to open issues or submit pull requests. Contributions are welcome!
+
+## Documentation
+
+- [Configuration](docs/configuration.md)
+- [Search](docs/search.md)
+- [Export](docs/export.md)
+- [Caching](docs/caching.md)
 
 ## License
 

@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Milenmk\LaravelSimpleDatatables\Traits;
 
 use Milenmk\LaravelSimpleDatatables\Table\Filters\SelectFilter;
 use Milenmk\LaravelSimpleDatatables\Table\Table;
 
+/**
+ * @see \Milenmk\LaravelSimpleDatatables\Contracts\WithFiltersInterface
+ */
 trait WithFilters
 {
     public bool $showFilters = false;
@@ -28,6 +33,11 @@ trait WithFilters
     public function setShowFilters(bool $show): void
     {
         $this->showFilters = $show;
+    }
+
+    public function toggleFilters(): void
+    {
+        $this->showFilters = ! $this->showFilters;
     }
 
     public function getTableFilterViews(): array
