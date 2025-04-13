@@ -16,9 +16,9 @@ use Milenmk\LaravelSimpleDatatables\Table\Grouping\Group;
 class Table
 {
     public string|array|null $heading = '';
-    public bool $striped = false;
+    public ?bool $striped = null;
 
-    public bool $showFilters = false;
+    public ?bool $showFilters = null;
 
     protected LengthAwarePaginator|Builder|null $query = null;
     protected array $columns = [];
@@ -66,7 +66,7 @@ class Table
         // Get appearance settings from config
         $config = config('simple-datatables.appearance', []);
         $theme = $config['theme'] ?? 'light';
-        $striped = $this->striped ?? $config['striped'] ?? true;
+        $striped = $this->striped ?? ($config['striped'] ?? true);
         $hover = $config['hover'] ?? true;
         $borders = $config['borders'] ?? 'all';
         $size = $config['size'] ?? 'md';

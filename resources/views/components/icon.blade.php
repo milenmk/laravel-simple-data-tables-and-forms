@@ -18,11 +18,8 @@
         {{ $icon }}
     </span>
 @elseif (str_contains($icon, '/'))
-    <img {{
-        $attributes
-            ->merge(['src' => $icon])
-            ->class($class)
-    }} />
+    <img alt="{{ $icon ?? 'icon' }}" src="{{ $icon }}" {{ $attributes->merge(['class' => $class ]) }}
+    />
 @else
     @svg($icon, $class, array_filter($attributes->getAttributes()))
 @endif

@@ -231,7 +231,6 @@
                         @class([
                             "dataTable-table min-w-full divide-y divide-gray-200",
                             "table-striped" => $striped,
-                            "hover:bg-gray-50" => $hover,
                             "border-collapse border border-gray-200" => $borders == 'all',
                             "border-collapse border-x border-gray-200" => $borders == 'horizontal',
                             "border-collapse border-y border-gray-200" => $borders == 'vertical',
@@ -299,7 +298,7 @@
                             </tr>
                             @if (!in_array($groupKey, $collapsedGroups))
                                 @foreach ($items as $item)
-                                    <tr wire:key="{{ $item->id }}">
+                                    <tr wire:key="{{ $item->id }}" @class(["hover:bg-gray-200" => $hover])>
                                         @foreach ($columns as $column)
                                             @if ($column->visible)
                                                 @include(
@@ -318,7 +317,7 @@
                     @else
                         <!-- Render normal rows -->
                         @forelse ($data as $item)
-                            <tr wire:key="{{ $item->id }}">
+                            <tr wire:key="{{ $item->id }}" @class(["hover:bg-gray-200" => $hover])>
                                 @foreach ($columns as $column)
                                     @if ($column->visible)
                                         @include(

@@ -7,6 +7,7 @@ namespace Milenmk\LaravelSimpleDatatables\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Milenmk\LaravelSimpleDatatables\Services\AssetService;
+use Symfony\Component\Console\Command\Command as CommandAlias;
 
 class PublishAssetsCommand extends Command
 {
@@ -75,6 +76,6 @@ class PublishAssetsCommand extends Command
         $this->line('- CSS: ' . $cssPath);
         $this->line('- JS: ' . $jsPath);
 
-        return Command::SUCCESS;
+        return CommandAlias::SUCCESS;
     }
 }
