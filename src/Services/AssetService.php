@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatables\Services;
 
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 
 class AssetService
 {
@@ -55,26 +54,5 @@ class AssetService
     {
         // Return the path to the JS file in the vendor directory
         return asset('vendor/milenmk/laravel-simple-datatables/js/package.js');
-    }
-
-    /**
-     * Simple CSS minification.
-     */
-    protected function minifyCss(string $sourcePath, string $destinationPath): void
-    {
-        if (! File::exists($sourcePath)) {
-            return;
-        }
-
-        $css = File::get($sourcePath);
-
-        // Basic CSS minification
-        $minified = preg_replace('/\/\*[^*]*\*+([^\/][^*]*\*+)*\//', '', $css); // Remove comments
-        $minified = preg_replace('/\s+/', ' ', $minified); // Replace multiple spaces with single space
-        $minified = preg_replace('/\s*([\{\}:;\,])\s*/', '$1', $minified); // Remove spaces around brackets, colons, semicolons
-        $minified = preg_replace('/([\,;])/', '$1', $minified); // Remove spaces after commas and semicolons
-        $minified = preg_replace('/([\{;])\s*([a-zA-Z0-9_-]+)\s*:/', '$1$2:', $minified); // Remove spaces around property names
-
-        File::put($destinationPath, $minified);
     }
 }

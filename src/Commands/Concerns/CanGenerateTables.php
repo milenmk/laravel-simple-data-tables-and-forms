@@ -55,8 +55,7 @@ trait CanGenerateTables
                 $guessedRelationshipName = $this->guessBelongsToRelationshipName($columnName, $model);
 
                 if (filled($guessedRelationshipName)) {
-                    $guessedRelationshipTitleColumnName = $this->guessBelongsToRelationshipTitleColumnName($columnName,
-                        app($model)->{$guessedRelationshipName}()->getModel()::class);
+                    $guessedRelationshipTitleColumnName = $this->guessBelongsToRelationshipTitleColumnName(app($model)->{$guessedRelationshipName}()->getModel()::class);
 
                     $columnName = "{$guessedRelationshipName}.{$guessedRelationshipTitleColumnName}";
                 }
@@ -76,14 +75,9 @@ trait CanGenerateTables
                 $columnData['type'] = IconColumn::class;
                 $columnData['boolean'] = [];
             } else {
-                $columnData['type'] = match (true) {
-                    $columnName === 'image', str($columnName)->startsWith('image_'), str($columnName)->contains('_image_'), str($columnName)->endsWith('_image') => Tables\Columns\ImageColumn::class,
-                    default => TextColumn::class,
-                };
+                $columnData['type'] = TextColumn::class;
 
-                if (in_array($type['name'], [
-                    'date',
-                ])) {
+                if ($type['name'] == 'date') {
                     $columnData['date'] = [];
                     $columnData['sortable'] = [];
                 }
@@ -127,7 +121,7 @@ trait CanGenerateTables
         foreach ($columns as $columnName => $columnData) {
             // Constructor
             $output .= '\\';
-            $output .= (string) str($columnData['type']);
+            $output .= str($columnData['type']);
             $output .= '::make(\'';
             $output .= $columnName;
             $output .= '\')';
@@ -164,7 +158,7 @@ trait CanGenerateTables
             // Termination
             $output .= ',';
 
-            if (! (array_key_last($columns) === $columnName)) {
+            if (array_key_last($columns) !== $columnName) {
                 $output .= PHP_EOL;
             }
         }

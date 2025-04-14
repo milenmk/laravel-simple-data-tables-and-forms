@@ -94,19 +94,21 @@ trait WithFilters
             $filter->modelClass = $modelClass;
         }
 
-        return collect($filters)->map(function ($filter) {
-            $filterData = [
-                'name' => $filter->name,
-                'view' => $filter->render(),
-                'filterLabel' => $filter->label,
-            ];
+        return collect($filters)
+            ->map(function ($filter) {
+                $filterData = [
+                    'name' => $filter->name,
+                    'view' => $filter->render(),
+                    'filterLabel' => $filter->label,
+                ];
 
-            if ($filter instanceof SelectFilter) {
-                $filterData['filterOptions'] = $filter->getOptions();
-            }
+                if ($filter instanceof SelectFilter) {
+                    $filterData['filterOptions'] = $filter->getOptions();
+                }
 
-            return $filterData;
-        })->toArray();
+                return $filterData;
+            })
+            ->toArray();
     }
 
     protected function applyFiltersToQuery($query): void

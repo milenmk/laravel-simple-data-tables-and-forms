@@ -5,6 +5,7 @@ namespace Milenmk\LaravelSimpleDatatables\Commands\Concerns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Schema\Builder;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use ReflectionClass;
@@ -45,6 +46,8 @@ trait CanReadModelSchemas
                 return null;
             }
         } catch (ReflectionException $exception) {
+            Log::error($exception->getMessage());
+
             return null;
         }
 
@@ -66,7 +69,7 @@ trait CanReadModelSchemas
         return $tableName;
     }
 
-    protected function guessBelongsToRelationshipTitleColumnName(string $column, string $model): string
+    protected function guessBelongsToRelationshipTitleColumnName(string $model): string
     {
         $schema = $this->getModelSchema($model);
         $table = $this->getModelTable($model);
@@ -127,7 +130,7 @@ trait CanReadModelSchemas
         };
 
         $values = str_contains($column['type'], '(')
-            ? str_getcsv(Str::between($column['type'], '(', ')'), enclosure: "'", escape: '\\')
+            ? str_getcsv(Str::between($column['type'], '(', ')'), enclosure: "'")
             : null;
 
         $values = is_null($values)

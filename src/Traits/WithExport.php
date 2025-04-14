@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatables\Traits;
 
 use Illuminate\Support\Facades\Config;
+use Milenmk\LaravelSimpleDatatables\Services\ExportService;
+use Milenmk\LaravelSimpleDatatables\Services\SearchService;
+use Milenmk\LaravelSimpleDatatables\Table\Table;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -31,10 +34,10 @@ trait WithExport
         }
 
         // Get export service
-        $exportService = app(\Milenmk\LaravelSimpleDatatables\Services\ExportService::class);
+        $exportService = app(ExportService::class);
 
         // Get table instance
-        $table = app(\Milenmk\LaravelSimpleDatatables\Table\Table::class);
+        $table = app(Table::class);
         $this->table($table);
 
         // Get query
@@ -47,7 +50,7 @@ trait WithExport
 
         // Apply search
         if (! empty($this->search)) {
-            $searchService = app(\Milenmk\LaravelSimpleDatatables\Services\SearchService::class);
+            $searchService = app(SearchService::class);
             $query = $searchService->applySearch($query, $this->search, $table);
         }
 

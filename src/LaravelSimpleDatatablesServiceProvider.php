@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables;
 
-use BladeUI\Icons\Exceptions\CannotRegisterIconSet;
 use BladeUI\Icons\Factory;
 use BladeUI\Icons\IconsManifest;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Milenmk\LaravelSimpleDatatables\Commands\MakeTableCommand;
 use Milenmk\LaravelSimpleDatatables\Commands\PublishAssetsCommand;
@@ -27,14 +25,13 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/simple-datatables.php', 'simple-datatables');
 
         // Register the asset service
-        $this->app->singleton(AssetService::class, function ($app) {
+        $this->app->singleton(AssetService::class, function () {
             return new AssetService;
         });
     }
 
     /**
      * @throws BindingResolutionException
-     * @throws CannotRegisterIconSet
      */
     public function boot(): void
     {
@@ -94,7 +91,6 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
 
     /**
      * @throws BindingResolutionException
-     * @throws CannotRegisterIconSet
      */
     protected function registerBladeIcons(): void
     {

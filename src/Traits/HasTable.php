@@ -10,6 +10,9 @@ use Illuminate\Support\Stringable;
 use Illuminate\View\View;
 use Livewire\Attributes\Session;
 use Livewire\WithPagination;
+use Milenmk\LaravelSimpleDatatables\Services\CacheService;
+use Milenmk\LaravelSimpleDatatables\Services\SearchService;
+use Milenmk\LaravelSimpleDatatables\Services\SecurityService;
 use Milenmk\LaravelSimpleDatatables\Table\Table;
 
 /**
@@ -53,6 +56,8 @@ trait HasTable
         $this->initializeFilters();
     }
 
+    abstract public function table(Table $table): Table;
+
     public function toggleValue(string $itemId, string $field): void
     {
         // Find the model by ID
@@ -75,17 +80,16 @@ trait HasTable
     public function getModel(string $itemId): ?Model
     {
         $table = new Table;
-        $model = $this->table($table)->getModelInstance($itemId);
 
-        return $model;
+        return $this->table($table)->getModelInstance($itemId);
     }
 
     public function getTableProperty(): View
     {
         // Use dependency injection through app() helper
-        $searchService = app(\Milenmk\LaravelSimpleDatatables\Services\SearchService::class);
-        $cacheService = app(\Milenmk\LaravelSimpleDatatables\Services\CacheService::class);
-        $securityService = app(\Milenmk\LaravelSimpleDatatables\Services\SecurityService::class);
+        $searchService = app(SearchService::class);
+        $cacheService = app(CacheService::class);
+        $securityService = app(SecurityService::class);
 
         // Create table instance
         $table = app(Table::class);
@@ -108,9 +112,13 @@ trait HasTable
 
         // Apply sorting with validation
         if (! empty($this->sortField)) {
-            $allowedFields = collect($table->getColumns())->pluck('key')->toArray();
-            if ($securityService->validateSortField($this->sortField, $allowedFields) &&
-                $securityService->validateSortDirection($this->sortDir)) {
+            $allowedFields = collect($table->getColumns())
+                ->pluck('key')
+                ->toArray();
+            if (
+                $securityService->validateSortField($this->sortField, $allowedFields) &&
+                $securityService->validateSortDirection($this->sortDir)
+            ) {
                 $query->orderBy($this->sortField, $this->sortDir);
             }
         }
@@ -151,8 +159,6 @@ trait HasTable
             ->render();
     }
 
-    abstract public function table(Table $table): Table;
-
     public function toggleColumnVisibility(string $columnKey): void
     {
         $prefixedKey = "{$this->componentName}.{$columnKey}";
@@ -160,7 +166,7 @@ trait HasTable
         $this->visibleColumns[$prefixedKey] = ! ($this->visibleColumns[$prefixedKey] ?? true);
 
         // Clear the cache to ensure the updated visibility is reflected
-        $cacheService = app(\Milenmk\LaravelSimpleDatatables\Services\CacheService::class);
+        $cacheService = app(CacheService::class);
         $cacheService->forget('columns_' . $this->componentName);
     }
 }

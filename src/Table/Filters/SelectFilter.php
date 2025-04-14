@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatables\Table\Filters;
 
 use Closure;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View as FacadesView;
 use Illuminate\View\View;
+use Milenmk\LaravelSimpleDatatables\Exceptions\FilterConfigurationException;
 
 class SelectFilter extends BaseFilter
 {
@@ -19,12 +19,12 @@ class SelectFilter extends BaseFilter
     protected ?string $displayColumn = null;
 
     /**
-     * @throws Exception
+     * @throws FilterConfigurationException
      */
     public function options(Closure|array|string $options): static
     {
         if ($this->relation) {
-            throw new Exception('Cannot set both relation() and options()');
+            throw FilterConfigurationException::conflictingConfiguration('Cannot set both relation() and options()');
         }
 
         if (is_string($options) && enum_exists($options)) {
@@ -43,12 +43,12 @@ class SelectFilter extends BaseFilter
     }
 
     /**
-     * @throws Exception
+     * @throws FilterConfigurationException
      */
     public function relationship(string $relation, string $displayColumn): static
     {
         if ($this->optionsCallback) {
-            throw new Exception('Cannot set both relation() and options()');
+            throw FilterConfigurationException::conflictingConfiguration('Cannot set both relation() and options()');
         }
 
         $this->relation = $relation;
@@ -86,7 +86,9 @@ class SelectFilter extends BaseFilter
         }
 
         if ($this->relation && $this->displayColumn) {
-            $modelClass = app($this->getModel())->{$this->relation}()->getRelated();
+            $modelClass = app($this->getModel())
+                ->{$this->relation}()
+                ->getRelated();
 
             return $modelClass->pluck($this->displayColumn, 'id')->toArray();
         }
@@ -96,25 +98,30 @@ class SelectFilter extends BaseFilter
         $tableName = (new $modelClass)->getTable();
         $columnName = $this->name;
 
-        return DB::table($tableName)->distinct()->orderBy($columnName)->pluck($columnName, $columnName)->toArray();
-    }
-
-    protected function getModel(): string
-    {
-        return $this->modelClass;
+        return DB::table($tableName)
+            ->distinct()
+            ->orderBy($columnName)
+            ->pluck($columnName, $columnName)
+            ->toArray();
     }
 
     protected function enumOptions(string $enumClass): static
     {
         $this->optionsCallback = function () use ($enumClass) {
             return collect($enumClass::cases())
-                ->mapWithKeys(fn ($case) => [
-                    $case->value => method_exists($case, 'getLabel')
-                        ? $case->getLabel()
-                        : $case->name,
-                ])->toArray();
+                ->mapWithKeys(
+                    fn ($case) => [
+                        $case->value => method_exists($case, 'getLabel') ? $case->getLabel() : $case->name,
+                    ],
+                )
+                ->toArray();
         };
 
         return $this;
+    }
+
+    protected function getModel(): string
+    {
+        return $this->modelClass;
     }
 }

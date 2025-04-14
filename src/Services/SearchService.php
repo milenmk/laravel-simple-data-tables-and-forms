@@ -44,24 +44,24 @@ class SearchService
     }
 
     /**
-     * Apply LIKE search to the query.
-     */
-    protected function applyLikeSearch(Builder $query, string $search, Table $table): Builder
-    {
-        return $query->where(function ($q) use ($search, $table) {
-            foreach ($table->getColumns() as $column) {
-                if ($column->searchable) {
-                    $q->orWhere($column->key, 'LIKE', "%{$search}%");
-                }
-            }
-        });
-    }
-
-    /**
      * Apply exact match search to the query.
      */
     protected function applyExactSearch(Builder $query, string $search, Table $table): Builder
     {
+        // Check if there are any searchable columns
+        $hasSearchableColumns = false;
+        foreach ($table->getColumns() as $column) {
+            if ($column->searchable) {
+                $hasSearchableColumns = true;
+                break;
+            }
+        }
+
+        // If no searchable columns, return the query as is
+        if (! $hasSearchableColumns) {
+            return $query;
+        }
+
         return $query->where(function ($q) use ($search, $table) {
             foreach ($table->getColumns() as $column) {
                 if ($column->searchable) {
@@ -69,6 +69,51 @@ class SearchService
                 }
             }
         });
+    }
+
+    /**
+     * Check if fulltext search can be used for the given query and columns.
+     */
+    protected function canUseFulltext(Builder $query, Table $table): bool
+    {
+        $connection = $query->getConnection();
+        $driver = $connection->getDriverName();
+
+        // Only MySQL supports FULLTEXT indexes
+        if ($driver !== 'mysql') {
+            return false;
+        }
+
+        // Get the table name from the query
+        $from = $query->getQuery()->from;
+        if (! $from || ! is_string($from)) {
+            return false;
+        }
+
+        // Get searchable columns
+        $searchableColumns = collect($table->getColumns())
+            ->filter(fn ($column) => $column->searchable)
+            ->pluck('key')
+            ->toArray();
+
+        if (empty($searchableColumns)) {
+            return false;
+        }
+
+        // Check if there's a FULLTEXT index on any of the searchable columns
+        $indexes = DB::select("SHOW INDEX FROM {$from} WHERE Index_type = 'FULLTEXT'");
+        $indexedColumns = collect($indexes)
+            ->pluck('Column_name')
+            ->toArray();
+
+        // Check if any searchable column has a FULLTEXT index
+        foreach ($searchableColumns as $column) {
+            if (in_array($column, $indexedColumns)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -108,45 +153,30 @@ class SearchService
     }
 
     /**
-     * Check if fulltext search can be used for the given query and columns.
+     * Apply LIKE search to the query.
      */
-    protected function canUseFulltext(Builder $query, Table $table): bool
+    protected function applyLikeSearch(Builder $query, string $search, Table $table): Builder
     {
-        $connection = $query->getConnection();
-        $driver = $connection->getDriverName();
-
-        // Only MySQL supports FULLTEXT indexes
-        if ($driver !== 'mysql') {
-            return false;
-        }
-
-        // Get the table name from the query
-        $from = $query->getQuery()->from;
-        if (! $from || ! is_string($from)) {
-            return false;
-        }
-
-        // Get searchable columns
-        $searchableColumns = collect($table->getColumns())
-            ->filter(fn ($column) => $column->searchable)
-            ->pluck('key')
-            ->toArray();
-
-        if (empty($searchableColumns)) {
-            return false;
-        }
-
-        // Check if there's a FULLTEXT index on any of the searchable columns
-        $indexes = DB::select("SHOW INDEX FROM {$from} WHERE Index_type = 'FULLTEXT'");
-        $indexedColumns = collect($indexes)->pluck('Column_name')->toArray();
-
-        // Check if any searchable column has a FULLTEXT index
-        foreach ($searchableColumns as $column) {
-            if (in_array($column, $indexedColumns)) {
-                return true;
+        // Check if there are any searchable columns
+        $hasSearchableColumns = false;
+        foreach ($table->getColumns() as $column) {
+            if ($column->searchable) {
+                $hasSearchableColumns = true;
+                break;
             }
         }
 
-        return false;
+        // If no searchable columns, return the query as is
+        if (! $hasSearchableColumns) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($search, $table) {
+            foreach ($table->getColumns() as $column) {
+                if ($column->searchable) {
+                    $q->orWhere($column->key, 'LIKE', "%{$search}%");
+                }
+            }
+        });
     }
 }

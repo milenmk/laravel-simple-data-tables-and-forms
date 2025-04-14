@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Table\Filters;
 
+use AllowDynamicProperties;
 use Closure;
 use Illuminate\View\View;
 use Livewire\Component;
 
+#[AllowDynamicProperties]
 abstract class BaseFilter
 {
     public string $name;

@@ -7,6 +7,7 @@ namespace Milenmk\LaravelSimpleDatatables\Services;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class CacheService
 {
@@ -24,11 +25,7 @@ class CacheService
             return $callback();
         }
 
-        return Cache::remember(
-            $this->getCacheKey($key),
-            $this->getCacheLifetime(),
-            $callback
-        );
+        return Cache::remember($this->getCacheKey($key), $this->getCacheLifetime(), $callback);
     }
 
     /**
@@ -52,11 +49,7 @@ class CacheService
             return false;
         }
 
-        return Cache::put(
-            $this->getCacheKey($key),
-            $value,
-            $this->getCacheLifetime()
-        );
+        return Cache::put($this->getCacheKey($key), $value, $this->getCacheLifetime());
     }
 
     /**
@@ -91,7 +84,7 @@ class CacheService
                 return true;
             }
         } catch (Exception $e) {
-            // Fallback if specific driver methods aren't available
+            Log::error($e->getMessage());
         }
 
         // Fallback: Use Cache::flush() as a last resort
@@ -132,6 +125,9 @@ class CacheService
      */
     protected function getCacheLifetime(): int
     {
-        return Config::get('simple-datatables.cache.lifetime', 3600);
+        $lifetime = Config::get('simple-datatables.cache.lifetime', 3600);
+
+        // Ensure we always return an integer
+        return $lifetime !== null ? (int) $lifetime : 3600;
     }
 }

@@ -2,7 +2,10 @@
 
 namespace Milenmk\LaravelSimpleDatatables\Commands\Concerns;
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 
 use function Laravel\Prompts\confirm;
@@ -40,6 +43,10 @@ trait CanManipulateFiles
 
     /**
      * @param  array<string, string>  $replacements
+     *
+     * @throws FileNotFoundException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function copyStubToApp(string $stub, string $targetPath, array $replacements = []): void
     {

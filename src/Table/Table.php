@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Table;
 
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\View as FacadesView;
 use Illuminate\View\View;
+use Milenmk\LaravelSimpleDatatables\Exceptions\InvalidFilterTypeException;
+use Milenmk\LaravelSimpleDatatables\Services\SecurityService;
 use Milenmk\LaravelSimpleDatatables\Table\Filters\BaseFilter;
 use Milenmk\LaravelSimpleDatatables\Table\Grouping\Group;
 
@@ -72,7 +73,7 @@ class Table
         $size = $config['size'] ?? 'md';
 
         // Get security service
-        $securityService = app(\Milenmk\LaravelSimpleDatatables\Services\SecurityService::class);
+        $securityService = app(SecurityService::class);
 
         // Generate CSRF field if enabled
         $csrfField = $securityService->getCsrfField();
@@ -103,6 +104,21 @@ class Table
         return $this->query;
     }
 
+    public function getSelectedGroupFromTrait(): ?string
+    {
+        return $this->selectedGroup;
+    }
+
+    public function getCollapsedGroupsFromTrait(): array
+    {
+        return $this->collapsedGroups;
+    }
+
+    public function getFiltersValues(): array
+    {
+        return $this->filtersValues;
+    }
+
     public function heading(string|array $value): self
     {
         $this->heading = $value;
@@ -119,13 +135,15 @@ class Table
 
     public function groups(array $groups): self
     {
-        $this->groups = collect($groups)->map(function ($group) {
-            if ($group instanceof Group) {
-                return $group;
-            }
+        $this->groups = collect($groups)
+            ->map(function ($group) {
+                if ($group instanceof Group) {
+                    return $group;
+                }
 
-            return is_array($group) ? Group::make(...$group) : Group::make($group);
-        })->toArray();
+                return is_array($group) ? Group::make(...$group) : Group::make($group);
+            })
+            ->toArray();
 
         return $this;
     }
@@ -135,21 +153,11 @@ class Table
         return $this->groups;
     }
 
-    public function getSelectedGroupFromTrait(): ?string
-    {
-        return $this->selectedGroup;
-    }
-
     public function setSelectedGroupFromTrait(?string $selectedGroup): self
     {
         $this->selectedGroup = $selectedGroup;
 
         return $this;
-    }
-
-    public function getCollapsedGroupsFromTrait(): array
-    {
-        return $this->collapsedGroups;
     }
 
     public function setCollapsedGroupsFromTrait(array $collapsedGroups): self
@@ -166,11 +174,6 @@ class Table
         return $this;
     }
 
-    public function getModelClass(): ?string
-    {
-        return $this->modelClass;
-    }
-
     public function getModelInstance(string $itemId): ?Model
     {
         $modelClass = $this->getModelClass();
@@ -182,14 +185,19 @@ class Table
         return call_user_func([$modelClass, 'find'], $itemId);
     }
 
+    public function getModelClass(): ?string
+    {
+        return $this->modelClass;
+    }
+
     /**
-     * @throws Exception
+     * @throws InvalidFilterTypeException
      */
     public function filters(array $filters): self
     {
         foreach ($filters as $filter) {
             if (! $filter instanceof BaseFilter) {
-                throw new Exception('All filters must be instances of the Filter class.');
+                throw InvalidFilterTypeException::notInstanceOfBaseFilter($filter);
             }
 
             $this->filters[] = $filter;
@@ -215,11 +223,6 @@ class Table
         $this->tableFilters = $tableFilters;
 
         return $this;
-    }
-
-    public function getFiltersValues(): array
-    {
-        return $this->filtersValues;
     }
 
     public function setFiltersValues(array $filtersValues): self

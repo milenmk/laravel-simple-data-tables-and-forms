@@ -9,10 +9,91 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
 use Milenmk\LaravelSimpleDatatables\Table\Table;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportService
 {
+    /**
+     * Export table data to Excel (generic method that chooses the appropriate format).
+     *
+     * Requires PhpSpreadsheet package.
+     */
+    public function toExcel(Builder $query, Table $table, string $format = 'xlsx'): StreamedResponse
+    {
+        return match ($format) {
+            'xls' => $this->toXls($query, $table),
+            default => $this->toXlsx($query, $table),
+        };
+    }
+
+    /**
+     * Export table data to Excel (XLS format).
+     *
+     * Requires PhpSpreadsheet package.
+     */
+    public function toXls(Builder $query, Table $table): StreamedResponse
+    {
+        if (! class_exists('\PhpOffice\PhpSpreadsheet\Spreadsheet')) {
+            return $this->fallbackToCSV('xls');
+        }
+
+        $columns = collect($table->getColumns())
+            ->filter(fn ($column) => $column->visible)
+            ->values();
+
+        $headers = $columns->pluck('label')->toArray();
+        $keys = $columns->pluck('key')->toArray();
+
+        $filename = $this->getExportFilename('xls');
+
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Add headers
+        foreach ($headers as $colIndex => $header) {
+            $sheet->setCellValueByColumnAndRow($colIndex + 1, 1, $header);
+        }
+
+        // Add data
+        $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
+        $rowIndex = 2; // Start from row 2 (after headers)
+        $count = 0;
+
+        $query->chunk(100, function (Collection $chunk) use ($sheet, $keys, &$rowIndex, &$count, $maxRows) {
+            foreach ($chunk as $row) {
+                if ($maxRows > 0 && $count >= $maxRows) {
+                    break;
+                }
+
+                foreach ($keys as $colIndex => $key) {
+                    $value = $row->{$key} ?? '';
+                    $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex, $this->formatValue($value));
+                }
+
+                $rowIndex++;
+                $count++;
+            }
+        });
+
+        // Create writer and prepare response
+        $writer = new Xls($spreadsheet);
+
+        return Response::stream(
+            function () use ($writer) {
+                $writer->save('php://output');
+            },
+            200,
+            [
+                'Content-Type' => 'application/vnd.ms-excel',
+                'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            ],
+        );
+    }
+
     /**
      * Export table data to CSV.
      */
@@ -61,72 +142,7 @@ class ExportService
             [
                 'Content-Type' => 'text/csv',
                 'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            ]
-        );
-    }
-
-    /**
-     * Export table data to Excel (XLS format).
-     *
-     * Requires PhpSpreadsheet package.
-     */
-    public function toXls(Builder $query, Table $table): StreamedResponse
-    {
-        if (! class_exists('\PhpOffice\PhpSpreadsheet\Spreadsheet')) {
-            return $this->fallbackToCSV('xls');
-        }
-
-        $columns = collect($table->getColumns())
-            ->filter(fn ($column) => $column->visible)
-            ->values();
-
-        $headers = $columns->pluck('label')->toArray();
-        $keys = $columns->pluck('key')->toArray();
-
-        $filename = $this->getExportFilename('xls');
-
-        // Create new Spreadsheet object
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
-        $sheet = $spreadsheet->getActiveSheet();
-
-        // Add headers
-        foreach ($headers as $colIndex => $header) {
-            $sheet->setCellValueByColumnAndRow($colIndex + 1, 1, $header);
-        }
-
-        // Add data
-        $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
-        $rowIndex = 2; // Start from row 2 (after headers)
-        $count = 0;
-
-        $query->chunk(100, function (Collection $chunk) use ($sheet, $keys, &$rowIndex, &$count, $maxRows) {
-            foreach ($chunk as $row) {
-                if ($maxRows > 0 && $count >= $maxRows) {
-                    break;
-                }
-
-                foreach ($keys as $colIndex => $key) {
-                    $value = $row->{$key} ?? '';
-                    $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex, $this->formatValue($value));
-                }
-
-                $rowIndex++;
-                $count++;
-            }
-        });
-
-        // Create writer and prepare response
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-
-        return Response::stream(
-            function () use ($writer) {
-                $writer->save('php://output');
-            },
-            200,
-            [
-                'Content-Type' => 'application/vnd.ms-excel',
-                'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            ]
+            ],
         );
     }
 
@@ -151,7 +167,7 @@ class ExportService
         $filename = $this->getExportFilename('xlsx');
 
         // Create new Spreadsheet object
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
 
         // Add headers
@@ -181,7 +197,7 @@ class ExportService
         });
 
         // Create writer and prepare response
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer = new Xlsx($spreadsheet);
 
         return Response::stream(
             function () use ($writer) {
@@ -191,21 +207,8 @@ class ExportService
             [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            ]
+            ],
         );
-    }
-
-    /**
-     * Export table data to Excel (generic method that chooses the appropriate format).
-     *
-     * Requires PhpSpreadsheet package.
-     */
-    public function toExcel(Builder $query, Table $table, string $format = 'xlsx'): StreamedResponse
-    {
-        return match ($format) {
-            'xls' => $this->toXls($query, $table),
-            default => $this->toXlsx($query, $table),
-        };
     }
 
     /**
@@ -266,10 +269,7 @@ class ExportService
      */
     protected function fallbackToCSV(string $extension): StreamedResponse
     {
-        $response = $this->toCsv(
-            app(Builder::class),
-            app(Table::class)
-        );
+        $response = $this->toCsv(app(Builder::class), app(Table::class));
 
         // Change the filename extension
         $headers = $response->headers->all();
@@ -280,6 +280,17 @@ class ExportService
         }
 
         return $response;
+    }
+
+    /**
+     * Generate export filename.
+     */
+    protected function getExportFilename(string $extension): string
+    {
+        $timestamp = date('Y-m-d_H-i-s');
+        $prefix = Config::get('simple-datatables.export.filename_prefix', 'export');
+
+        return "{$prefix}_{$timestamp}.{$extension}";
     }
 
     /**
@@ -308,16 +319,5 @@ class ExportService
         }
 
         return (string) $value;
-    }
-
-    /**
-     * Generate export filename.
-     */
-    protected function getExportFilename(string $extension): string
-    {
-        $timestamp = date('Y-m-d_H-i-s');
-        $prefix = Config::get('simple-datatables.export.filename_prefix', 'export');
-
-        return "{$prefix}_{$timestamp}.{$extension}";
     }
 }
