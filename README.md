@@ -1,6 +1,7 @@
 # Laravel Simple Datatables
 
-A lightweight, easy-to-use Laravel package for creating interactive data tables with sorting, filtering, searching, and exporting capabilities.
+A lightweight, easy-to-use Laravel package for creating interactive data tables with sorting, filtering, searching, and
+exporting capabilities.
 
 ![Screenshot](resources/img/light.png)
 ![Screenshot](resources/img/dark.png)
@@ -26,10 +27,11 @@ A lightweight, easy-to-use Laravel package for creating interactive data tables 
 
 ### Version Compatibility
 
-| Laravel Simple Datatables | PHP                | Laravel              | Livewire |
-|---------------------------|--------------------|-----------------------|----------|
-| 1.x                       | ^8.2               | ^10.0                 | ^3.0     |
+| Laravel Simple Datatables | PHP                  | Laravel                 | Livewire |
+| ------------------------- | -------------------- | ----------------------- | -------- |
+| 1.x                       | ^8.2                 | ^10.0                   | ^3.0     |
 | 1.7+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
+| 1.8+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 
 ## Installation
 
@@ -65,7 +67,7 @@ Add the following directives to your layout file:
 
 <body>
     <!-- Your content -->
-    
+
     <!-- Scripts -->
     @SimpleDatatablesScript
 </body>
@@ -73,7 +75,8 @@ Add the following directives to your layout file:
 
 ### Tailwind CSS Integration
 
-As an alternative to the assets publishing command, you can copy the content from `/vendor/milenmk/laravel-simple-datatables/resources/css/package.css` to your `app.css` file. Then:
+As an alternative to the assets publishing command, you can copy the content from
+`/vendor/milenmk/laravel-simple-datatables/resources/css/package.css` to your `app.css` file. Then:
 
 ### For Tailwind CSS
 
@@ -82,12 +85,12 @@ Add the package views to your Tailwind configuration:
 ```js
 // tailwind.config.js
 module.exports = {
-  content: [
-    // ... your existing content paths
-    './vendor/milenmk/laravel-simple-datatables/resources/views/**/*.blade.php',
-  ],
-  // ... rest of your configuration
-}
+    content: [
+        // ... your existing content paths
+        './vendor/milenmk/laravel-simple-datatables/resources/views/**/*.blade.php',
+    ],
+    // ... rest of your configuration
+};
 ```
 
 ### Editing assets
@@ -100,17 +103,18 @@ php artisan vendor:publish --tag="laravel-simple-datatables-views"
 
 The view files are now available in `/resources/views/vendor/laravel-simple-datatables`
 
-To make the classes in the package view files discovered when running `npm run dev` or `npm run build`, add the published views path to your Tailwind configuration:
+To make the classes in the package view files discovered when running `npm run dev` or `npm run build`, add the
+published views path to your Tailwind configuration:
 
 ```js
 // tailwind.config.js
 module.exports = {
-  content: [
-    // ... your existing content paths
-    './resources/views/vendor/laravel-simple-datatables/**/*.blade.php',
-  ],
-  // ... rest of your configuration
-}
+    content: [
+        // ... your existing content paths
+        './resources/views/vendor/laravel-simple-datatables/**/*.blade.php',
+    ],
+    // ... rest of your configuration
+};
 ```
 
 ## Usage
@@ -182,7 +186,7 @@ public function table(Table $table): Table
                     'user' => 'User',
                 ])
                 ->label('Role'),
-                
+
             DateFilter::make('created_at')
                 ->label('Created Date'),
         ]);
@@ -211,71 +215,64 @@ public function table(Table $table): Table
 
 ### Exporting Data
 
-The export functionality is automatically included when you use the `HasTable` trait. Users can export data to CSV, Excel, or PDF formats.
+The export functionality is automatically included when you use the `HasTable` trait. Users can export data to CSV,
+Excel, or PDF formats.
 
 ### Available Columns
 
 - **TextColumn**: Displays text content with optional formatting
-  ```php
-  TextColumn::make('name')
-      ->label('Full Name')
-      ->searchable()
-      ->sortable()
-  ```
+
+    ```php
+    TextColumn::make('name')->label('Full Name')->searchable()->sortable();
+    ```
 
 - **ToggleColumn**: Creates a toggle switch for boolean values
-  ```php
-  ToggleColumn::make('is_active')
-      ->label('Active Status')
-  ```
+
+    ```php
+    ToggleColumn::make('is_active')->label('Active Status');
+    ```
 
 - **CheckBoxColumn**: Creates a checkbox for selection
-  ```php
-  CheckBoxColumn::make('selected')
-      ->label('Select')
-  ```
+
+    ```php
+    CheckBoxColumn::make('selected')->label('Select');
+    ```
 
 - **ProgressColumn**: Displays a progress bar
-  ```php
-  ProgressColumn::make('completion')
-      ->label('Progress')
-      ->min(0)
-      ->max(100)
-      ->color('primary') // primary, success, warning, danger
-  ```
+
+    ```php
+    ProgressColumn::make('completion')->label('Progress')->min(0)->max(100)->color('primary'); // primary, success, warning, danger
+    ```
 
 - **IconColumn**: Displays an icon, useful for boolean states
-  ```php
-  IconColumn::make('is_verified')
-      ->boolean() // Shows check or x icon based on value
-      ->label('Verified')
-  ```
+
+    ```php
+    IconColumn::make('is_verified')
+        ->boolean() // Shows check or x icon based on value
+        ->label('Verified');
+    ```
 
 - **ActionColumn**: Displays action buttons
-  ```php
-  ActionColumn::make('actions')
-      ->label('Actions')
-      ->actions([
-          Action::make('edit')
-              ->label('Edit')
-              ->icon('pencil')
-              ->url(fn($row) => route('users.edit', $row)),
-          Action::make('delete')
-              ->label('Delete')
-              ->icon('trash')
-              ->action(fn($row) => $this->deleteUser($row->id))
-              ->confirm('Are you sure you want to delete this user?')
-      ])
-  ```
+    ```php
+    ActionColumn::make('actions')
+        ->label('Actions')
+        ->actions([
+            Action::make('edit')->label('Edit')->icon('pencil')->url(fn($row) => route('users.edit', $row)),
+            Action::make('delete')
+                ->label('Delete')
+                ->icon('trash')
+                ->action(fn($row) => $this->deleteUser($row->id))
+                ->confirm('Are you sure you want to delete this user?'),
+        ]);
+    ```
 
 ### Column Options/Settings
 
 - `label` (string|array|callable) - The column header label
 - `value` (callable) - Custom value for the column
-  ```php
-  TextColumn::make('full_name')
-      ->value(fn($row) => $row->first_name . ' ' . $row->last_name)
-  ```
+    ```php
+    TextColumn::make('full_name')->value(fn($row) => $row->first_name . ' ' . $row->last_name);
+    ```
 - `color` (string) - Text color using Tailwind classes (e.g., text-gray-500, text-primary, text-danger)
 - `background` (string) - Background color using Tailwind classes (e.g., bg-gray-500, bg-danger)
 - `visible` (bool) - Whether the column is visible (default: true)
@@ -288,38 +285,37 @@ The export functionality is automatically included when you use the `HasTable` t
 - `searchable` (bool) - Whether the column is searchable (default: false)
 - `sortable` (bool) - Whether the column is sortable (default: false)
 - `format` (callable) - Format the value before display
-  ```php
-  TextColumn::make('created_at')
-      ->format(fn($value) => $value->format('Y-m-d H:i'))
-  ```
+    ```php
+    TextColumn::make('created_at')->format(fn($value) => $value->format('Y-m-d H:i'));
+    ```
 - `tooltip` (string|callable) - Add a tooltip to the column
 - `hidden` (bool) - Hide the column but keep it available for export (default: false)
 - `exportOnly` (bool) - Only include this column in exports (default: false)
 
-  #### Icon Column options
-  
-  ```php
-  //Change both default color and icon
-  IconColumn::make('status')
-      ->boolean()
-      ->label('Status')
-      ->true('icon', 'color')
-      ->false('icon', 'color')
-      
-  // Change only the icon
-  IconColumn::make('status')
-      ->boolean()
-      ->label('Status')
-      ->trueIcon('icon')    
-      ->falseIcon('icon')  
-      
-  // Change only the color
-  IconColumn::make('status')
-      ->boolean()
-      ->label('Status')
-      ->trueColor('color')    
-      ->falseColor('color')  
-  ```
+    #### Icon Column options
+
+    ```php
+    //Change both default color and icon
+    IconColumn::make('status')
+        ->boolean()
+        ->label('Status')
+        ->true('icon', 'color')
+        ->false('icon', 'color')
+
+    // Change only the icon
+    IconColumn::make('status')
+        ->boolean()
+        ->label('Status')
+        ->trueIcon('icon')
+        ->falseIcon('icon')
+
+    // Change only the color
+    IconColumn::make('status')
+        ->boolean()
+        ->label('Status')
+        ->trueColor('color')
+        ->falseColor('color')
+    ```
 
 ## DISCLAIMER
 
