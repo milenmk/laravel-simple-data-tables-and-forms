@@ -296,6 +296,31 @@ The export functionality is automatically included when you use the `HasTable` t
 - `hidden` (bool) - Hide the column but keep it available for export (default: false)
 - `exportOnly` (bool) - Only include this column in exports (default: false)
 
+  #### Icon Column options
+  
+  ```php
+  //Change both default color and icon
+  IconColumn::make('status')
+      ->boolean()
+      ->label('Status')
+      ->true('icon', 'color')
+      ->false('icon', 'color')
+      
+  // Change only the icon
+  IconColumn::make('status')
+      ->boolean()
+      ->label('Status')
+      ->trueIcon('icon')    
+      ->falseIcon('icon')  
+      
+  // Change only the color
+  IconColumn::make('status')
+      ->boolean()
+      ->label('Status')
+      ->trueColor('color')    
+      ->falseColor('color')  
+  ```
+
 ## DISCLAIMER
 
 This package is provided ”as is”, without warranty of any kind, either express or implied, including but not limited to
