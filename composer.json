@@ -44,6 +44,10 @@
         "tightenco/duster": "^3.1",
         "symfony/process": "^7.2"
     },
+    "suggest": {
+        "phpoffice/phpspreadsheet": "Required for Excel export functionality (^1.28)",
+        "barryvdh/laravel-dompdf": "Required for PDF export functionality (^2.0)"
+    },
     "conflict": {
         "laravel/framework": "<10.0"
     },

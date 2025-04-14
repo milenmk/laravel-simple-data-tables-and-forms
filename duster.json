@@ -1,0 +1,4 @@
+{
+    "include": ["src", "config", "resources/views"],
+    "exclude": ["src/Services/ExportService.php"]
+}

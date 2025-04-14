@@ -45,6 +45,9 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
                 __DIR__ . '/../resources/views/components' => base_path(
                     'resources/views/vendor/laravel-simple-datatables/components',
                 ),
+                __DIR__ . '/../resources/views/exports' => base_path(
+                    'resources/views/vendor/laravel-simple-datatables/exports',
+                ),
             ],
             'laravel-simple-datatables-views',
         );

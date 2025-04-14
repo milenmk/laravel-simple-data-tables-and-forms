@@ -56,7 +56,26 @@ trait WithExport
             $query->orderBy($this->sortField, $this->sortDir);
         }
 
-        // Only support CSV export for now
-        return $exportService->toCsv($query, $table);
+        // Choose the appropriate export method based on format
+        return match ($format) {
+            'excel' => $exportService->toExcel($query, $table),
+            'xlsx' => $exportService->toXlsx($query, $table),
+            'xls' => $exportService->toXls($query, $table),
+            'pdf' => $exportService->toPdf($query, $table),
+            default => $exportService->toCsv($query, $table),
+        };
+    }
+
+    /**
+     * Get custom filename for export.
+     * Override this method in your component to customize the export filename.
+     */
+    public function exportFilename(string $format): string
+    {
+        $timestamp = date('Y-m-d_H-i-s');
+        $prefix = Config::get('simple-datatables.export.filename_prefix', 'export');
+        $componentName = class_basename($this);
+
+        return "{$prefix}_{$componentName}_{$timestamp}.{$format}";
     }
 }

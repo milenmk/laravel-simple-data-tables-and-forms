@@ -1,6 +1,6 @@
 # Export Functionality
 
-Laravel Simple Datatables provides built-in export functionality that allows users to export table data.
+Laravel Simple Datatables provides built-in export functionality that allows users to export table data in various formats.
 
 ## Enabling Export
 
@@ -13,7 +13,7 @@ Export functionality is enabled by default. You can control it through the confi
     'enable' => true,
     
     // Available export formats
-    'formats' => ['csv', 'excel', 'pdf'],
+    'formats' => ['csv', 'excel', 'xlsx', 'xls', 'pdf'],
     
     // Default export format
     'default_format' => 'csv',
@@ -26,15 +26,27 @@ Export functionality is enabled by default. You can control it through the confi
 ],
 ```
 
+## Required Packages for Export Formats
+
+The package supports multiple export formats, but some require additional packages:
+
+### For Excel Export (XLS/XLSX)
+
+```bash
+composer require phpoffice/phpspreadsheet
+```
+
+### For PDF Export
+
+```bash
+composer require barryvdh/laravel-dompdf
+```
+
+If these packages are not installed, the export will gracefully fall back to CSV format with the appropriate file extension.
+
 ## Using Export in Your Components
 
 The export functionality is automatically included in components that use the `HasTable` trait. The export button will appear in the table header.
-
-### Current Implementation Status
-
-**Important Note**: While the configuration allows for specifying multiple export formats, the current implementation in the `WithExport` trait only supports CSV export. The `ExportService` class contains placeholder implementations for Excel and PDF exports that actually return CSV data.
-
-If you need Excel or PDF export functionality, you will need to implement these features yourself by extending the `ExportService` class or overriding the `export` method in your Livewire component.
 
 ### Customizing Export Formats
 
@@ -45,7 +57,7 @@ You can customize which export formats are available for a specific table by pas
 public function render()
 {
     return view('livewire.my-table', [
-        'exportFormats' => ['csv'], // Currently only CSV is fully implemented
+        'exportFormats' => ['csv', 'xlsx', 'pdf'], // Specify available formats
     ]);
 }
 ```
@@ -70,15 +82,14 @@ public function export(string $format = 'csv')
     // Then use the export service
     $exportService = app(\Milenmk\LaravelSimpleDatatables\Services\ExportService::class);
     
-    // Currently, only CSV export is fully implemented
-    return $exportService->toCsv($query, $table);
-    
-    // If you've implemented your own Excel or PDF export:
-    // return match($format) {
-    //     'excel' => $exportService->toExcel($query, $table),
-    //     'pdf' => $exportService->toPdf($query, $table),
-    //     default => $exportService->toCsv($query, $table),
-    // };
+    // Choose the appropriate export method based on format
+    return match($format) {
+        'excel' => $exportService->toExcel($query, $table),
+        'xlsx' => $exportService->toXlsx($query, $table),
+        'xls' => $exportService->toXls($query, $table),
+        'pdf' => $exportService->toPdf($query, $table),
+        default => $exportService->toCsv($query, $table),
+    };
 }
 ```
 
@@ -86,27 +97,65 @@ public function export(string $format = 'csv')
 
 ### CSV Export
 
-CSV export is the default and currently the only fully implemented export option. It exports data as a comma-separated values file.
+CSV export is the default and most lightweight option. It exports data as a comma-separated values file. This format doesn't require any additional packages.
 
-### Excel Export (Placeholder Implementation)
+### Excel Export (XLS and XLSX)
 
-The current implementation of Excel export in the `ExportService` class is a placeholder that returns CSV data with an Excel MIME type. To implement proper Excel export, you would need to extend the service with a library like PhpSpreadsheet or Laravel Excel.
+The package supports both older XLS format and newer XLSX format for Excel exports:
 
-To implement proper Excel export, you would need to add the following package to your project:
+- **XLS**: The older Excel format, compatible with Excel 97-2003
+- **XLSX**: The modern Excel format based on Open XML, compatible with Excel 2007 and later
 
+Both formats require the PhpSpreadsheet package:
+
+```bash
+composer require phpoffice/phpspreadsheet
 ```
-composer require maatwebsite/excel
-```
 
-### PDF Export (Placeholder Implementation)
+If PhpSpreadsheet is not installed, the export will fall back to CSV format with an Excel extension.
 
-The current implementation of PDF export in the `ExportService` class is a placeholder that returns CSV data. To implement proper PDF export, you would need to extend the service with a PDF generation library.
+### PDF Export
 
-To implement proper PDF export, you would need to add the following package to your project:
+PDF export creates a portable document format file that maintains consistent formatting across different devices and platforms. This format is ideal for reports that need to be printed or shared formally.
 
-```
+PDF export requires the Laravel DomPDF package:
+
+```bash
 composer require barryvdh/laravel-dompdf
 ```
+
+If DomPDF is not installed, the export will fall back to CSV format with a PDF extension.
+
+## Customizing the Export Button
+
+You can customize the export button by publishing the component view:
+
+```bash
+php artisan vendor:publish --tag=laravel-simple-datatables-views
+```
+
+Then edit the `resources/views/vendor/laravel-simple-datatables/components/export.blade.php` file.
+
+## Customizing Export Filenames
+
+You can customize the filename of exported files by implementing the `exportFilename` method in your Livewire component:
+
+```php
+public function exportFilename(string $format): string
+{
+    return 'users-report-' . date('Y-m-d') . '.' . $format;
+}
+```
+
+## Customizing PDF Template
+
+The package includes a default PDF template at `resources/views/exports/pdf.blade.php`. You can publish and customize this template:
+
+```bash
+php artisan vendor:publish --tag=laravel-simple-datatables-views
+```
+
+Then edit the `resources/views/vendor/laravel-simple-datatables/exports/pdf.blade.php` file to match your design requirements.
 
 ## Customizing the Export Button
 

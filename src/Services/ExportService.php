@@ -47,28 +47,7 @@ class ExportService
                         $data = [];
                         foreach ($keys as $key) {
                             $value = $row->{$key} ?? '';
-
-                            // Handle Enum values
-                            if (is_object($value) && enum_exists(get_class($value))) {
-                                if (method_exists($value, 'value')) {
-                                    $value = $value->value;
-                                } elseif (property_exists($value, 'name')) {
-                                    $value = $value->name;
-                                } else {
-                                    $value = (string) $value;
-                                }
-                            }
-
-                            // Handle other object types that need conversion
-                            if (is_object($value) && method_exists($value, '__toString')) {
-                                $value = (string) $value;
-                            } elseif (is_object($value)) {
-                                $value = json_encode($value);
-                            } elseif (is_array($value)) {
-                                $value = json_encode($value);
-                            }
-
-                            $data[] = $value;
+                            $data[] = $this->formatValue($value);
                         }
 
                         fputcsv($handle, $data);
@@ -87,16 +66,15 @@ class ExportService
     }
 
     /**
-     * Export table data to Excel.
+     * Export table data to Excel (XLS format).
      *
-     * Note: This is a basic implementation. For a more robust solution,
-     * consider using a package like PhpSpreadsheet or Laravel Excel.
+     * Requires PhpSpreadsheet package.
      */
-    public function toExcel(Builder $query, Table $table): StreamedResponse
+    public function toXls(Builder $query, Table $table): StreamedResponse
     {
-        // For now, this is just a CSV with an Excel extension
-        // In a real implementation, you would use a proper Excel library
-        $filename = $this->getExportFilename('xls'); // Using .xls instead of .xlsx for better compatibility
+        if (! class_exists('\PhpOffice\PhpSpreadsheet\Spreadsheet')) {
+            return $this->fallbackToCSV('xls');
+        }
 
         $columns = collect($table->getColumns())
             ->filter(fn ($column) => $column->visible)
@@ -105,75 +83,141 @@ class ExportService
         $headers = $columns->pluck('label')->toArray();
         $keys = $columns->pluck('key')->toArray();
 
+        $filename = $this->getExportFilename('xls');
+
+        // Create new Spreadsheet object
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Add headers
+        foreach ($headers as $colIndex => $header) {
+            $sheet->setCellValueByColumnAndRow($colIndex + 1, 1, $header);
+        }
+
+        // Add data
+        $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
+        $rowIndex = 2; // Start from row 2 (after headers)
+        $count = 0;
+
+        $query->chunk(100, function (Collection $chunk) use ($sheet, $keys, &$rowIndex, &$count, $maxRows) {
+            foreach ($chunk as $row) {
+                if ($maxRows > 0 && $count >= $maxRows) {
+                    break;
+                }
+
+                foreach ($keys as $colIndex => $key) {
+                    $value = $row->{$key} ?? '';
+                    $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex, $this->formatValue($value));
+                }
+
+                $rowIndex++;
+                $count++;
+            }
+        });
+
+        // Create writer and prepare response
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+
         return Response::stream(
-            function () use ($query, $headers, $keys) {
-                $handle = fopen('php://output', 'w');
-
-                // Add headers
-                fputcsv($handle, $headers);
-
-                // Add data in chunks to avoid memory issues
-                $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
-                $count = 0;
-
-                $query->chunk(100, function (Collection $chunk) use ($handle, $keys, &$count, $maxRows) {
-                    foreach ($chunk as $row) {
-                        if ($maxRows > 0 && $count >= $maxRows) {
-                            break;
-                        }
-
-                        $data = [];
-                        foreach ($keys as $key) {
-                            $value = $row->{$key} ?? '';
-
-                            // Handle Enum values
-                            if (is_object($value) && enum_exists(get_class($value))) {
-                                if (method_exists($value, 'value')) {
-                                    $value = $value->value;
-                                } elseif (property_exists($value, 'name')) {
-                                    $value = $value->name;
-                                } else {
-                                    $value = (string) $value;
-                                }
-                            }
-
-                            // Handle other object types that need conversion
-                            if (is_object($value) && method_exists($value, '__toString')) {
-                                $value = (string) $value;
-                            } elseif (is_object($value)) {
-                                $value = json_encode($value);
-                            } elseif (is_array($value)) {
-                                $value = json_encode($value);
-                            }
-
-                            $data[] = $value;
-                        }
-
-                        fputcsv($handle, $data);
-                        $count++;
-                    }
-                });
-
-                fclose($handle);
+            function () use ($writer) {
+                $writer->save('php://output');
             },
             200,
             [
-                'Content-Type' => 'application/vnd.ms-excel', // Correct MIME type for .xls
+                'Content-Type' => 'application/vnd.ms-excel',
                 'Content-Disposition' => "attachment; filename=\"{$filename}\"",
             ]
         );
+    }
+
+    /**
+     * Export table data to Excel (XLSX format).
+     *
+     * Requires PhpSpreadsheet package.
+     */
+    public function toXlsx(Builder $query, Table $table): StreamedResponse
+    {
+        if (! class_exists('\PhpOffice\PhpSpreadsheet\Spreadsheet')) {
+            return $this->fallbackToCSV('xlsx');
+        }
+
+        $columns = collect($table->getColumns())
+            ->filter(fn ($column) => $column->visible)
+            ->values();
+
+        $headers = $columns->pluck('label')->toArray();
+        $keys = $columns->pluck('key')->toArray();
+
+        $filename = $this->getExportFilename('xlsx');
+
+        // Create new Spreadsheet object
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Add headers
+        foreach ($headers as $colIndex => $header) {
+            $sheet->setCellValueByColumnAndRow($colIndex + 1, 1, $header);
+        }
+
+        // Add data
+        $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
+        $rowIndex = 2; // Start from row 2 (after headers)
+        $count = 0;
+
+        $query->chunk(100, function (Collection $chunk) use ($sheet, $keys, &$rowIndex, &$count, $maxRows) {
+            foreach ($chunk as $row) {
+                if ($maxRows > 0 && $count >= $maxRows) {
+                    break;
+                }
+
+                foreach ($keys as $colIndex => $key) {
+                    $value = $row->{$key} ?? '';
+                    $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex, $this->formatValue($value));
+                }
+
+                $rowIndex++;
+                $count++;
+            }
+        });
+
+        // Create writer and prepare response
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        return Response::stream(
+            function () use ($writer) {
+                $writer->save('php://output');
+            },
+            200,
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            ]
+        );
+    }
+
+    /**
+     * Export table data to Excel (generic method that chooses the appropriate format).
+     *
+     * Requires PhpSpreadsheet package.
+     */
+    public function toExcel(Builder $query, Table $table, string $format = 'xlsx'): StreamedResponse
+    {
+        return match ($format) {
+            'xls' => $this->toXls($query, $table),
+            default => $this->toXlsx($query, $table),
+        };
     }
 
     /**
      * Export table data to PDF.
      *
-     * Note: For now, we'll export as CSV with a .pdf extension.
-     * For a real implementation, you would need to use a PDF generation library.
+     * Requires DomPDF package.
      */
     public function toPdf(Builder $query, Table $table): StreamedResponse
     {
-        // For now, we'll just return a CSV with a .pdf extension
-        $filename = $this->getExportFilename('csv');
+        if (! class_exists('\Barryvdh\DomPDF\Facade\Pdf')) {
+            return $this->fallbackToCSV('pdf');
+        }
 
         $columns = collect($table->getColumns())
             ->filter(fn ($column) => $column->visible)
@@ -182,63 +226,88 @@ class ExportService
         $headers = $columns->pluck('label')->toArray();
         $keys = $columns->pluck('key')->toArray();
 
-        return Response::stream(
-            function () use ($query, $headers, $keys) {
-                $handle = fopen('php://output', 'w');
+        $filename = $this->getExportFilename('pdf');
 
-                // Add headers
-                fputcsv($handle, $headers);
+        // Prepare data for PDF
+        $data = [];
+        $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
+        $count = 0;
 
-                // Add data in chunks to avoid memory issues
-                $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
-                $count = 0;
+        $query->chunk(100, function (Collection $chunk) use (&$data, $keys, &$count, $maxRows) {
+            foreach ($chunk as $row) {
+                if ($maxRows > 0 && $count >= $maxRows) {
+                    break;
+                }
 
-                $query->chunk(100, function (Collection $chunk) use ($handle, $keys, &$count, $maxRows) {
-                    foreach ($chunk as $row) {
-                        if ($maxRows > 0 && $count >= $maxRows) {
-                            break;
-                        }
+                $rowData = [];
+                foreach ($keys as $key) {
+                    $value = $row->{$key} ?? '';
+                    $rowData[] = $this->formatValue($value);
+                }
 
-                        $data = [];
-                        foreach ($keys as $key) {
-                            $value = $row->{$key} ?? '';
+                $data[] = $rowData;
+                $count++;
+            }
+        });
 
-                            // Handle Enum values
-                            if (is_object($value) && enum_exists(get_class($value))) {
-                                if (method_exists($value, 'value')) {
-                                    $value = $value->value;
-                                } elseif (property_exists($value, 'name')) {
-                                    $value = $value->name;
-                                } else {
-                                    $value = (string) $value;
-                                }
-                            }
+        // Generate PDF
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('laravel-simple-datatables::exports.pdf', [
+            'headers' => $headers,
+            'data' => $data,
+            'title' => 'Data Export',
+        ]);
 
-                            // Handle other object types that need conversion
-                            if (is_object($value) && method_exists($value, '__toString')) {
-                                $value = (string) $value;
-                            } elseif (is_object($value)) {
-                                $value = json_encode($value);
-                            } elseif (is_array($value)) {
-                                $value = json_encode($value);
-                            }
+        return $pdf->download($filename);
+    }
 
-                            $data[] = $value;
-                        }
-
-                        fputcsv($handle, $data);
-                        $count++;
-                    }
-                });
-
-                fclose($handle);
-            },
-            200,
-            [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            ]
+    /**
+     * Fallback to CSV export when required packages are not installed.
+     */
+    protected function fallbackToCSV(string $extension): StreamedResponse
+    {
+        $response = $this->toCsv(
+            app(Builder::class),
+            app(Table::class)
         );
+
+        // Change the filename extension
+        $headers = $response->headers->all();
+        if (isset($headers['content-disposition'][0])) {
+            $contentDisposition = $headers['content-disposition'][0];
+            $newContentDisposition = str_replace('.csv', '.' . $extension, $contentDisposition);
+            $response->headers->set('Content-Disposition', $newContentDisposition);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Format a value for export.
+     */
+    protected function formatValue(mixed $value): string
+    {
+        // Handle Enum values
+        if (is_object($value) && enum_exists(get_class($value))) {
+            if (method_exists($value, 'value')) {
+                return $value->value;
+            } elseif (property_exists($value, 'name')) {
+                return $value->name;
+            } else {
+                return (string) $value;
+            }
+        }
+
+        // Handle other object types that need conversion
+        if (is_object($value) && method_exists($value, '__toString')) {
+            return (string) $value;
+        } elseif (is_object($value)) {
+            return json_encode($value) ?: '';
+        } elseif (is_array($value)) {
+            return json_encode($value) ?: '';
+        }
+
+        return (string) $value;
     }
 
     /**
@@ -247,7 +316,8 @@ class ExportService
     protected function getExportFilename(string $extension): string
     {
         $timestamp = date('Y-m-d_H-i-s');
+        $prefix = Config::get('simple-datatables.export.filename_prefix', 'export');
 
-        return "export_{$timestamp}.{$extension}";
+        return "{$prefix}_{$timestamp}.{$extension}";
     }
 }

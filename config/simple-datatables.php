@@ -143,7 +143,7 @@ return [
         'enable' => true,
 
         // Available export formats
-        'formats' => ['csv', 'excel', 'pdf'],
+        'formats' => ['csv', 'excel', 'xlsx', 'xls', 'pdf'],
 
         // Default export format
         'default_format' => 'csv',
