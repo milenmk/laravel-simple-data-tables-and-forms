@@ -32,6 +32,10 @@ class Table
 
     protected array $tableFilters = [];
 
+    protected ?string $selectedGroup = null;
+    protected array $collapsedGroups = [];
+    protected array $filtersValues = [];
+
     public function query(Builder|LengthAwarePaginator $query): self
     {
         $this->query = $query;
@@ -117,6 +121,13 @@ class Table
     public function getFiltersValues(): array
     {
         return $this->filtersValues;
+    }
+
+    public function setFiltersValues(array $filtersValues): self
+    {
+        $this->filtersValues = $filtersValues;
+
+        return $this;
     }
 
     public function heading(string|array $value): self
@@ -221,13 +232,6 @@ class Table
     public function setTableFilters(array $tableFilters): self
     {
         $this->tableFilters = $tableFilters;
-
-        return $this;
-    }
-
-    public function setFiltersValues(array $filtersValues): self
-    {
-        $this->filtersValues = $filtersValues;
 
         return $this;
     }
