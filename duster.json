@@ -1,4 +1,4 @@
 {
-    "include": ["src", "config", "resources/views"],
+    "include": ["src", "config", "resources/views", "tests"],
     "exclude": ["src/Services/ExportService.php"]
 }

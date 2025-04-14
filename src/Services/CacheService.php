@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatables\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
@@ -31,11 +32,21 @@ class CacheService
     }
 
     /**
-     * Store item in cache.
-     *
-     * @param  mixed  $value
+     * Get item from cache.
      */
-    public function put(string $key, $value): bool
+    public function get(string $key, mixed $default = null): mixed
+    {
+        if (! $this->isCacheEnabled()) {
+            return $default;
+        }
+
+        return Cache::get($this->getCacheKey($key), $default);
+    }
+
+    /**
+     * Store item in cache.
+     */
+    public function put(string $key, mixed $value): bool
     {
         if (! $this->isCacheEnabled()) {
             return false;
@@ -49,18 +60,45 @@ class CacheService
     }
 
     /**
-     * Get item from cache.
+     * Clear all cache for this package.
      *
-     * @param  mixed  $default
-     * @return mixed
+     * Note: This method uses a driver-specific approach to clear cache entries with a specific prefix.
      */
-    public function get(string $key, $default = null)
+    public function clear(): bool
     {
-        if (! $this->isCacheEnabled()) {
-            return $default;
+        $prefix = Config::get('simple-datatables.cache.prefix', 'simple_datatables_');
+
+        try {
+            // For Redis driver
+            $store = Cache::getStore();
+            if (method_exists($store, 'getRedis')) {
+                $redis = $store->getRedis();
+                $keys = $redis->keys("*{$prefix}*");
+
+                foreach ($keys as $key) {
+                    $redis->del($key);
+                }
+
+                return true;
+            }
+
+            // For Memcached driver
+            if (method_exists($store, 'getMemcached')) {
+                // Memcached doesn't support pattern-based deletion
+                // We'll use Cache::flush() as a fallback
+                Cache::flush();
+
+                return true;
+            }
+        } catch (Exception $e) {
+            // Fallback if specific driver methods aren't available
         }
 
-        return Cache::get($this->getCacheKey($key), $default);
+        // Fallback: Use Cache::flush() as a last resort
+        // Warning: This clears ALL cache entries
+        Cache::flush();
+
+        return true;
     }
 
     /**
@@ -72,22 +110,11 @@ class CacheService
     }
 
     /**
-     * Clear all cache for this package.
+     * Check if caching is enabled.
      */
-    public function clear(): bool
+    protected function isCacheEnabled(): bool
     {
-        $prefix = Config::get('simple-datatables.cache.prefix', 'simple_datatables_');
-        $keys = Cache::getStore()->many(Cache::getStore()->all());
-
-        $cacheKeys = array_filter(array_keys($keys), function ($key) use ($prefix) {
-            return strpos($key, $prefix) === 0;
-        });
-
-        foreach ($cacheKeys as $key) {
-            Cache::forget($key);
-        }
-
-        return true;
+        return Config::get('simple-datatables.cache.enable', true);
     }
 
     /**
@@ -106,13 +133,5 @@ class CacheService
     protected function getCacheLifetime(): int
     {
         return Config::get('simple-datatables.cache.lifetime', 3600);
-    }
-
-    /**
-     * Check if caching is enabled.
-     */
-    protected function isCacheEnabled(): bool
-    {
-        return Config::get('simple-datatables.cache.enable', true);
     }
 }

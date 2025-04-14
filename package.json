@@ -4,6 +4,7 @@
   "scripts": {
     "format-app": "npx prettier --write src/",
     "format-resources": "npx prettier --write resources/",
+    "format-tests": "npx prettier --write tests/",
     "prepare": "husky install"
   },
   "dependencies": {
