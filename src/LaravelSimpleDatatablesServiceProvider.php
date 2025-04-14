@@ -6,6 +6,8 @@ namespace Milenmk\LaravelSimpleDatatables;
 
 use BladeUI\Icons\Exceptions\CannotRegisterIconSet;
 use BladeUI\Icons\Factory;
+use BladeUI\Icons\IconsManifest;
+use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
@@ -101,20 +103,37 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
             return;
         }
 
-        /** @var Factory $factory */
-        $factory = $this->app->make(Factory::class);
+        // Register the IconsManifest with the container
+        if (! $this->app->bound('blade.icons')) {
+            $this->app->singleton('blade.icons', function ($app) {
+                $config = $app['config']['blade-icons'] ?? [];
+                $manifestPath = $config['manifest'] ?? storage_path('blade-icons.php');
 
-        // Resolve path to Heroicons inside your package
-        $heroiconsPath = __DIR__ . '/../../vendor/blade-ui-kit/blade-heroicons/resources/svg';
-
-        if (! is_dir($heroiconsPath)) {
-            return; // Prevent errors if the package is missing
+                return new IconsManifest($manifestPath);
+            });
         }
 
-        // Register Heroicons inside Blade Icons
-        $factory->add('heroicons', [
-            'path' => $heroiconsPath,
-            'prefix' => 'heroicon', // Allows usage like 'heroicon-o-check-circle'
-        ]);
+        try {
+            /** @var Factory $factory */
+            $factory = $this->app->make(Factory::class);
+
+            // Resolve path to Heroicons inside your package
+            $heroiconsPath = __DIR__ . '/../../vendor/blade-ui-kit/blade-heroicons/resources/svg';
+
+            if (! is_dir($heroiconsPath)) {
+                return; // Prevent errors if the package is missing
+            }
+
+            // Register Heroicons inside Blade Icons
+            $factory->add('heroicons', [
+                'path' => $heroiconsPath,
+                'prefix' => 'heroicon', // Allows usage like 'heroicon-o-check-circle'
+            ]);
+        } catch (Exception $e) {
+            // Log the error but don't crash the application
+            if ($this->app->bound('log')) {
+                $this->app->make('log')->error('Failed to register Blade Icons: ' . $e->getMessage());
+            }
+        }
     }
 }
