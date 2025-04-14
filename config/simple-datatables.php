@@ -22,6 +22,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Pagination Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure default pagination behavior.
+    |
+    */
+    'pagination' => [
+        // Default items per page
+        'per_page' => 10,
+
+        // Available pagination options
+        'options' => [10, 25, 50, 100],
+
+        // Show pagination summary
+        'show_summary' => true,
+
+        // Enable pagination by default
+        'enabled' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Search Configuration
     |--------------------------------------------------------------------------
     |
@@ -121,13 +143,16 @@ return [
         'enable' => true,
 
         // Available export formats
-        'formats' => ['csv'],
+        'formats' => ['csv', 'excel', 'pdf'],
 
         // Default export format
         'default_format' => 'csv',
 
         // Maximum rows for export (0 for unlimited)
         'max_rows' => 10000,
+
+        // Custom filename prefix (default is 'export')
+        'filename_prefix' => 'export',
     ],
 
     /*

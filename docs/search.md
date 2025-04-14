@@ -55,9 +55,22 @@ ALTER TABLE users ADD FULLTEXT(name, email, description);
 SELECT * FROM users WHERE MATCH(name, email, description) AGAINST('John' IN BOOLEAN MODE)
 ```
 
-For PostgreSQL:
+**Note about PostgreSQL Implementation**: While the documentation mentions PostgreSQL full-text search, the current implementation in `SearchService.php` does not actually use PostgreSQL's full-text search capabilities. Instead, it falls back to using `ILIKE` for PostgreSQL:
+
+```php
+// Current implementation for PostgreSQL in SearchService.php
+case 'pgsql':
+    return $query->where(function ($q) use ($searchableColumns, $search) {
+        foreach ($searchableColumns as $column) {
+            $q->orWhereRaw("{$column}::text ILIKE ?", ["%{$search}%"]);
+        }
+    });
+```
+
+To implement true PostgreSQL full-text search, you would need to modify the `SearchService` class to use:
+
 ```sql
--- PostgreSQL uses different syntax
+-- PostgreSQL true full-text search syntax
 SELECT * FROM users WHERE to_tsvector('english', name || ' ' || email || ' ' || description) @@ to_tsquery('english', 'John')
 ```
 
@@ -87,6 +100,12 @@ public function mount()
 {
     $this->searchMode = 'fulltext'; // Use full-text search
 }
+
+// Customize search placeholder
+public function searchPlaceholder(): string
+{
+    return 'Search users...';
+}
 ```
 
 ### Customizing Searchable Columns
@@ -99,16 +118,31 @@ public function table(Table $table): Table
     return $table
         ->query(User::query())
         ->schema([
-            Column::make('name')
+            TextColumn::make('name')
                 ->searchable(), // This column will be included in search
                 
-            Column::make('email')
+            TextColumn::make('email')
                 ->searchable(), // This column will be included in search
                 
-            Column::make('created_at')
+            TextColumn::make('created_at')
                 ->searchable(false), // This column will NOT be included in search
         ]);
 }
+```
+
+### Advanced Search Options
+
+You can customize how each column is searched:
+
+```php
+TextColumn::make('name')
+    ->searchable(true, function($query, $searchTerm) {
+        // Custom search logic
+        return $query->where(function($q) use ($searchTerm) {
+            $q->where('first_name', 'like', "%{$searchTerm}%")
+              ->orWhere('last_name', 'like', "%{$searchTerm}%");
+        });
+    })
 ```
 
 ## Search Performance Tips

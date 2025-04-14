@@ -75,7 +75,34 @@ Cache is automatically invalidated when:
 1. The cache lifetime expires
 2. You manually clear the cache
 
-You should clear relevant cache entries when:
+### Automatic Cache Invalidation
+
+You can set up automatic cache invalidation by implementing model observers or using Laravel's model events:
+
+```php
+// In your AppServiceProvider or a dedicated observer
+public function boot()
+{
+    User::observe(UserObserver::class);
+    
+    // Or using closures
+    User::created(function ($user) {
+        app(CacheService::class)->forget('users_table_data');
+    });
+    
+    User::updated(function ($user) {
+        app(CacheService::class)->forget('users_table_data');
+    });
+    
+    User::deleted(function ($user) {
+        app(CacheService::class)->forget('users_table_data');
+    });
+}
+```
+
+### Manual Cache Invalidation
+
+You should manually clear relevant cache entries when:
 
 1. Table structure changes
 2. Filter options change
@@ -87,7 +114,71 @@ public function saved(User $user)
 {
     app(CacheService::class)->forget('users_table_data');
 }
+
+// In your controller after a bulk operation
+public function bulkDelete()
+{
+    // Perform bulk delete
+    User::whereIn('id', $ids)->delete();
+    
+    // Clear cache
+    app(CacheService::class)->forget('users_table_data');
+}
 ```
+
+### Selective Cache Invalidation
+
+For more granular control, you can invalidate specific cache entries based on the affected data:
+
+```php
+// In your model observer
+public function saved(User $user)
+{
+    $cacheService = app(CacheService::class);
+    
+    // Clear specific user cache
+    $cacheService->forget("user_data_{$user->id}");
+    
+    // Clear department-specific cache if department changed
+    if ($user->isDirty('department_id')) {
+        $cacheService->forget("department_users_{$user->department_id}");
+        
+        if ($user->getOriginal('department_id')) {
+            $cacheService->forget("department_users_{$user->getOriginal('department_id')}");
+        }
+    }
+    
+    // Only clear global cache for significant changes
+    if ($user->isDirty(['role', 'is_active'])) {
+        $cacheService->forget('users_table_data');
+    }
+}
+```
+
+### Cache Tags (Not Currently Implemented)
+
+**Important Note**: While Laravel supports cache tags with certain cache drivers (like Redis or Memcached), the current implementation of `CacheService` in this package does not include tag support. The following is an example of how you might implement tag support if needed:
+
+```php
+// This functionality is NOT currently available in the package
+// You would need to extend the CacheService class to implement this
+
+// Example of how you might implement tag support:
+public function someMethod()
+{
+    // Using Laravel's cache facade directly for tags
+    Cache::tags(['users', "user-{$userId}"])->put('key', $value, 3600);
+    
+    // Retrieve with tags
+    $value = Cache::tags(['users', "user-{$userId}"])->get('key');
+    
+    // Invalidate by tag
+    Cache::tags(['users'])->flush(); // Clear all user-related cache
+    Cache::tags(["user-{$userId}"])->flush(); // Clear specific user cache
+}
+```
+
+If you need tag support, consider extending the `CacheService` class to add this functionality or use Laravel's Cache facade directly in your application code.
 
 ## Performance Tips
 

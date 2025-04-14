@@ -12,6 +12,50 @@ php artisan vendor:publish --tag=laravel-simple-datatables-config
 
 This will create a `simple-datatables.php` file in your application's `config` directory.
 
+## Pagination Settings
+
+You can customize pagination settings for your tables through the configuration file:
+
+```php
+'pagination' => [
+    // Default items per page
+    'per_page' => 10,
+    
+    // Available pagination options
+    'options' => [10, 25, 50, 100],
+    
+    // Show pagination summary
+    'show_summary' => true,
+    
+    // Enable pagination by default
+    'enabled' => true,
+],
+```
+
+You can also customize pagination at the component level:
+
+```php
+// In your Livewire component
+public function table(Table $table): Table
+{
+    return $table
+        ->query(User::query())
+        ->schema([
+            // Your columns here
+        ])
+        ->paginate(true) // Enable pagination (default)
+        ->perPage(25); // Set items per page
+}
+
+// Override per page options
+public function perPageOptions(): array
+{
+    return [5, 15, 30, 50, 100]; // Custom options
+}
+```
+
+For more details on pagination, see the [Pagination](pagination.md) documentation.
+
 ## Configuration Options
 
 ### Asset Loading
@@ -121,13 +165,16 @@ Configure export functionality:
     'enable' => true,
     
     // Available export formats
-    'formats' => ['csv'],
+    'formats' => ['csv', 'excel', 'pdf'],
     
     // Default export format
     'default_format' => 'csv',
     
     // Maximum rows for export (0 for unlimited)
     'max_rows' => 10000,
+    
+    // Custom filename prefix (default is 'export')
+    'filename_prefix' => 'export',
 ],
 ```
 

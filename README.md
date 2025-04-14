@@ -20,9 +20,16 @@ A lightweight, easy-to-use Laravel package for creating interactive data tables 
 
 ## Requirements
 
-- PHP 8.2 or higher
-- Laravel 10.x or higher
+- PHP 8.2 or higher (compatible with PHP 8.3 and 8.4)
+- Laravel 10.x or higher (compatible with Laravel 11.x and 12.x)
 - Livewire 3.x or higher
+
+### Version Compatibility
+
+| Laravel Simple Datatables | PHP                | Laravel              | Livewire |
+|---------------------------|--------------------|-----------------------|----------|
+| 1.x                       | ^8.2               | ^10.0                 | ^3.0     |
+| 1.7+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 
 ## Installation
 
@@ -68,23 +75,43 @@ Add the following directives to your layout file:
 
 As an alternative to the assets publishing command, you can copy the content from `/vendor/milenmk/laravel-simple-datatables/resources/css/package.css` to your `app.css` file. Then:
 
-### For Tailwind 4.x
+### For Tailwind CSS
 
-Add `@source '../../vendor/milenmk/laravel-simple-datatables/resources/views/';` in your app.css
+Add the package views to your Tailwind configuration:
 
-### For Tailwind 3.x
-
-Add `'../../vendor/milenmk/laravel-simple-datatables/resources/views/'` inside `content: []` of `tailwind.config.js`
+```js
+// tailwind.config.js
+module.exports = {
+  content: [
+    // ... your existing content paths
+    './vendor/milenmk/laravel-simple-datatables/resources/views/**/*.blade.php',
+  ],
+  // ... rest of your configuration
+}
+```
 
 ### Editing assets
 
-If you want to edit the view files, run `php artisan vendor:publish --tag="laravel-simple-datatables-views"`
+If you want to edit the view files, run:
+
+```
+php artisan vendor:publish --tag="laravel-simple-datatables-views"
+```
 
 The view files are now available in `/resources/views/vendor/laravel-simple-datatables`
 
-To make the classes in the package view files discovered when running `npm run dev` оr `npm run build`, add:
+To make the classes in the package view files discovered when running `npm run dev` or `npm run build`, add the published views path to your Tailwind configuration:
 
-Do not forget to update the `@source` directives in your `app.css`
+```js
+// tailwind.config.js
+module.exports = {
+  content: [
+    // ... your existing content paths
+    './resources/views/vendor/laravel-simple-datatables/**/*.blade.php',
+  ],
+  // ... rest of your configuration
+}
+```
 
 ## Usage
 
@@ -188,29 +215,86 @@ The export functionality is automatically included when you use the `HasTable` t
 
 ### Available Columns
 
-- TextColumn
-- ToggleColumn
-- CheckBoxColumn
-- ProgressColumn
-- IconColumn
-- ActionColumn
+- **TextColumn**: Displays text content with optional formatting
+  ```php
+  TextColumn::make('name')
+      ->label('Full Name')
+      ->searchable()
+      ->sortable()
+  ```
+
+- **ToggleColumn**: Creates a toggle switch for boolean values
+  ```php
+  ToggleColumn::make('is_active')
+      ->label('Active Status')
+  ```
+
+- **CheckBoxColumn**: Creates a checkbox for selection
+  ```php
+  CheckBoxColumn::make('selected')
+      ->label('Select')
+  ```
+
+- **ProgressColumn**: Displays a progress bar
+  ```php
+  ProgressColumn::make('completion')
+      ->label('Progress')
+      ->min(0)
+      ->max(100)
+      ->color('primary') // primary, success, warning, danger
+  ```
+
+- **IconColumn**: Displays an icon, useful for boolean states
+  ```php
+  IconColumn::make('is_verified')
+      ->boolean() // Shows check or x icon based on value
+      ->label('Verified')
+  ```
+
+- **ActionColumn**: Displays action buttons
+  ```php
+  ActionColumn::make('actions')
+      ->label('Actions')
+      ->actions([
+          Action::make('edit')
+              ->label('Edit')
+              ->icon('pencil')
+              ->url(fn($row) => route('users.edit', $row)),
+          Action::make('delete')
+              ->label('Delete')
+              ->icon('trash')
+              ->action(fn($row) => $this->deleteUser($row->id))
+              ->confirm('Are you sure you want to delete this user?')
+      ])
+  ```
 
 ### Column Options/Settings
 
 - `label` (string|array|callable) - The column header label
-- `value` - Custom value for the column
-- `color` (Full value e.g. text-gray-500, text-primary, text-danger etc.)
-- `background` (Full value e.g. bg-gray-500, bg-danger)
-- `visible` (true|false, default true)
-- `weight` (font weight of the text (e.g., bold, thin, medium))
-- `wrap` (true|false, default true)
-- `description` (string|callable)
-- `align` (left|center|right, default left)
-- `headerAlign` (left|center|right, default left)
-- `model` (Specify custom value for the wire:model of the field. Default is the column key inside make())
-- `searchable` (true|false, default false)
-- `sortable` (true|false, default false)
+- `value` (callable) - Custom value for the column
+  ```php
+  TextColumn::make('full_name')
+      ->value(fn($row) => $row->first_name . ' ' . $row->last_name)
+  ```
+- `color` (string) - Text color using Tailwind classes (e.g., text-gray-500, text-primary, text-danger)
+- `background` (string) - Background color using Tailwind classes (e.g., bg-gray-500, bg-danger)
+- `visible` (bool) - Whether the column is visible (default: true)
+- `weight` (string) - Font weight of the text (e.g., font-bold, font-thin, font-medium)
+- `wrap` (bool) - Whether text should wrap (default: true)
+- `description` (string|callable) - Additional description text shown below the main content
+- `align` (string) - Content alignment: 'left', 'center', 'right' (default: 'left')
+- `headerAlign` (string) - Header alignment: 'left', 'center', 'right' (default: 'left')
+- `model` (string) - Custom wire:model name (default is the column key)
+- `searchable` (bool) - Whether the column is searchable (default: false)
+- `sortable` (bool) - Whether the column is sortable (default: false)
 - `format` (callable) - Format the value before display
+  ```php
+  TextColumn::make('created_at')
+      ->format(fn($value) => $value->format('Y-m-d H:i'))
+  ```
+- `tooltip` (string|callable) - Add a tooltip to the column
+- `hidden` (bool) - Hide the column but keep it available for export (default: false)
+- `exportOnly` (bool) - Only include this column in exports (default: false)
 
 ## DISCLAIMER
 
@@ -239,6 +323,7 @@ Feel free to open issues or submit pull requests. Contributions are welcome!
 - [Search](docs/search.md)
 - [Export](docs/export.md)
 - [Caching](docs/caching.md)
+- [Pagination](docs/pagination.md)
 
 ## License
 
