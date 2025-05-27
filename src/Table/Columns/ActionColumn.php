@@ -6,10 +6,9 @@ namespace Milenmk\LaravelSimpleDatatables\Table\Columns;
 
 class ActionColumn extends Column
 {
+    public bool $groupActions = false;
+
     protected array $actions = [];
-
-    protected bool $groupActions = false;
-
     protected ?string $actionView = null;
 
     protected string $view = 'laravel-simple-datatables::components.table.columns.action';
@@ -26,8 +25,10 @@ class ActionColumn extends Column
         return $this->actions;
     }
 
-    public function groupActions(): void
+    public function groupActions(): static
     {
         $this->groupActions = true;
+
+        return $this;
     }
 }

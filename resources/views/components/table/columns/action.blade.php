@@ -1,39 +1,108 @@
 @php
-    $actions = $column->getActions();
+    $value = $column->getValue($item);
 @endphp
 
-<td class="px-4 py-2">
-    @if (! $column->groupActions)
-        <div class="flex items-center justify-center space-x-2">
-            @foreach ($actions as $action)
-                @include($action->getView())
-            @endforeach
-        </div>
+<div>
+    @if ($action->actionView === 'icon')
+        <a href="{{ $action->getUrl() }}">
+            @if ($action->icon instanceof Htmlable)
+                <span {{ $attributes->merge(['class' => ['ltr:mr-1.5 rtl:ml-1.5']]) }}>
+                    {{ $action->icon }}
+                </span>
+            @elseif (str_contains($action->icon, '/'))
+                <img
+                    alt="{{ $action->label }}"
+                    src="{{ $action->icon }}"
+                    {{ $attributes->merge(['class' => ['ltr:mr-1.5 rtl:ml-1.5']]) }}
+                />
+            @else
+                @svg($action->icon, 'icon-column-item size-4 ltr:mr-1.5 rtl:ml-1.5', array_filter($attributes->getAttributes()))
+            @endif
+        </a>
+    @elseif ($action->actionView === 'badge')
+        <a
+            href="{{ $action->getUrl() }}"
+            @class([
+                'badge',
+                match ($action->color) {
+                    'secondary' => 'bg-secondary',
+                    'success' => 'bg-success',
+                    'danger' => 'bg-danger',
+                    'warning' => 'bg-warning',
+                    'info' => 'bg-info',
+                    default => 'bg-primary',
+                },
+            ])
+        >
+            {{ $action->label }}
+        </a>
+    @elseif ($action->actionView === 'button')
+        <a
+            href="{{ $action->getUrl() }}"
+            @class([
+                'btn flex justify-center',
+                match ($action->color) {
+                    'secondary' => 'btn-secondary',
+                    'success' => 'btn-success',
+                    'danger' => 'btn-danger',
+                    'warning' => 'btn-warning',
+                    'info' => 'btn-info',
+                    default => match ($action->key) {
+                        'delete' => 'btn-danger',
+                        'edit' => 'btn-warning',
+                        default => 'btn-primary',
+                    },
+                },
+            ])
+        >
+            @if ($action->icon instanceof Htmlable)
+                <span {{ $attributes->merge(['class' => ['ltr:mr-1.5 rtl:ml-1.5']]) }}>
+                    {{ $action->icon }}
+                </span>
+            @elseif (str_contains($action->icon, '/'))
+                <img
+                    alt="{{ $action->label }}"
+                    src="{{ $action->icon }}"
+                    {{ $attributes->merge(['class' => ['ltr:mr-1.5 rtl:ml-1.5']]) }}
+                />
+            @else
+                @svg($action->icon, 'icon-column-item size-4 ltr:mr-1.5 rtl:ml-1.5', array_filter($attributes->getAttributes()))
+            @endif
+            {{ $action->label }}
+        </a>
     @else
-        <ul class="horizontal-menu dark:text-white-dark text-black">
-            <li class="nav-item relative">
-                <a href="javascript:" class="nav-link">
-                    <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 rotate-90 opacity-70 hover:opacity-100"
-                    >
-                        <circle cx="5" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
-                        <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
-                        <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
-                    </svg>
-                </a>
-                <ul class="sub-menu w-30 px-2 py-2 font-semibold ltr:right-0 rtl:left-0">
-                    @foreach ($actions as $action)
-                        <li class="my-2">
-                            @include($action->getView())
-                        </li>
-                    @endforeach
-                </ul>
-            </li>
-        </ul>
+        <a
+            href="{{ $action->getUrl() }}"
+            @class([
+                'flex items-start justify-start ltr:mr-2 rtl:ml-2',
+                match ($action->color) {
+                    'secondary' => 'text-secondary',
+                    'success' => 'text-success',
+                    'danger' => 'text-danger',
+                    'warning' => 'text-warning',
+                    'info' => 'text-info',
+                    default => match ($action->key) {
+                        'delete' => 'text-danger',
+                        'edit' => 'text-warning',
+                        default => 'text-primary',
+                    },
+                },
+            ])
+        >
+            @if ($action->icon instanceof Htmlable)
+                <span {{ $attributes->merge(['class' => ['ltr:mr-1 rtl:ml-1']]) }}>
+                    {{ $action->icon }}
+                </span>
+            @elseif (str_contains($action->icon, '/'))
+                <img
+                    alt="{{ $action->label }}"
+                    src="{{ $action->icon }}"
+                    {{ $attributes->merge(['class' => ['ltr:mr-1 rtl:ml-1']]) }}
+                />
+            @else
+                @svg($action->icon, 'icon-column-item size-4 ltr:mr-1 rtl:ml-1', array_filter($attributes->getAttributes()))
+            @endif
+            {{ $action->label }}
+        </a>
     @endif
-</td>
+</div>

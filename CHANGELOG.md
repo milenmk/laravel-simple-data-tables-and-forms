@@ -1,3 +1,10 @@
+## v1.9.1
+
+#### Published at: 2025-05-27
+
+- Bug fixes
+- Adjusting the href tags in the action's blade file
+
 ## v1.9.0
 
 #### Published at: 2025-05-27
