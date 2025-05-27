@@ -1,3 +1,9 @@
+## v1.10.0
+
+#### Published at: 2025-05-27
+
+- Removes CreateAction.php to consolidate creation logic elsewhere.
+
 ## v1.9.2
 
 #### Published at: 2025-05-27
