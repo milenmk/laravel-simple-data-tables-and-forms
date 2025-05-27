@@ -1,3 +1,9 @@
+## v1.10.1
+
+#### Published at: 2025-05-27
+
+- Enhance action button styling with specific colors.
+
 ## v1.10.0
 
 #### Published at: 2025-05-27

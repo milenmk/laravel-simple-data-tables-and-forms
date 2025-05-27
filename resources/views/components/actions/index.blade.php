@@ -4,7 +4,23 @@
 
 <div>
     @if ($action->actionView === 'icon')
-        <a href="{{ $action->getUrl() }}">
+        <a
+            href="{{ $action->getUrl() }}"
+            @class([
+                match ($action->color) {
+                    'secondary' => 'text-secondary',
+                    'success' => 'text-success',
+                    'danger' => 'text-danger',
+                    'warning' => 'text-warning',
+                    'info' => 'text-info',
+                    default => match ($action->key) {
+                        'delete' => 'text-danger',
+                        'edit' => 'text-warning',
+                        default => 'text-primary',
+                    },
+                },
+            ])
+        >
             @if ($action->icon instanceof Htmlable)
                 <span {{ $attributes->merge(['class' => ['ltr:mr-1.5 rtl:ml-1.5']]) }}>
                     {{ $action->icon }}
@@ -30,7 +46,11 @@
                     'danger' => 'bg-danger',
                     'warning' => 'bg-warning',
                     'info' => 'bg-info',
-                    default => 'bg-primary',
+                    default => match ($action->key) {
+                        'delete' => 'bg-danger',
+                        'edit' => 'bg-warning',
+                        default => 'bg-primary',
+                    },
                 },
             ])
         >
