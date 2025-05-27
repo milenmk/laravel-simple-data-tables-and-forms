@@ -1,3 +1,9 @@
+## v1.9.2
+
+#### Published at: 2025-05-27
+
+- Bug fixes
+
 ## v1.9.1
 
 #### Published at: 2025-05-27
