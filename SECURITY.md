@@ -13,6 +13,7 @@
 | 1.6.x   | Development | Internal Testing | not supported   |
 | 1.7.x   | Development | Internal Testing | not supported   |
 | 1.8.x   | Stable      | Production       | TBD             |
+| 1.9.x   | Stable      | Production       | TBD             |
 
 - Development: Used for features under development; not recommended for production.
 - Stable: Deployed to production for all users.

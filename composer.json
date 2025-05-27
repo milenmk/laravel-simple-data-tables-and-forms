@@ -1,7 +1,7 @@
 {
     "name": "milenmk/laravel-simple-datatables",
     "description": "Simple Table component to create datatables for Livewire components",
-    "version": "1.8.3",
+    "version": "1.9.0",
     "license": "MIT",
     "autoload": {
         "psr-4": {

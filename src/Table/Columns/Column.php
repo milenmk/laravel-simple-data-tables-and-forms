@@ -65,6 +65,13 @@ class Column
         return $this;
     }
 
+    public function hiddenLabel(): static
+    {
+        $this->label = null;
+
+        return $this;
+    }
+
     public function value(mixed $value): self
     {
         $this->value ??= $value; // Only set if null
@@ -77,7 +84,7 @@ class Column
         return match (true) {
             is_callable($this->value) => call_user_func($this->value, $item),
             isset($this->value) => $this->value,
-            default => $item->{$this->key} ?? null
+            default => $item->{$this->key} ?? null,
         };
     }
 
@@ -155,7 +162,7 @@ class Column
         return match (true) {
             is_callable($this->description) => call_user_func($this->description, $item),
             isset($this->description) => $this->description,
-            default => $item->{$this->key} ?? null
+            default => $item->{$this->key} ?? null,
         };
     }
 

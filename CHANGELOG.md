@@ -1,3 +1,10 @@
+## v1.9.0
+
+#### Published at: 2025-05-27
+
+- Introducing an action column to table
+- Added Create, Edit and Delete actions to be used within the ActionColumn
+
 ## v1.6.3
 
 #### Published at: 2025-03-24

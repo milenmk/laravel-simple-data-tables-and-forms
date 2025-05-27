@@ -32,6 +32,7 @@ exporting capabilities.
 | 1.x                       | ^8.2                 | ^10.0                   | ^3.0     |
 | 1.7+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 | 1.8+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
+| 1.9+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 
 ## Installation
 
@@ -257,12 +258,7 @@ Excel, or PDF formats.
     ActionColumn::make('actions')
         ->label('Actions')
         ->actions([
-            Action::make('edit')->label('Edit')->icon('pencil')->url(fn($row) => route('users.edit', $row)),
-            Action::make('delete')
-                ->label('Delete')
-                ->icon('trash')
-                ->action(fn($row) => $this->deleteUser($row->id))
-                ->confirm('Are you sure you want to delete this user?'),
+            EditAction::make('edit')->label('Edit')->icon('pencil')->url(fn($row) => route('users.edit', $row)),
         ]);
     ```
 
@@ -315,6 +311,13 @@ Excel, or PDF formats.
         ->label('Status')
         ->trueColor('color')
         ->falseColor('color')
+    ```
+
+    #### Action Column options
+
+    ```php
+    // To group the action in a dropdown use groupActions()
+    ActionColumn::make('actions')->groupActions();
     ```
 
 ## DISCLAIMER
