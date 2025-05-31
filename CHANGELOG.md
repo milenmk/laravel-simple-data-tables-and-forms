@@ -1,3 +1,9 @@
+## v1.10.5
+
+#### Published at: 2025-06-01
+
+- [FIX] No data exported when using a relation in a column
+
 ## v1.10.4
 
 #### Published at: 2025-06-01

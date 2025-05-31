@@ -70,7 +70,7 @@ class ExportService
                 }
 
                 foreach ($keys as $colIndex => $key) {
-                    $value = $row->{$key} ?? '';
+                    $value = data_get($row, $key, '');
                     $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex, $this->formatValue($value));
                 }
 
@@ -127,7 +127,7 @@ class ExportService
 
                         $data = [];
                         foreach ($keys as $key) {
-                            $value = $row->{$key} ?? '';
+                            $value = data_get($row, $key, '');
                             $data[] = $this->formatValue($value);
                         }
 
@@ -187,7 +187,7 @@ class ExportService
                 }
 
                 foreach ($keys as $colIndex => $key) {
-                    $value = $row->{$key} ?? '';
+                    $value = data_get($row, $key, '');
                     $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex, $this->formatValue($value));
                 }
 
@@ -244,7 +244,7 @@ class ExportService
 
                 $rowData = [];
                 foreach ($keys as $key) {
-                    $value = $row->{$key} ?? '';
+                    $value = data_get($row, $key, '');
                     $rowData[] = $this->formatValue($value);
                 }
 
