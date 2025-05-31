@@ -10,6 +10,7 @@ class TextColumn extends Column
     public bool $isDate = false;
     public bool $isBadge = false;
     public int $decimalPlaces = 2;
+    public string $dateFormat = 'Y-m-d H:i:s';
 
     protected string $view = 'laravel-simple-datatables::components.table.columns.text';
 
@@ -27,8 +28,12 @@ class TextColumn extends Column
     /**
      * Set the column to be a date.
      */
-    public function date(): self
+    public function date(?string $format = null): self
     {
+        if ($format) {
+            $this->dateFormat = $format;
+        }
+
         $this->isDate = true;
 
         return $this;

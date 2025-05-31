@@ -1,3 +1,9 @@
+## v1.10.2
+
+#### Published at: 2025-06-01
+
+- [NEW] Ability to set a custom date format for text column when cast to date.
+
 ## v1.10.1
 
 #### Published at: 2025-05-27
