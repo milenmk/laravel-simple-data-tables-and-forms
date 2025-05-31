@@ -102,7 +102,25 @@ trait HasTable
 
         // Apply search filter if there's any input using the search service
         if (! empty($sanitizedSearch)) {
-            $query = $searchService->applySearch($query, $sanitizedSearch, $table);
+            $query->where(function ($query) use ($sanitizedSearch, $table) {
+                foreach ($table->getColumns() as $column) {
+                    if ($column->searchable) {
+                        $fields = $column->searchFields ?: [$column->key];
+                        foreach ($fields as $field) {
+                            if (str_contains($field, '.')) {
+                                // Handle relationship search
+                                [$relation, $relatedField] = explode('.', $field, 2);
+                                $query->orWhereHas($relation, function ($query) use ($relatedField, $sanitizedSearch) {
+                                    $query->where($relatedField, 'LIKE', "%{$sanitizedSearch}%");
+                                });
+                            } else {
+                                // Handle direct field search
+                                $query->orWhere($field, 'LIKE', "%{$sanitizedSearch}%");
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         // Apply grouping

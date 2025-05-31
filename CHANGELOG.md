@@ -1,3 +1,10 @@
+## v1.10.4
+
+#### Published at: 2025-06-01
+
+- [FIX] Add an option to set the relation search fields like
+  `TextColumn::make('user')->searchable(['user.name'])` to avoid SQL query errors when searching a relation field
+
 ## v1.10.3
 
 #### Published at: 2025-06-01

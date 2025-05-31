@@ -21,6 +21,7 @@ class Column
     public string $align = 'left';
     public string $headerAlign = 'left';
     public string $wireModel;
+    public array $searchFields = [];
 
     protected string $view;
 
@@ -45,7 +46,12 @@ class Column
 
     public function searchable($value = true): static
     {
-        $this->searchable = $value;
+        if (is_array($value)) {
+            $this->searchable = true;
+            $this->searchFields = $value;
+        } else {
+            $this->searchable = $value;
+        }
 
         return $this;
     }
@@ -181,7 +187,7 @@ class Column
     }
 
     /**
-     * Specify custom wire model for field.
+     * Specify a custom wire model for field.
      */
     public function model(mixed $value): static
     {
