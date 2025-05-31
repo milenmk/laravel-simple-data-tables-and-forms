@@ -1,3 +1,9 @@
+## v1.10.3
+
+#### Published at: 2025-06-01
+
+- [BUG_FIX] When using a nested value for a relation property like `TextColumn::make('user.name')` no data is displayed
+
 ## v1.10.2
 
 #### Published at: 2025-06-01

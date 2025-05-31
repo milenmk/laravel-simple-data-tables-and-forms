@@ -84,7 +84,7 @@ class Column
         return match (true) {
             is_callable($this->value) => call_user_func($this->value, $item),
             isset($this->value) => $this->value,
-            default => $item->{$this->key} ?? null,
+            default => $this->getNestedValue($item, $this->key),
         };
     }
 
@@ -188,5 +188,19 @@ class Column
         $this->wireModel = $value;
 
         return $this;
+    }
+
+    protected function getNestedValue($item, string $key)
+    {
+        $keys = explode('.', $key);
+        foreach ($keys as $keyPart) {
+            if (is_object($item) && isset($item->{$keyPart})) {
+                $item = $item->{$keyPart};
+            } else {
+                return null;
+            }
+        }
+
+        return $item;
     }
 }
