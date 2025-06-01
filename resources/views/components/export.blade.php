@@ -136,17 +136,22 @@
     </div>
 
     <!-- Package Missing Modal -->
-    <div class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60" x-show="showPackageModal">
-        <div class="flex min-h-screen items-center justify-center px-4" @click.self="open = false">
+    <div
+        class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60"
+        x-show="showPackageModal"
+        x-cloak
+        style="display: none"
+    >
+        <div class="flex min-h-screen items-center justify-center px-4" @click.self="showPackageModal = false">
             <div
-                x-show="open"
+                x-show="showPackageModal"
                 x-transition
                 x-transition.duration.300
                 class="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0"
             >
                 <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
                     <h5 class="text-lg font-bold">{{ __('Package Required') }}</h5>
-                    <button type="button" class="text-white-dark hover:text-dark" @click="toggle">
+                    <button type="button" class="text-white-dark hover:text-dark" @click="showPackageModal = false">
                         <svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path
                                 stroke-linecap="round"

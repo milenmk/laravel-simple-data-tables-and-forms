@@ -1,3 +1,9 @@
+## v1.10.7
+
+#### Published at: 2025-06-01
+
+- [FIX] The package missing modal for the export functionality is shown on a page load
+
 ## v1.10.6
 
 #### Published at: 2025-06-01
