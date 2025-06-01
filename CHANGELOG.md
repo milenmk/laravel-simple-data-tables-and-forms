@@ -1,3 +1,11 @@
+## v1.10.6
+
+#### Published at: 2025-06-01
+
+- Export blade component now includes all available exports
+- Modal is shown if the external package required for the export is not installed
+- Convert raw strings to translatable strings
+
 ## v1.10.5
 
 #### Published at: 2025-06-01

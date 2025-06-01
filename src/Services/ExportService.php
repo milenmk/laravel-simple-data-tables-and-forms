@@ -17,6 +17,31 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ExportService
 {
     /**
+     * Check if required package is available for the given format.
+     */
+    public function isPackageAvailable(string $format): bool
+    {
+        return match ($format) {
+            'xls', 'xlsx', 'excel' => class_exists('\PhpOffice\PhpSpreadsheet\Spreadsheet'),
+            'pdf' => class_exists('\Barryvdh\DomPDF\Facade\Pdf'),
+            'csv' => true, // CSV doesn't require external packages
+            default => true,
+        };
+    }
+
+    /**
+     * Get the required package name for the given format.
+     */
+    public function getRequiredPackage(string $format): ?string
+    {
+        return match ($format) {
+            'xls', 'xlsx', 'excel' => 'phpoffice/phpspreadsheet',
+            'pdf' => 'barryvdh/laravel-dompdf',
+            default => null,
+        };
+    }
+
+    /**
      * Export table data to Excel (generic method that chooses the appropriate format).
      *
      * Requires PhpSpreadsheet package.

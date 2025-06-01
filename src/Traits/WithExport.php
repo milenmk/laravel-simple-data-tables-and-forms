@@ -36,6 +36,18 @@ trait WithExport
         // Get export service
         $exportService = app(ExportService::class);
 
+        // Check if required package is available
+        if (! $exportService->isPackageAvailable($format)) {
+            $packageName = $exportService->getRequiredPackage($format);
+            $this->dispatch('package-missing', [
+                'format' => $format,
+                'package' => $packageName,
+                'message' => "The package '{$packageName}' is required to export to {$format} format.",
+            ]);
+
+            return null;
+        }
+
         // Get table instance
         $table = app(Table::class);
         $this->table($table);
