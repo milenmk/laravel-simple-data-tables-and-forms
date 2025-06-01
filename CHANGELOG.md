@@ -1,3 +1,9 @@
+## v1.10.8
+
+#### Published at: 2025-06-01
+
+- [FIX] Tailwind pagination styling
+
 ## v1.10.7
 
 #### Published at: 2025-06-01
