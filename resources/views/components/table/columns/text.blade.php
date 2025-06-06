@@ -25,7 +25,7 @@
     ])
     style="text-align: {{ $column->align }}"
 >
-    @if ($column->isDate)
+    @if ($value && $column->isDate)
         {{ $value->format($column->dateFormat) }}
     @elseif ($column->isNumeric)
         {{ number_format($value, $column->decimalPlaces) }}

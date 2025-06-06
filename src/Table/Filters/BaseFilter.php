@@ -46,6 +46,13 @@ abstract class BaseFilter
         return $this;
     }
 
+    public function query(Closure $query): static
+    {
+        $this->query = $query;
+
+        return $this;
+    }
+
     public function setComponent(Component $component): void
     {
         $this->component = $component;
