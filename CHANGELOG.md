@@ -1,3 +1,10 @@
+## v1.10.9
+
+#### Published at: 2025-06-01
+
+- [FIX] Handles null values in date columns
+- Add query method for filters
+
 ## v1.10.8
 
 #### Published at: 2025-06-01
