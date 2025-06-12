@@ -1,13 +1,3 @@
-## v1.11.0
-
-#### Published at: 2025-06-12
-
-- Refactor actions to support Livewire actions with configurable styles and button types.
-- [FIX] `url()` for actions not working properly
-- [FIX] `action()` for actions not working properly
-- Updates Readme to reflect the current package status and functions
-- Updates Security Policy
-
 ## v1.10.9
 
 #### Published at: 2025-06-01
