@@ -1,4 +1,4 @@
-# Pagination
+## Pagination
 
 Laravel Simple Datatables provides flexible pagination options to help manage large datasets efficiently.
 
@@ -69,7 +69,8 @@ public function perPageOptions(): array
 
 ## Pagination Summary
 
-By default, the package shows a pagination summary that displays the current range of records being shown and the total number of records. You can customize this behavior in the configuration file:
+By default, the package shows a pagination summary that displays the current range of records being shown and the total
+number of records. You can customize this behavior in the configuration file:
 
 ```php
 'pagination' => [
@@ -96,15 +97,18 @@ You can customize the appearance of pagination controls by publishing the packag
 php artisan vendor:publish --tag=laravel-simple-datatables-views
 ```
 
-Then edit the pagination component in `resources/views/vendor/laravel-simple-datatables/components/pagination.blade.php`.
+Then edit the pagination component in
+`resources/views/vendor/laravel-simple-datatables/components/pagination.blade.php`.
 
 ## Handling Pagination State
 
-The pagination state is automatically managed by the package. When a user changes the page or items per page, the table is refreshed with the new data.
+The pagination state is automatically managed by the package. When a user changes the page or items per page, the table
+is refreshed with the new data.
 
 ## Pagination with Filters and Sorting
 
-Pagination works seamlessly with filters and sorting. When a user applies a filter or sorts a column, the pagination is reset to the first page to avoid confusion.
+Pagination works seamlessly with filters and sorting. When a user applies a filter or sorts a column, the pagination is
+reset to the first page to avoid confusion.
 
 ## Performance Considerations
 
@@ -116,7 +120,8 @@ For large datasets, consider implementing the following optimizations:
 
 3. **Limit Eager Loading**: Be careful with eager loading relationships, as it can impact pagination performance.
 
-4. **Consider Caching**: For very large datasets, consider implementing caching as described in the [Caching](caching.md) documentation.
+4. **Consider Caching**: For very large datasets, consider implementing caching as described in
+   the [Caching](caching.md) documentation.
 
 ## Example: Complete Pagination Implementation
 
@@ -142,4 +147,5 @@ public function perPageOptions(): array
 }
 ```
 
-This implementation provides a paginated table with custom per page options, allowing users to efficiently navigate through large datasets.
+This implementation provides a paginated table with custom per page options, allowing users to efficiently navigate
+through large datasets.

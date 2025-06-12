@@ -1,6 +1,7 @@
-# Table Actions
+## Table Actions
 
-Laravel Simple Datatables provides a flexible action system that allows you to add interactive buttons to your tables. These actions can either navigate to URLs or trigger Livewire methods in your component.
+Laravel Simple Datatables provides a flexible action system that allows you to add interactive buttons to your tables.
+These actions can either navigate to URLs or trigger Livewire methods in your component.
 
 ## Basic Usage
 
@@ -60,7 +61,8 @@ URL-based actions navigate to a specific URL when clicked:
 EditAction::make('edit')->label('Edit')->icon('heroicon-o-pencil-square')->url(fn($row) => route('users.edit', $row));
 ```
 
-The `url` method accepts either a string or a closure. When using a closure, the current record is passed as a parameter, allowing you to generate dynamic URLs based on the record data.
+The `url` method accepts either a string or a closure. When using a closure, the current record is passed as a
+parameter, allowing you to generate dynamic URLs based on the record data.
 
 ## Livewire Actions
 
@@ -70,7 +72,8 @@ Livewire actions trigger methods in your Livewire component when clicked:
 DeleteAction::make('delete')->label('Delete')->icon('heroicon-o-trash')->action('deleteUser');
 ```
 
-The `action` method specifies the name of the method to call in your Livewire component. The record ID is automatically passed to this method:
+The `action` method specifies the name of the method to call in your Livewire component. The record ID is automatically
+passed to this method:
 
 ```php
 // In your Livewire component
@@ -265,4 +268,5 @@ public function deleteUser($id)
 }
 ```
 
-This implementation provides a complete set of CRUD actions for managing users, with appropriate icons and styles for each action.
+This implementation provides a complete set of CRUD actions for managing users, with appropriate icons and styles for
+each action.
