@@ -18,6 +18,7 @@ exporting capabilities.
 - 🔒 Security features
 - ⚡ Performance optimizations with caching
 - 🧩 Livewire integration
+- 🔘 Flexible actions with support for both URL links and Livewire methods
 
 ## Requirements
 
@@ -33,6 +34,7 @@ exporting capabilities.
 | 1.7+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 | 1.8+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 | 1.9+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
+| 1.10+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 
 ## Installation
 
@@ -253,12 +255,16 @@ Excel, or PDF formats.
         ->label('Verified');
     ```
 
-- **ActionColumn**: Displays action buttons
+- **ActionColumn**: Displays action buttons with support for both URL links and Livewire actions
     ```php
     ActionColumn::make('actions')
         ->label('Actions')
         ->actions([
+            // URL-based action (opens a new page)
             EditAction::make('edit')->label('Edit')->icon('pencil')->url(fn($row) => route('users.edit', $row)),
+
+            // Livewire action (calls a method in your component)
+            DeleteAction::make('delete')->label('Delete')->icon('trash')->action('deleteRecord'),
         ]);
     ```
 
@@ -318,6 +324,34 @@ Excel, or PDF formats.
     ```php
     // To group the action in a dropdown use groupActions()
     ActionColumn::make('actions')->groupActions();
+
+    // Action styles: 'icon', 'badge', 'button', or default (text link)
+    ActionColumn::make('actions')
+        ->actions([
+            EditAction::make('edit')->actionView('icon'),
+            DeleteAction::make('delete')->actionView('badge'),
+            ViewAction::make('view')->actionView('button'),
+        ]);
+
+    // Handling Livewire actions
+    ActionColumn::make('actions')
+        ->actions([
+            DeleteAction::make('delete')
+                ->action('deleteRecord') // This will call the deleteRecord method in your Livewire component
+                ->icon('trash')
+                ->actionView('icon'),
+        ]);
+
+    // In your Livewire component, implement the action method:
+    public function deleteRecord($id)
+    {
+        // $id is the ID of the record to delete
+        $record = YourModel::find($id);
+        if ($record) {
+            $record->delete();
+            $this->notification()->success('Record deleted successfully');
+        }
+    }
     ```
 
 ## DISCLAIMER
@@ -348,6 +382,7 @@ Feel free to open issues or submit pull requests. Contributions are welcome!
 - [Export](docs/export.md)
 - [Caching](docs/caching.md)
 - [Pagination](docs/pagination.md)
+- [Actions](docs/actions.md)
 
 ## License
 
