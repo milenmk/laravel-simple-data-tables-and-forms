@@ -281,7 +281,7 @@
                                         <th
                                             id="th-{{ $column->key }}"
                                             @class([
-                                                "items-center px-6 py-3 font-medium tracking-wider text-gray-500 uppercase",
+                                                "items-center px-4 py-3 font-medium tracking-wider text-gray-500 uppercase",
                                                 "asc" => $this->sortDir === "ASC" && $this->sortField === $column->key,
                                                 "desc" => $this->sortDir === "DESC" && $this->sortField === $column->key,
                                             ])
