@@ -10,7 +10,7 @@ use Illuminate\View\View;
 
 class TernaryFilter extends BaseFilter
 {
-    public bool $toggle = false;
+    public bool $toggle = true;
 
     public function toggle(bool $toggle = true): static
     {

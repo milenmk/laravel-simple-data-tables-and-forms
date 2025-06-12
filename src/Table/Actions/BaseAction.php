@@ -18,6 +18,7 @@ class BaseAction
     public ?string $buttonBackground = null;
     public ?string $actionView = null;
     public string|bool|Closure|null $icon = null;
+    public ?string $actionName = null;
 
     protected string $view = 'laravel-simple-datatables::components.actions.index';
 
@@ -79,9 +80,10 @@ class BaseAction
         return $this;
     }
 
-    public function getUrl(): mixed
+    public function getUrl($record = null): mixed
     {
         return match (true) {
+            is_callable($this->url) && $record !== null => call_user_func($this->url, $record),
             is_callable($this->url) => call_user_func($this->url),
             default => $this->url ?? null,
         };
@@ -110,9 +112,11 @@ class BaseAction
         return $this;
     }
 
-    public function action()
+    public function action(string $actionName): self
     {
-        //
+        $this->actionName = $actionName;
+
+        return $this;
     }
 
     public function confirm()
