@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatables\Table\Actions;
 
 use Closure;
+use Illuminate\Support\HtmlString;
 
 class BaseAction
 {
@@ -19,6 +20,13 @@ class BaseAction
     public ?string $actionView = null;
     public string|bool|Closure|null $icon = null;
     public ?string $actionName = null;
+    public ?Closure $actionClosure = null;
+
+    public bool $requiresConfirmation = false;
+    public string|HtmlString|Closure|null $modalHeading = null;
+    public string|HtmlString|Closure|null $modalDescription = null;
+    public string|HtmlString|Closure|null $modalContent = null;
+    public string|Closure|null $modalIcon = null;
 
     protected string $view = 'laravel-simple-datatables::components.actions.index';
 
@@ -80,15 +88,6 @@ class BaseAction
         return $this;
     }
 
-    public function getUrl($record = null): mixed
-    {
-        return match (true) {
-            is_callable($this->url) && $record !== null => call_user_func($this->url, $record),
-            is_callable($this->url) => call_user_func($this->url),
-            default => $this->url ?? null,
-        };
-    }
-
     /**
      * @param  string  $color  Full value e.g. text-gray-500, text-primary
      * @return $this
@@ -112,15 +111,136 @@ class BaseAction
         return $this;
     }
 
-    public function action(string $actionName): self
+    public function action(string|Closure $action): self
     {
-        $this->actionName = $actionName;
+        if (is_string($action)) {
+            $this->actionName = $action;
+        } else {
+            $this->actionClosure = $action;
+        }
 
         return $this;
     }
 
-    public function confirm()
+    public function requiresConfirmation(bool $value): static
     {
-        //
+        if ($value === true) {
+            $this->requiresConfirmation = true;
+        }
+
+        return $this;
+    }
+
+    public function modalHeading(string|HtmlString|Closure $heading): static
+    {
+        $this->modalHeading = $heading;
+
+        return $this;
+    }
+
+    public function modalDescription(string|HtmlString|Closure $description): static
+    {
+        $this->modalDescription = $description;
+
+        return $this;
+    }
+
+    public function modalContent(string|HtmlString|Closure $content): static
+    {
+        $this->modalContent = $content;
+
+        return $this;
+    }
+
+    public function modalIcon(string|Closure $icon): static
+    {
+        $this->modalIcon = $icon;
+
+        return $this;
+    }
+
+    public function executeAction($record = null): mixed
+    {
+        if ($this->actionClosure) {
+            return call_user_func($this->actionClosure, $record);
+        }
+
+        return null;
+    }
+
+    public function confirmationModalContent($record = null): array
+    {
+        $heading = $this->getModalHeading($record) ?? 'Confirm Action';
+        $description = $this->getModalDescription($record) ?? 'Are you sure you want to perform this action?';
+        $content = $this->getModalContent($record);
+
+        return [
+            'heading' => $heading instanceof HtmlString ? $heading->toHtml() : $heading,
+            'description' => $description instanceof HtmlString ? $description->toHtml() : $description,
+            'content' => $content instanceof HtmlString ? $content->toHtml() : $content,
+            'icon' => $this->getModalIcon($record),
+            'hasUrl' => $this->hasUrl(),
+            'hasAction' => $this->hasAction(),
+            'url' => $this->getUrl($record),
+            'actionName' => $this->actionName,
+        ];
+    }
+
+    public function getModalHeading($record = null): string|HtmlString|null
+    {
+        return match (true) {
+            is_callable($this->modalHeading) && $record !== null => call_user_func($this->modalHeading, $record),
+            is_callable($this->modalHeading) => call_user_func($this->modalHeading),
+            default => $this->modalHeading,
+        };
+    }
+
+    public function getModalDescription($record = null): string|HtmlString|null
+    {
+        return match (true) {
+            is_callable($this->modalDescription) && $record !== null => call_user_func(
+                $this->modalDescription,
+                $record,
+            ),
+            is_callable($this->modalDescription) => call_user_func($this->modalDescription),
+            default => $this->modalDescription,
+        };
+    }
+
+    public function getModalContent($record = null): string|HtmlString|null
+    {
+        return match (true) {
+            is_callable($this->modalContent) && $record !== null => call_user_func($this->modalContent, $record),
+            is_callable($this->modalContent) => call_user_func($this->modalContent),
+            default => $this->modalContent,
+        };
+    }
+
+    public function getModalIcon($record = null): ?string
+    {
+        return match (true) {
+            is_callable($this->modalIcon) && $record !== null => call_user_func($this->modalIcon, $record),
+            is_callable($this->modalIcon) => call_user_func($this->modalIcon),
+            default => $this->modalIcon,
+        };
+    }
+
+    public function hasUrl(): bool
+    {
+        return $this->url !== null;
+    }
+
+    public function hasAction(): bool
+    {
+        return $this->actionName !== null || $this->actionClosure !== null;
+    }
+
+    public function getUrl($record = null): mixed
+    {
+        return match (true) {
+            is_callable($this->url) && $record !== null => call_user_func($this->url, $record),
+            is_callable($this->url) => call_user_func($this->url),
+            default => $this->url ?? null,
+        };
     }
 }

@@ -202,3 +202,84 @@ table.dataTable-table tbody tr:last-child td {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
+
+/* Buttons */
+button {
+    @apply cursor-pointer;
+}
+
+.btn {
+    @apply relative flex items-center justify-center rounded-md border px-5 py-2 text-sm font-semibold uppercase shadow-[0_10px_20px_-10px] outline-hidden transition duration-300 hover:shadow-none;
+}
+
+.btn-lg {
+    @apply px-7 py-2.5 text-base;
+}
+
+.btn-sm {
+    @apply px-2.5 py-1.5 text-xs;
+}
+
+.btn[disabled] {
+    @apply cursor-not-allowed opacity-60;
+}
+
+.btn-primary {
+    @apply border-primary bg-primary shadow-primary/60 text-white;
+}
+
+.btn-outline-primary {
+    @apply border-primary text-primary hover:bg-primary shadow-none hover:text-white;
+}
+
+.btn-secondary {
+    @apply border-secondary bg-secondary shadow-secondary/60 text-white;
+}
+
+.btn-outline-secondary {
+    @apply border-secondary text-secondary hover:bg-secondary shadow-none hover:text-white;
+}
+
+.btn-success {
+    @apply border-success bg-success shadow-success/60 text-white;
+}
+
+.btn-outline-success {
+    @apply border-success text-success hover:bg-success shadow-none hover:text-white;
+}
+
+.btn-danger {
+    @apply border-danger bg-danger shadow-danger/60 text-white;
+}
+
+.btn-outline-danger {
+    @apply border-danger text-danger hover:bg-danger shadow-none hover:text-white;
+}
+
+.btn-warning {
+    @apply border-warning bg-warning shadow-warning/60 text-white;
+}
+
+.btn-outline-warning {
+    @apply border-warning text-warning hover:bg-warning shadow-none hover:text-white;
+}
+
+.btn-info {
+    @apply border-info bg-info shadow-info/60 text-white;
+}
+
+.btn-outline-info {
+    @apply border-info text-info hover:bg-info shadow-none hover:text-white;
+}
+
+.btn-dark {
+    @apply border-dark bg-dark shadow-dark/60 text-white;
+}
+
+.btn-outline-dark {
+    @apply border-dark text-dark hover:bg-dark shadow-none hover:text-white;
+}
+
+.btn-gradient {
+    @apply bg-gradient-to-r from-[#EF1262] to-[#4361EE] text-white hover:from-[#4361EE] hover:to-[#EF1262];
+}
