@@ -1,5 +1,11 @@
 ## v1.11.0
 
+#### Published at: 2025-06-13
+
+- [NEW] Implements confirmation modal for actions
+
+## v1.11.0
+
 #### Published at: 2025-06-12
 
 - Refactor actions to support Livewire actions with configurable styles and button types.

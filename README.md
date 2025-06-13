@@ -36,6 +36,7 @@ exporting capabilities.
 | 1.9+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 | 1.10+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 | 1.11+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
+| 1.12+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 
 ## Installation
 
@@ -159,6 +160,18 @@ public function table(Table $table): Table
                     ->headerAlign('center'),
                 ToggleColumn::make('is_admin_menu')->label('Is Admin Menu'),
                 IconColumn::make('is_admin_menu')->boolean(),
+                ActionColumn::make('actions')
+                ->label('Actions')
+                ->actions([
+                    EditAction::make('edit')
+                      ->label('Edit')
+                      ->icon('pencil')
+                      ->url(fn($row) => route('users.edit', $row)),
+                    DeleteAction::make('delete')
+                      ->label('Delete')
+                      ->icon('trash')
+                      ->action('deleteRecord'),
+                ]),
             ])
             ->striped();
     }
