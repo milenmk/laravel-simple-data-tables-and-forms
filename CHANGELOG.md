@@ -1,4 +1,10 @@
-## v1.11.0
+## v1.12.1
+
+#### Published at: 2025-06-13
+
+- Generate a new package.css file to reflect the recent changes
+
+## v1.12.0
 
 #### Published at: 2025-06-13
 
