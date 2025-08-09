@@ -8,17 +8,22 @@ exporting capabilities.
 
 ## Features
 
+### Data Tables
+
 - 🔍 Advanced search with debouncing and minimum character requirements
 - 🔄 Column sorting
-- 🧹 Filtering with multiple filter types
+- 🧹 Filtering with multiple filter types and grouping
 - 📊 Data grouping
 - 📱 Responsive design
 - 🎨 Customizable appearance
 - 📤 Export to CSV, Excel, and PDF
-- 🔒 Security features
-- ⚡ Performance optimizations with caching
-- 🧩 Livewire integration
 - 🔘 Flexible actions with support for both URL links and Livewire methods
+
+### General
+
+- 🔒 Security features with CSRF protection and input sanitization
+- ⚡ Performance optimizations with caching
+- 🧩 Seamless Livewire integration
 
 ## Requirements
 
@@ -124,7 +129,9 @@ module.exports = {
 
 ## Usage
 
-### Using a command
+### Data Tables
+
+#### Using a command
 
 1. Run `php artisan make:milenmk-datatable PostList Post` where `PostList` is the name of the Livewire component that
    will be created and `Post` is the name of the model.
@@ -133,7 +140,7 @@ module.exports = {
 
 3. The command will create a component in `App\Livewire` and a view file in `resources/views/livewire`
 
-### Manual
+#### Manual
 
 1. In you Livewire component add the package trait `use HasTable;`
 2. Define your table fields like:
@@ -392,12 +399,15 @@ Feel free to open issues or submit pull requests. Contributions are welcome!
 
 ## Documentation
 
+### Data Tables
+
 - [Configuration](docs/configuration.md)
 - [Search](docs/search.md)
 - [Export](docs/export.md)
 - [Caching](docs/caching.md)
 - [Pagination](docs/pagination.md)
 - [Actions](docs/actions.md)
+- [Filter Grouping](docs/filter-grouping.md)
 
 ## License
 

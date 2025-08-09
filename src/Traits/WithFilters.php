@@ -94,20 +94,53 @@ trait WithFilters
             $filter->modelClass = $modelClass;
         }
 
-        return collect($filters)
-            ->map(function ($filter) {
-                $filterData = [
-                    'name' => $filter->name,
-                    'view' => $filter->render(),
-                    'filterLabel' => $filter->label,
-                ];
+        // Group filters by their group property
+        $groupedFilters = collect($filters)->groupBy(function ($filter) {
+            return $filter->group ?? 'ungrouped_' . $filter->name;
+        });
 
-                if ($filter instanceof SelectFilter) {
-                    $filterData['filterOptions'] = $filter->getOptions();
+        return $groupedFilters
+            ->map(function ($filtersInGroup, $groupKey) {
+                // If it's a single ungrouped filter, return it as before
+                if (str_starts_with($groupKey, 'ungrouped_') && $filtersInGroup->count() === 1) {
+                    $filter = $filtersInGroup->first();
+                    $filterData = [
+                        'name' => $filter->name,
+                        'view' => $filter->render(),
+                        'filterLabel' => $filter->label,
+                        'isGroup' => false,
+                    ];
+
+                    if ($filter instanceof SelectFilter) {
+                        $filterData['filterOptions'] = $filter->getOptions();
+                    }
+
+                    return $filterData;
                 }
 
-                return $filterData;
+                // For grouped filters, create a group structure
+                return [
+                    'name' => $groupKey,
+                    'isGroup' => true,
+                    'groupLabel' => $groupKey,
+                    'filters' => $filtersInGroup
+                        ->map(function ($filter) {
+                            $filterData = [
+                                'name' => $filter->name,
+                                'view' => $filter->render(),
+                                'filterLabel' => $filter->label,
+                            ];
+
+                            if ($filter instanceof SelectFilter) {
+                                $filterData['filterOptions'] = $filter->getOptions();
+                            }
+
+                            return $filterData;
+                        })
+                        ->toArray(),
+                ];
             })
+            ->values()
             ->toArray();
     }
 

@@ -16,7 +16,31 @@
     "csrfField" => "",
     "exportEnabled" => true,
     "exportFormats" => ["csv"],
+    "filterColumns" => 6,
+    "filterResponsive" => true,
+    "filterResponsiveColumns" => [
+        "sm" => 1,
+        "md" => 2,
+        "lg" => 4,
+        "xl" => 6,
+    ],
 ])
+
+@php
+    // Generate grid classes based on configuration
+    $gridClasses = "grid gap-4";
+
+    if ($filterResponsive) {
+        // Add responsive grid classes
+        $gridClasses .= " grid-cols-{$filterResponsiveColumns["sm"]}";
+        $gridClasses .= " sm:grid-cols-{$filterResponsiveColumns["md"]}";
+        $gridClasses .= " md:grid-cols-{$filterResponsiveColumns["lg"]}";
+        $gridClasses .= " lg:grid-cols-{$filterResponsiveColumns["xl"]}";
+    } else {
+        // Use fixed columns
+        $gridClasses .= " grid-cols-{$filterColumns}";
+    }
+@endphp
 
 <div class="panel">
     @if ($heading)
@@ -170,10 +194,26 @@
                 @if ($showFilters)
                     <div class="mb-4 w-full">
                         <div class="mt-4 rounded-md border bg-gray-50 p-4 dark:bg-(--color-white-dark)">
-                            <div class="grid grid-cols-6 gap-4">
-                                <!-- Add grid container -->
+                            <div class="{{ $gridClasses }}">
+                                <!-- Dynamic grid container -->
                                 @foreach ($tableFilters as $filter)
-                                    {!! $filter["view"] !!}
+                                    @if ($filter["isGroup"] ?? false)
+                                        <!-- Grouped filters in a single column -->
+                                        <div class="space-y-3">
+                                            @if (isset($filter["groupLabel"]) && $filter["groupLabel"] !== "")
+                                                <div class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    {{ $filter["groupLabel"] }}
+                                                </div>
+                                            @endif
+
+                                            @foreach ($filter["filters"] as $groupedFilter)
+                                                {!! $groupedFilter["view"] !!}
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <!-- Single filter -->
+                                        {!! $filter["view"] !!}
+                                    @endif
                                 @endforeach
                             </div>
                             <div class="mt-4 flex justify-end">
@@ -197,7 +237,22 @@
                     @foreach ($filters as $filterName => $filterValues)
                         @if (! empty($filterValues))
                             @php
+                                // First try to find the filter directly
                                 $filterItem = collect($tableFilters)->firstWhere("name", $filterName);
+
+                                // If not found, search within grouped filters
+                                if (! $filterItem) {
+                                    foreach ($tableFilters as $tableFilter) {
+                                        if (isset($tableFilter["isGroup"]) && $tableFilter["isGroup"]) {
+                                            $groupedFilter = collect($tableFilter["filters"])->firstWhere("name", $filterName);
+                                            if ($groupedFilter) {
+                                                $filterItem = $groupedFilter;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
                                 $filterLabel = $filterItem["filterLabel"] ?? $filterName;
                                 $filterOptions = $filterItem["filterOptions"] ?? [];
                             @endphp
@@ -229,7 +284,7 @@
                             @else
                                 @php
                                     $boolValue = $filterValues === true ? "Yes" : ($filterValues === false ? "No" : null);
-                                    $displayValue = $boolValue ?? $filterValues;
+                                    $displayValue = $boolValue ?? ($filterOptions[$filterValues] ?? $filterValues);
                                 @endphp
 
                                 <div

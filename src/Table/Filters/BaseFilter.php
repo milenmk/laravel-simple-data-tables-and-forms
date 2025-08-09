@@ -19,6 +19,8 @@ abstract class BaseFilter
 
     public ?string $modelClass = null;
 
+    public ?string $group = null;
+
     protected ?Component $component = null;
 
     public function __construct(string $name)
@@ -49,6 +51,13 @@ abstract class BaseFilter
     public function query(Closure $query): static
     {
         $this->query = $query;
+
+        return $this;
+    }
+
+    public function group(string $group): static
+    {
+        $this->group = $group;
 
         return $this;
     }

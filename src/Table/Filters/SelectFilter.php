@@ -65,7 +65,7 @@ class SelectFilter extends BaseFilter
 
         if ($this->relation && $this->displayColumn) {
             $query->whereHas($this->relation, function (Builder $q) use ($value) {
-                $q->whereIn($this->displayColumn, (array) $value);
+                $q->whereIn('id', (array) $value);
             });
         } elseif ($this->query instanceof Closure) {
             call_user_func($this->query, $query, (array) $value);

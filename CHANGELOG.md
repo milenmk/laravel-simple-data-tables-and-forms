@@ -1,3 +1,12 @@
+## v1.13.0
+
+#### Published at: 2025-08-10
+
+- [FIX] Active filters displays column ID instead of option name
+- [NEW] Responsive filters
+- [NEW] User can set filters responsiveness to false in the config file and specify custom number of columns
+- [NEW] Filters can be grouped
+
 ## v1.12.1
 
 #### Published at: 2025-06-13

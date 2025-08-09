@@ -36,6 +36,10 @@ class Table
     protected array $collapsedGroups = [];
     protected array $filtersValues = [];
 
+    protected ?int $filterColumns = null;
+    protected ?bool $filterResponsive = null;
+    protected ?array $filterResponsiveColumns = null;
+
     public function query(Builder|LengthAwarePaginator $query): self
     {
         $this->query = $query;
@@ -100,6 +104,9 @@ class Table
             'csrfField' => $csrfField,
             'exportEnabled' => config('simple-datatables.export.enable', true),
             'exportFormats' => config('simple-datatables.export.formats', ['csv', 'excel', 'pdf']),
+            'filterColumns' => $this->getFilterColumns(),
+            'filterResponsive' => $this->getFilterResponsive(),
+            'filterResponsiveColumns' => $this->getFilterResponsiveColumns(),
         ]);
     }
 
@@ -234,5 +241,47 @@ class Table
         $this->tableFilters = $tableFilters;
 
         return $this;
+    }
+
+    public function filterColumns(int $columns): self
+    {
+        $this->filterColumns = $columns;
+
+        return $this;
+    }
+
+    public function getFilterColumns(): int
+    {
+        return $this->filterColumns ?? config('simple-datatables.filters.columns', 6);
+    }
+
+    public function filterResponsive(bool $responsive = true): self
+    {
+        $this->filterResponsive = $responsive;
+
+        return $this;
+    }
+
+    public function getFilterResponsive(): bool
+    {
+        return $this->filterResponsive ?? config('simple-datatables.filters.responsive', true);
+    }
+
+    public function filterResponsiveColumns(array $responsiveColumns): self
+    {
+        $this->filterResponsiveColumns = $responsiveColumns;
+
+        return $this;
+    }
+
+    public function getFilterResponsiveColumns(): array
+    {
+        return $this->filterResponsiveColumns ??
+            config('simple-datatables.filters.responsive_columns', [
+                'sm' => 1,
+                'md' => 2,
+                'lg' => 4,
+                'xl' => 6,
+            ]);
     }
 }
