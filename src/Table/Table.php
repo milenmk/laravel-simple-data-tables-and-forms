@@ -12,6 +12,7 @@ use Illuminate\View\View;
 use Milenmk\LaravelSimpleDatatables\Exceptions\InvalidFilterTypeException;
 use Milenmk\LaravelSimpleDatatables\Services\SecurityService;
 use Milenmk\LaravelSimpleDatatables\Table\Filters\BaseFilter;
+use Milenmk\LaravelSimpleDatatables\Table\Filters\FiltersGroup;
 use Milenmk\LaravelSimpleDatatables\Table\Grouping\Group;
 
 class Table
@@ -29,6 +30,8 @@ class Table
     protected ?string $modelClass = null;
 
     protected array $filters = [];
+
+    protected array $filtersGroups = [];
 
     protected array $tableFilters = [];
 
@@ -214,11 +217,23 @@ class Table
     public function filters(array $filters): self
     {
         foreach ($filters as $filter) {
-            if (! $filter instanceof BaseFilter) {
+            if ($filter instanceof FiltersGroup) {
+                // Store the FiltersGroup for later reference
+                $this->filtersGroups[$filter->getName()] = $filter;
+
+                // Handle FiltersGroup - add all its filters to the main filters array
+                foreach ($filter->getFilters() as $groupFilter) {
+                    if (! $groupFilter instanceof BaseFilter) {
+                        throw InvalidFilterTypeException::notInstanceOfBaseFilter($groupFilter);
+                    }
+                    $this->filters[] = $groupFilter;
+                }
+            } elseif ($filter instanceof BaseFilter) {
+                // Handle individual filter
+                $this->filters[] = $filter;
+            } else {
                 throw InvalidFilterTypeException::notInstanceOfBaseFilter($filter);
             }
-
-            $this->filters[] = $filter;
         }
 
         return $this;
@@ -227,6 +242,11 @@ class Table
     public function getFilters(): array
     {
         return $this->filters;
+    }
+
+    public function getFiltersGroups(): array
+    {
+        return $this->filtersGroups;
     }
 
     public function setShowFilters(bool $showFilters): self

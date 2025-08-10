@@ -87,8 +87,10 @@ trait WithFilters
     protected function prepareFilterViews(): array
     {
         $table = new Table;
-        $filters = $this->table($table)->getFilters();
-        $modelClass = $this->table($table)->getModelClass();
+        $tableInstance = $this->table($table);
+        $filters = $tableInstance->getFilters();
+        $filtersGroups = $tableInstance->getFiltersGroups();
+        $modelClass = $tableInstance->getModelClass();
 
         foreach ($filters as $filter) {
             $filter->modelClass = $modelClass;
@@ -100,7 +102,7 @@ trait WithFilters
         });
 
         return $groupedFilters
-            ->map(function ($filtersInGroup, $groupKey) {
+            ->map(function ($filtersInGroup, $groupKey) use ($filtersGroups) {
                 // If it's a single ungrouped filter, return it as before
                 if (str_starts_with($groupKey, 'ungrouped_') && $filtersInGroup->count() === 1) {
                     $filter = $filtersInGroup->first();
@@ -119,10 +121,17 @@ trait WithFilters
                 }
 
                 // For grouped filters, create a group structure
+                // Check if this group was created by a FiltersGroup instance
+                $groupLabel = $groupKey;
+                if (isset($filtersGroups[$groupKey])) {
+                    $filtersGroupInstance = $filtersGroups[$groupKey];
+                    $groupLabel = $filtersGroupInstance->getLabel(); // This returns null if hidden
+                }
+
                 return [
                     'name' => $groupKey,
                     'isGroup' => true,
-                    'groupLabel' => $groupKey,
+                    'groupLabel' => $groupLabel ?? '', // Use empty string if null (hidden)
                     'filters' => $filtersInGroup
                         ->map(function ($filter) {
                             $filterData = [

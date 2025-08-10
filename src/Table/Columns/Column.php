@@ -209,4 +209,36 @@ class Column
 
         return $item;
     }
+
+    /**
+     * Handle serialization - exclude callable properties
+     */
+    public function __sleep(): array
+    {
+        $properties = get_object_vars($this);
+        $serializable = [];
+
+        foreach ($properties as $key => $value) {
+            // Skip callable properties during serialization
+            if (! is_callable($value)) {
+                $serializable[] = $key;
+            }
+        }
+
+        return $serializable;
+    }
+
+    /**
+     * Handle unserialization - reset callable properties to null
+     */
+    public function __wakeup(): void
+    {
+        // Reset callable properties to null after unserialization
+        if (! isset($this->value) || is_callable($this->value)) {
+            $this->value = null;
+        }
+        if (! isset($this->description) || is_callable($this->description)) {
+            $this->description = null;
+        }
+    }
 }

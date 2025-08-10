@@ -42,6 +42,7 @@ exporting capabilities.
 | 1.10+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 | 1.11+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 | 1.12+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
+| 1.13+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
 
 ## Installation
 
@@ -407,7 +408,7 @@ Feel free to open issues or submit pull requests. Contributions are welcome!
 - [Caching](docs/caching.md)
 - [Pagination](docs/pagination.md)
 - [Actions](docs/actions.md)
-- [Filter Grouping](docs/filter-grouping.md)
+- [Filter Grouping](docs/filters-group-class.md)
 
 ## License
 

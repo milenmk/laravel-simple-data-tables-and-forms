@@ -177,6 +177,28 @@ Configure export functionality:
 ],
 ```
 
+### Filters Configuration
+
+Configure filter behavior and appearance
+
+```php
+'filters' => [
+        // Default number of columns for filter layout
+        'columns' => 6,
+
+        // Enable responsive filter columns
+        'responsive' => true,
+
+        // Responsive breakpoints for filter columns
+        'responsive_columns' => [
+            'sm' => 1, // 1 column on small screens
+            'md' => 2, // 2 columns on medium screens
+            'lg' => 4, // 4 columns on large screens
+            'xl' => 6, // 6 columns on extra large screens
+        ],
+    ],
+```
+
 ### Security Configuration
 
 Configure security settings:

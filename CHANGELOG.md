@@ -1,3 +1,10 @@
+## v1.13.1
+
+#### Published at: 2025-08-10
+
+- [FIX] Error `Serialization of 'Closure' is not allowed` when caching table columns
+- [NEW] Add filters grouping
+
 ## v1.13.0
 
 #### Published at: 2025-08-10

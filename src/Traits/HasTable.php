@@ -144,17 +144,35 @@ trait HasTable
         // Apply filters to query
         $this->applyFiltersToQuery($query);
 
-        // Cache the column configuration
-        $columns = $cacheService->remember('columns_' . $this->componentName, function () use ($table) {
-            return collect($table->getColumns())
-                ->map(function ($column) {
-                    $column->visible =
-                        $this->visibleColumns["{$this->componentName}.{$column->key}"] ?? $column->visible;
+        // Get original columns before caching
+        $originalColumns = $table->getColumns();
 
-                    return $column;
+        // Try to get cached column visibility data first
+        $cacheKey = 'column_visibility_' . $this->componentName;
+        $cachedVisibility = $cacheService->get($cacheKey);
+
+        if ($cachedVisibility === null) {
+            // Cache only the visibility data, not the Column objects
+            $cachedVisibility = collect($originalColumns)
+                ->mapWithKeys(function ($column) {
+                    return [
+                        $column->key => $this->visibleColumns["{$this->componentName}.{$column->key}"] ?? $column->visible,
+                    ];
                 })
                 ->toArray();
-        });
+
+            // Cache the visibility data (no objects, just simple array)
+            $cacheService->put($cacheKey, $cachedVisibility);
+        }
+
+        // Apply cached visibility to original columns
+        $columns = collect($originalColumns)
+            ->map(function ($column) use ($cachedVisibility) {
+                $column->visible = $cachedVisibility[$column->key] ?? $column->visible;
+
+                return $column;
+            })
+            ->toArray();
 
         // Ensure the query is paginated before passing it to the table
         $paginatedResults = $query->paginate($this->perPage);
@@ -185,6 +203,6 @@ trait HasTable
 
         // Clear the cache to ensure the updated visibility is reflected
         $cacheService = app(CacheService::class);
-        $cacheService->forget('columns_' . $this->componentName);
+        $cacheService->forget('column_visibility_' . $this->componentName);
     }
 }
