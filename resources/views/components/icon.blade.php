@@ -1,5 +1,5 @@
 @php
-    use Milenmk\LaravelSimpleDatatables\Icons\IconManager;
+    use Milenmk\LaravelSimpleDatatablesAndForms\Icons\IconManager;
     use Illuminate\Contracts\Support\Htmlable;
 @endphp
 
@@ -18,8 +18,7 @@
         {{ $icon }}
     </span>
 @elseif (str_contains($icon, '/'))
-    <img alt="{{ $icon ?? 'icon' }}" src="{{ $icon }}" {{ $attributes->merge(['class' => $class ]) }}
-    />
+    <img alt="{{ $icon ?? 'icon' }}" src="{{ $icon }}" {{ $attributes->merge(['class' => $class]) }} />
 @else
     @svg($icon, $class, array_filter($attributes->getAttributes()))
 @endif

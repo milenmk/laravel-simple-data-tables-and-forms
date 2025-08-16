@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Columns;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns;
 
 class TextColumn extends Column
 {
@@ -12,7 +12,7 @@ class TextColumn extends Column
     public int $decimalPlaces = 2;
     public string $dateFormat = 'Y-m-d H:i:s';
 
-    protected string $view = 'laravel-simple-datatables::components.table.columns.text';
+    protected string $view = 'laravel-simple-datatables-and-forms::components.table.columns.text';
 
     /**
      * Set the column to be numeric with a given number of decimal places.

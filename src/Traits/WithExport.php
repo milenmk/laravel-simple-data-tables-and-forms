@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Traits;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Traits;
 
 use Illuminate\Support\Facades\Config;
-use Milenmk\LaravelSimpleDatatables\Services\ExportService;
-use Milenmk\LaravelSimpleDatatables\Services\SearchService;
-use Milenmk\LaravelSimpleDatatables\Table\Table;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\ExportService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\SearchService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * @see \Milenmk\LaravelSimpleDatatables\Contracts\WithExportInterface
+ * @see \Milenmk\LaravelSimpleDatatablesAndForms\Contracts\WithExportInterface
  */
 trait WithExport
 {
@@ -21,16 +21,16 @@ trait WithExport
     public function export(string $format = 'csv'): ?StreamedResponse
     {
         // Check if export is enabled in config
-        if (! Config::get('simple-datatables.export.enable', true)) {
+        if (! Config::get('simple-datatables-and-forms.export.enable', true)) {
             return null;
         }
 
         // Get available export formats
-        $availableFormats = Config::get('simple-datatables.export.formats', ['csv', 'excel', 'pdf']);
+        $availableFormats = Config::get('simple-datatables-and-forms.export.formats', ['csv', 'excel', 'pdf']);
 
         // Validate format
         if (! in_array($format, $availableFormats)) {
-            $format = Config::get('simple-datatables.export.default_format', 'csv');
+            $format = Config::get('simple-datatables-and-forms.export.default_format', 'csv');
         }
 
         // Get export service
@@ -88,7 +88,7 @@ trait WithExport
     public function exportFilename(string $format): string
     {
         $timestamp = date('Y-m-d_H-i-s');
-        $prefix = Config::get('simple-datatables.export.filename_prefix', 'export');
+        $prefix = Config::get('simple-datatables-and-forms.export.filename_prefix', 'export');
         $componentName = class_basename($this);
 
         return "{$prefix}_{$componentName}_{$timestamp}.{$format}";

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Exceptions;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Exceptions;
 
 use Exception;
-use Milenmk\LaravelSimpleDatatables\Table\Filters\BaseFilter;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters\BaseFilter;
 
 class InvalidFilterTypeException extends Exception
 {

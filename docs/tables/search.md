@@ -1,22 +1,22 @@
 # Advanced Search
 
-Laravel Simple Datatables provides powerful search capabilities that can be customized to fit your needs.
+Laravel Simple Datatables And Forms provides powerful search capabilities that can be customized to fit your needs.
 
 ## Search Configuration
 
-You can configure search behavior in the `simple-datatables.php` configuration file:
+You can configure search behavior in the `simple-datatables-and-forms.php` configuration file:
 
 ```php
 'search' => [
     // Default search mode: 'like', 'exact', or 'fulltext'
     'default_mode' => 'like',
-    
+
     // Enable full-text search when available
     'enable_fulltext' => false,
-    
+
     // Minimum characters required to trigger search
     'min_characters' => 2,
-    
+
     // Debounce time in milliseconds
     'debounce_time' => 300,
 ],
@@ -26,7 +26,8 @@ You can configure search behavior in the `simple-datatables.php` configuration f
 
 ### LIKE Search
 
-The default search mode uses SQL `LIKE` queries with wildcards. This is compatible with all database systems but may be slower on large datasets.
+The default search mode uses SQL `LIKE` queries with wildcards. This is compatible with all database systems but may be
+slower on large datasets.
 
 ```php
 // Example of LIKE search in SQL
@@ -44,18 +45,25 @@ SELECT * FROM users WHERE name = 'John'
 
 ### Full-Text Search
 
-When enabled and supported by your database, full-text search provides the best performance for large datasets. It requires proper database configuration.
+When enabled and supported by your database, full-text search provides the best performance for large datasets. It
+requires proper database configuration.
 
 For MySQL:
+
 ```sql
 -- Create a FULLTEXT index
-ALTER TABLE users ADD FULLTEXT(name, email, description);
+ALTER TABLE users
+    ADD FULLTEXT (name, email, description);
 
 -- Then the search will use
-SELECT * FROM users WHERE MATCH(name, email, description) AGAINST('John' IN BOOLEAN MODE)
+SELECT *
+FROM users
+WHERE MATCH(name, email, description) AGAINST('John' IN BOOLEAN MODE)
 ```
 
-**Note about PostgreSQL Implementation**: While the documentation mentions PostgreSQL full-text search, the current implementation in `SearchService.php` does not actually use PostgreSQL's full-text search capabilities. Instead, it falls back to using `ILIKE` for PostgreSQL:
+**Note about PostgreSQL Implementation**: While the documentation mentions PostgreSQL full-text search, the current
+implementation in `SearchService.php` does not actually use PostgreSQL's full-text search capabilities. Instead, it
+falls back to using `ILIKE` for PostgreSQL:
 
 ```php
 // Current implementation for PostgreSQL in SearchService.php
@@ -71,12 +79,15 @@ To implement true PostgreSQL full-text search, you would need to modify the `Sea
 
 ```sql
 -- PostgreSQL true full-text search syntax
-SELECT * FROM users WHERE to_tsvector('english', name || ' ' || email || ' ' || description) @@ to_tsquery('english', 'John')
+SELECT *
+FROM users
+WHERE to_tsvector('english', name || ' ' || email || ' ' || description) @@ to_tsquery('english', 'John')
 ```
 
 ## Implementing Search in Your Components
 
-Search functionality is automatically included in components that use the `HasTable` trait. The search input will appear in the table header.
+Search functionality is automatically included in components that use the `HasTable` trait. The search input will appear
+in the table header.
 
 ### Customizing Search Behavior
 
@@ -120,10 +131,10 @@ public function table(Table $table): Table
         ->schema([
             TextColumn::make('name')
                 ->searchable(), // This column will be included in search
-                
+
             TextColumn::make('email')
                 ->searchable(), // This column will be included in search
-                
+
             TextColumn::make('created_at')
                 ->searchable(false), // This column will NOT be included in search
         ]);
@@ -135,14 +146,12 @@ public function table(Table $table): Table
 You can customize how each column is searched:
 
 ```php
-TextColumn::make('name')
-    ->searchable(true, function($query, $searchTerm) {
-        // Custom search logic
-        return $query->where(function($q) use ($searchTerm) {
-            $q->where('first_name', 'like', "%{$searchTerm}%")
-              ->orWhere('last_name', 'like', "%{$searchTerm}%");
-        });
-    })
+TextColumn::make('name')->searchable(true, function ($query, $searchTerm) {
+    // Custom search logic
+    return $query->where(function ($q) use ($searchTerm) {
+        $q->where('first_name', 'like', "%{$searchTerm}%")->orWhere('last_name', 'like', "%{$searchTerm}%");
+    });
+});
 ```
 
 ## Search Performance Tips
@@ -153,6 +162,7 @@ TextColumn::make('name')
 
 3. **Limit Searchable Columns**: Only make necessary columns searchable to improve performance.
 
-4. **Increase Minimum Characters**: Setting a higher minimum character count (3-4) can significantly reduce unnecessary searches.
+4. **Increase Minimum Characters**: Setting a higher minimum character count (3-4) can significantly reduce unnecessary
+   searches.
 
 5. **Adjust Debounce Time**: Increase the debounce time for slower databases or complex queries.

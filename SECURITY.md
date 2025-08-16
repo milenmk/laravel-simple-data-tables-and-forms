@@ -2,24 +2,40 @@
 
 ## Supported Versions
 
-| Version | Stage       | Environment      | Supported Until |
-| ------- | ----------- | ---------------- | --------------- |
-| 0.x.x   | Development | Internal Testing | not supported   |
-| 1.1.x   | Development | Internal Testing | not supported   |
-| 1.2.x   | Development | Internal Testing | not supported   |
-| 1.3.x   | Development | Internal Testing | not supported   |
-| 1.4.x   | Development | Internal Testing | not supported   |
-| 1.5.x   | Development | Internal Testing | not supported   |
-| 1.6.x   | Development | Internal Testing | not supported   |
-| 1.7.x   | Development | Internal Testing | not supported   |
-| 1.8.x   | Stable      | Production       | not supported   |
-| 1.9.x   | Stable      | Production       | not supported   |
-| 1.10.x  | Stable      | Production       | not supported   |
-| 1.11.x  | Stable      | Production       | TBD             |
-| 1.12.x  | Stable      | Production       | TBD             |
+| Version | Stage  | Environment | Supported Until |
+| ------- | ------ | ----------- | --------------- |
+| 0.x.x   | Alpha  | Development | not supported   |
+| 1.1.x   | Alpha  | Development | not supported   |
+| 1.2.x   | Alpha  | Development | not supported   |
+| 1.3.x   | Alpha  | Development | not supported   |
+| 1.4.x   | Alpha  | Development | not supported   |
+| 1.5.x   | Alpha  | Development | not supported   |
+| 1.6.x   | Alpha  | Development | not supported   |
+| 1.7.x   | Alpha  | Development | not supported   |
+| 1.8.x   | Stable | Production  | not supported   |
+| 1.9.x   | Stable | Production  | not supported   |
+| 1.10.x  | Stable | Production  | not supported   |
+| 1.11.x  | Stable | Production  | not supported   |
+| 1.12.x  | Stable | Production  | 30.08.2025      |
+| 1.13.x  | Stable | Production  | 30.10.2025      |
+| 2.0.x   | RC     | Beta        | 30.10.2025      |
 
-- Development: Used for features under development; not recommended for production.
-- Stable: Deployed to production for all users.
+#### Stage (maturity of the release)
+
+| Stage  | Environment              | Notes                                                  |
+| ------ | ------------------------ | ------------------------------------------------------ |
+| Alpha  | Development              | Experimental, incomplete, unstable.                    |
+| Beta   | Staging / Pre-production | Feature-complete but may have bugs.                    |
+| RC     | Staging / Public Testing | Final candidate for stable, should be almost bug-free. |
+| Stable | Production               | Official public release, fully supported.              |
+
+#### Environment (where it’s deployed / who can access it)
+
+- Development – Used for features under active development. Not recommended for production.
+- Staging – Mimics production, used for final checks before release.
+- Pre-production – Stable-like environment for early adopters or selected customers.
+- Public Testing – Available to the public for feedback (often open beta).
+- Production – Deployed for all end users.
 
 _Supported Until_ dates will be updated as the development lifecycle progresses.
 

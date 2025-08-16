@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Contracts;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\View;
-use Milenmk\LaravelSimpleDatatables\Table\Table;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 
 interface HasTableInterface
 {

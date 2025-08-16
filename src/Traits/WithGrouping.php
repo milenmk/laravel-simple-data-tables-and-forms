@@ -1,6 +1,8 @@
 <?php
 
-namespace Milenmk\LaravelSimpleDatatables\Traits;
+declare(strict_types=1);
+
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Traits;
 
 use Livewire\Attributes\On;
 

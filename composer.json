@@ -1,22 +1,22 @@
 {
-    "name": "milenmk/laravel-simple-datatables",
+    "name": "milenmk/laravel-simple-datatables-and-forms",
     "description": "Simple Table component to create datatables for Livewire components",
     "version": "1.13.1",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Milenmk\\LaravelSimpleDatatables\\": "src/"
+            "Milenmk\\LaravelSimpleDatatablesAndForms\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Milenmk\\LaravelSimpleDatatables\\Tests\\": "tests/"
+            "Milenmk\\LaravelSimpleDatatablesAndForms\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Milenmk\\LaravelSimpleDatatables\\LaravelSimpleDatatablesServiceProvider"
+                "Milenmk\\LaravelSimpleDatatablesAndForms\\LaravelSimpleDatatablesAndFormsServiceProvider"
             ]
         }
     },
@@ -29,7 +29,7 @@
     "repository": [
         {
             "type": "git",
-            "url": "https://github.com/milenmk/laravel-simple-datatables.git"
+            "url": "https://github.com/milenmk/laravel-simple-datatables-and-forms.git"
         }
     ],
     "require": {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Traits;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Traits;
 
 use Illuminate\Support\Facades\Config;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 
 /**
- * @see \Milenmk\LaravelSimpleDatatables\Contracts\WithSearchInterface
+ * @see \Milenmk\LaravelSimpleDatatablesAndForms\Contracts\WithSearchInterface
  */
 trait WithSearch
 {
@@ -28,7 +28,7 @@ trait WithSearch
     {
         // Set default search mode from config if not already set
         if (empty($this->searchMode)) {
-            $this->searchMode = Config::get('simple-datatables.search.default_mode', 'like');
+            $this->searchMode = Config::get('simple-datatables-and-forms.search.default_mode', 'like');
         }
     }
 
@@ -40,7 +40,7 @@ trait WithSearch
     public function updatedSearch(): void
     {
         // Get minimum characters required from config
-        $minChars = Config::get('simple-datatables.search.min_characters', 2);
+        $minChars = Config::get('simple-datatables-and-forms.search.min_characters', 2);
 
         // Only reset page if search meets minimum character requirement or is empty
         if (strlen($this->search) >= $minChars || empty($this->search)) {
@@ -67,7 +67,7 @@ trait WithSearch
     #[Computed]
     public function searchDebounceTime(): int
     {
-        return Config::get('simple-datatables.search.debounce_time', 300);
+        return Config::get('simple-datatables-and-forms.search.debounce_time', 300);
     }
 
     /**
@@ -76,6 +76,6 @@ trait WithSearch
     #[Computed]
     public function searchMinCharacters(): int
     {
-        return Config::get('simple-datatables.search.min_characters', 2);
+        return Config::get('simple-datatables-and-forms.search.min_characters', 2);
     }
 }

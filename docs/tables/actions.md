@@ -1,6 +1,7 @@
 ## Table Actions
 
-Laravel Simple Datatables provides a flexible action system that allows you to add interactive buttons to your tables.
+Laravel Simple Datatables And Forms provides a flexible action system that allows you to add interactive buttons to your
+tables.
 These actions can either navigate to URLs or trigger Livewire methods in your component.
 
 ## Basic Usage
@@ -8,10 +9,10 @@ These actions can either navigate to URLs or trigger Livewire methods in your co
 Actions are typically added to tables using the `ActionColumn` class:
 
 ```php
-use Milenmk\LaravelSimpleDatatables\Table\Columns\ActionColumn;
-use Milenmk\LaravelSimpleDatatables\Table\Actions\EditAction;
-use Milenmk\LaravelSimpleDatatables\Table\Actions\DeleteAction;
-use Milenmk\LaravelSimpleDatatables\Table\Actions\ViewAction;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\ActionColumn;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\EditAction;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\DeleteAction;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\ViewAction;
 
 public function table(Table $table): Table
 {
@@ -173,7 +174,7 @@ ActionColumn::make('actions')->actions([
 You can create custom actions by extending the `BaseAction` class:
 
 ```php
-use Milenmk\LaravelSimpleDatatables\Table\Actions\BaseAction;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\BaseAction;
 
 class ArchiveAction extends BaseAction
 {
@@ -216,10 +217,10 @@ Here's a complete example of implementing CRUD actions in a table:
 
 ```php
 // In your Livewire component
-use Milenmk\LaravelSimpleDatatables\Table\Columns\ActionColumn;
-use Milenmk\LaravelSimpleDatatables\Table\Actions\EditAction;
-use Milenmk\LaravelSimpleDatatables\Table\Actions\DeleteAction;
-use Milenmk\LaravelSimpleDatatables\Table\Actions\ViewAction;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\ActionColumn;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\EditAction;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\DeleteAction;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\ViewAction;
 
 public function table(Table $table): Table
 {

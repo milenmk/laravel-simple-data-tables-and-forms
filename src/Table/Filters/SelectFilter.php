@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Filters;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\View as FacadesView;
 use Illuminate\View\View;
-use Milenmk\LaravelSimpleDatatables\Exceptions\FilterConfigurationException;
+use Milenmk\LaravelSimpleDatatablesAndForms\Exceptions\FilterConfigurationException;
 
 class SelectFilter extends BaseFilter
 {
@@ -76,7 +75,7 @@ class SelectFilter extends BaseFilter
 
     public function render(): View
     {
-        return FacadesView::make('laravel-simple-datatables::components.table.filters.select', ['filter' => $this]);
+        return view('laravel-simple-datatables-and-forms::components.table.filters.select', ['filter' => $this]);
     }
 
     public function getOptions(): array

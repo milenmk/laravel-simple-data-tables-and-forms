@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Icons;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Icons;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;

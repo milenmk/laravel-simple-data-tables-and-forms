@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Filters;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters;
 
 use Closure;
-use Illuminate\Support\Facades\View as FacadesView;
 use Illuminate\View\View;
 
 class Filter extends BaseFilter
@@ -34,6 +33,6 @@ class Filter extends BaseFilter
 
     public function render(): View
     {
-        return FacadesView::make('laravel-simple-datatables::components.table.filters.ternary', ['filter' => $this]);
+        return view('laravel-simple-datatables-and-forms::components.table.filters.ternary', ['filter' => $this]);
     }
 }

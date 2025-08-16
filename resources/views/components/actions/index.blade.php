@@ -362,5 +362,5 @@
     @endif
 
     <!-- Confirmation Modal -->
-    <x-laravel-simple-datatables::actions.confirmation-modal />
+    <x-laravel-simple-datatables-and-forms::actions.confirmation-modal />
 </div>

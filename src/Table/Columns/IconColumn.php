@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Columns;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns;
 
 use Closure;
-use Milenmk\LaravelSimpleDatatables\Table\Columns\IconColumn\IconColumnSize;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\IconColumn\IconColumnSize;
 
 class IconColumn extends Column
 {
-    protected string $view = 'laravel-simple-datatables::components.table.columns.icon-column';
+    protected string $view = 'laravel-simple-datatables-and-forms::components.table.columns.icon-column';
 
     protected bool|Closure|null $isBoolean = null;
 

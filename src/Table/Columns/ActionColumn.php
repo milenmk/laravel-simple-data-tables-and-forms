@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Columns;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns;
 
 class ActionColumn extends Column
 {
@@ -11,7 +11,7 @@ class ActionColumn extends Column
     protected array $actions = [];
     protected ?string $actionView = null;
 
-    protected string $view = 'laravel-simple-datatables::components.table.columns.action';
+    protected string $view = 'laravel-simple-datatables-and-forms::components.table.columns.action';
 
     public function actions(array $actions): static
     {

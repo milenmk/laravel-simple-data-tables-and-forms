@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Services;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Services;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
-use Milenmk\LaravelSimpleDatatables\Table\Table;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -23,8 +23,7 @@ class ExportService
     {
         return match ($format) {
             'xls', 'xlsx', 'excel' => class_exists('\PhpOffice\PhpSpreadsheet\Spreadsheet'),
-            'pdf' => class_exists('\Barryvdh\DomPDF\Facade\Pdf'),
-            'csv' => true, // CSV doesn't require external packages
+            'pdf' => class_exists('\Barryvdh\DomPDF\Facade\Pdf'), // CSV doesn't require external packages
             default => true,
         };
     }
@@ -84,7 +83,7 @@ class ExportService
         }
 
         // Add data
-        $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
+        $maxRows = Config::get('simple-datatables-and-forms.export.max_rows', 10000);
         $rowIndex = 2; // Start from row 2 (after headers)
         $count = 0;
 
@@ -141,7 +140,7 @@ class ExportService
                 fputcsv($handle, $headers);
 
                 // Add data in chunks to avoid memory issues
-                $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
+                $maxRows = Config::get('simple-datatables-and-forms.export.max_rows', 10000);
                 $count = 0;
 
                 $query->chunk(100, function (Collection $chunk) use ($handle, $keys, &$count, $maxRows) {
@@ -201,7 +200,7 @@ class ExportService
         }
 
         // Add data
-        $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
+        $maxRows = Config::get('simple-datatables-and-forms.export.max_rows', 10000);
         $rowIndex = 2; // Start from row 2 (after headers)
         $count = 0;
 
@@ -258,7 +257,7 @@ class ExportService
 
         // Prepare data for PDF
         $data = [];
-        $maxRows = Config::get('simple-datatables.export.max_rows', 10000);
+        $maxRows = Config::get('simple-datatables-and-forms.export.max_rows', 10000);
         $count = 0;
 
         $query->chunk(100, function (Collection $chunk) use (&$data, $keys, &$count, $maxRows) {
@@ -280,7 +279,7 @@ class ExportService
 
         // Generate PDF
         $pdf = app('dompdf.wrapper');
-        $pdf->loadView('laravel-simple-datatables::exports.pdf', [
+        $pdf->loadView('laravel-simple-datatables-and-forms::exports.pdf', [
             'headers' => $headers,
             'data' => $data,
             'title' => 'Data Export',
@@ -313,7 +312,7 @@ class ExportService
     protected function getExportFilename(string $extension): string
     {
         $timestamp = date('Y-m-d_H-i-s');
-        $prefix = Config::get('simple-datatables.export.filename_prefix', 'export');
+        $prefix = Config::get('simple-datatables-and-forms.export.filename_prefix', 'export');
 
         return "{$prefix}_{$timestamp}.{$extension}";
     }

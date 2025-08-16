@@ -1,29 +1,37 @@
-# Laravel Simple Datatables
+# Laravel Simple Datatables And Forms
 
-A lightweight, easy-to-use Laravel package for creating interactive data tables with sorting, filtering, searching, and
-exporting capabilities.
+A lightweight, easy-to-use Laravel package for creating interactive data tables and dynamic forms with Livewire
+integration.
 
 ![Screenshot](resources/img/light.png)
 ![Screenshot](resources/img/dark.png)
 
-## Features
+## Overview
 
-### Data Tables
+Laravel Simple Datatables And Forms provides two powerful components for your Laravel applications:
 
-- 🔍 Advanced search with debouncing and minimum character requirements
-- 🔄 Column sorting
-- 🧹 Filtering with multiple filter types and grouping
-- 📊 Data grouping
-- 📱 Responsive design
-- 🎨 Customizable appearance
-- 📤 Export to CSV, Excel, and PDF
-- 🔘 Flexible actions with support for both URL links and Livewire methods
+### 📊 Data Tables
 
-### General
+Create interactive, feature-rich data tables with minimal code. Includes advanced search, sorting, filtering, grouping,
+and export capabilities.
 
-- 🔒 Security features with CSRF protection and input sanitization
-- ⚡ Performance optimizations with caching
-- 🧩 Seamless Livewire integration
+### 📝 Dynamic Forms
+
+Build dynamic forms with fluent API, multiple field types, validation, and model binding support.
+
+## Key Features
+
+- 🔍 **Advanced Search** - Debounced search with minimum character requirements
+- 🔄 **Column Sorting** - Click-to-sort functionality for table columns
+- 🧹 **Filtering & Grouping** - Multiple filter types with advanced grouping options
+- 📤 **Data Export** - Export to CSV, Excel, and PDF formats
+- 📝 **Dynamic Forms** - Fluent features for building complex forms
+- 🔧 **Multiple Field Types** - Input, Select, Checkbox, Toggle, Textarea, and more
+- ✅ **Validation Integration** - Built-in Laravel validation support
+- 📱 **Responsive Design** - Mobile-friendly components
+- ⚡ **Performance Optimized** - Intelligent caching and query optimization
+- 🔒 **Security Features** - CSRF protection and input sanitization
+- 🧩 **Seamless Livewire Integration** - Built specifically for Livewire 3.x
 
 ## Requirements
 
@@ -31,65 +39,122 @@ exporting capabilities.
 - Laravel 10.x or higher (compatible with Laravel 11.x and 12.x)
 - Livewire 3.x or higher
 
-### Version Compatibility
+## Quick Start
 
-| Laravel Simple Datatables | PHP                  | Laravel                 | Livewire |
-| ------------------------- | -------------------- | ----------------------- | -------- |
-| 1.x                       | ^8.2                 | ^10.0                   | ^3.0     |
-| 1.7+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
-| 1.8+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
-| 1.9+                      | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
-| 1.10+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
-| 1.11+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
-| 1.12+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
-| 1.13+                     | ^8.2 \| ^8.3 \| ^8.4 | ^10.0 \| ^11.0 \| ^12.0 | ^3.0     |
+### Installation
 
-## Installation
-
-You can install the package via composer:
-
-```
-composer require milenmk/laravel-simple-datatables
+```bash
+composer require milenmk/laravel-simple-datatables-and-forms
 ```
 
-## Publishing Assets
+### Publish Configurations
 
-Publish the package assets:
-
-```
-php artisan simple-datatables:publish-assets
+```bash
+php artisan vendor:publish --tag=laravel-simple-datatables-and-forms-config
 ```
 
-Optionally, you can publish the configuration file:
+### Publish Assets
 
+```bash
+php artisan simple-datatables-and-forms:publish-assets
 ```
-php artisan vendor:publish --tag=laravel-simple-datatables-config
-```
 
-## Including Assets
-
-Add the following directives to your layout file:
+### Include Assets in Your Layout
 
 ```blade
 <head>
-    <!-- Other head elements -->
     @SimpleDatatablesStyle
 </head>
-
 <body>
     <!-- Your content -->
-
-    <!-- Scripts -->
     @SimpleDatatablesScript
 </body>
 ```
 
-### Tailwind CSS Integration
+### Create Your First Data Table
 
-As an alternative to the assets publishing command, you can copy the content from
-`/vendor/milenmk/laravel-simple-datatables/resources/css/package.css` to your `app.css` file. Then:
+Generate a table component:
 
-### For Tailwind CSS
+```bash
+php artisan make:milenmk-datatable UserList User --generate
+```
+
+Or create manually:
+
+```php
+use Milenmk\LaravelSimpleDatatablesAndForms\Traits\HasTable;
+
+class UserList extends Component
+{
+    use HasTable;
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->query(User::query())
+            ->schema([
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('email')->searchable(),
+                ToggleColumn::make('is_active')->label('Active'),
+            ])
+            ->striped()
+            ->paginate();
+    }
+}
+```
+
+### Create Your First Form
+
+Generate a form component:
+
+```bash
+php artisan make:milenmk-form CreateUser User --generate
+```
+
+Or create manually:
+
+```php
+use Milenmk\LaravelSimpleDatatablesAndForms\Traits\HasForm;
+
+class CreateUser extends Component
+{
+    use HasForm;
+
+    public function form(Form $form): Form
+    {
+        return $form->model(User::class)->schema([
+            InputField::make('name')->required(),
+            InputField::make('email')->email()->required(),
+            SelectField::make('role')
+                ->options(['admin' => 'Admin', 'user' => 'User'])
+                ->required(),
+        ]);
+    }
+}
+```
+
+## Documentation
+
+### 📚 Complete Documentation
+
+- **[Documentation Hub](docs/README.md)** - Complete documentation index and navigation guide
+- **[Troubleshooting Guide](docs/troubleshooting.md)** - Common issues and solutions
+
+### 📊 Data Tables Documentation
+
+- **[Getting Started](docs/tables/getting-started.md)** - Quick start guide for tables
+- **[Column Types](docs/tables/column-types.md)** - Complete reference for all column types
+- **[Configuration](docs/tables/configuration.md)** - Configuration guide and options
+- **[Advanced Features](docs/tables/search.md)** - Search, filtering, export, and caching
+
+### 📝 Forms Documentation
+
+- **[Getting Started](docs/forms/getting-started.md)** - Quick start guide for forms
+- **[Field Types](docs/forms/field-types.md)** - Complete reference for all field types
+- **[Validation](docs/forms/validation.md)** - Validation rules and techniques
+- **[Advanced Features](docs/forms/model-binding.md)** - Model binding and relationships
+
+## Tailwind CSS Integration
 
 Add the package views to your Tailwind configuration:
 
@@ -98,318 +163,34 @@ Add the package views to your Tailwind configuration:
 module.exports = {
     content: [
         // ... your existing content paths
-        './vendor/milenmk/laravel-simple-datatables/resources/views/**/*.blade.php',
+        './vendor/milenmk/laravel-simple-datatables-and-forms/resources/views/**/*.blade.php',
     ],
     // ... rest of your configuration
 };
 ```
-
-### Editing assets
-
-If you want to edit the view files, run:
-
-```
-php artisan vendor:publish --tag="laravel-simple-datatables-views"
-```
-
-The view files are now available in `/resources/views/vendor/laravel-simple-datatables`
-
-To make the classes in the package view files discovered when running `npm run dev` or `npm run build`, add the
-published views path to your Tailwind configuration:
-
-```js
-// tailwind.config.js
-module.exports = {
-    content: [
-        // ... your existing content paths
-        './resources/views/vendor/laravel-simple-datatables/**/*.blade.php',
-    ],
-    // ... rest of your configuration
-};
-```
-
-## Usage
-
-### Data Tables
-
-#### Using a command
-
-1. Run `php artisan make:milenmk-datatable PostList Post` where `PostList` is the name of the Livewire component that
-   will be created and `Post` is the name of the model.
-
-2. If you want to generate the columns for the model properties you add `--generate` at the end of the command
-
-3. The command will create a component in `App\Livewire` and a view file in `resources/views/livewire`
-
-#### Manual
-
-1. In you Livewire component add the package trait `use HasTable;`
-2. Define your table fields like:
-
-```
-public function table(Table $table): Table
-    {
-        return $table
-            ->query(Menu::query())
-            ->schema([
-                TextColumn::make('name')
-                    ->label('Name')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('route_name')
-                    ->label('Route')
-                    ->sortable(),
-                TextColumn::make('parent_menu_id')->label('Parent ID'),
-                TextColumn::make('type')->label('Type'),
-                TextColumn::make('icon')->label('Icon'),
-                TextColumn::make('position')
-                    ->label('Position')
-                    ->align('center')
-                    ->headerAlign('center'),
-                ToggleColumn::make('is_admin_menu')->label('Is Admin Menu'),
-                IconColumn::make('is_admin_menu')->boolean(),
-                ActionColumn::make('actions')
-                ->label('Actions')
-                ->actions([
-                    EditAction::make('edit')
-                      ->label('Edit')
-                      ->icon('pencil')
-                      ->url(fn($row) => route('users.edit', $row)),
-                    DeleteAction::make('delete')
-                      ->label('Delete')
-                      ->icon('trash')
-                      ->action('deleteRecord'),
-                ]),
-            ])
-            ->striped();
-    }
-```
-
-3. In the view file of the Livewire component add `{{ $this->table }}` to render the table
-
-## Advanced Usage
-
-### Adding Filters
-
-```php
-use Milenmk\LaravelSimpleDatatables\Table\Filters\SelectFilter;
-use Milenmk\LaravelSimpleDatatables\Table\Filters\DateFilter;
-
-public function table(Table $table): Table
-{
-    return $table
-        ->query(User::query())
-        ->heading('Users')
-        ->striped()
-        ->schema([
-            // Columns...
-        ])
-        ->filters([
-            SelectFilter::make('role')
-                ->options([
-                    'admin' => 'Admin',
-                    'user' => 'User',
-                ])
-                ->label('Role'),
-
-            DateFilter::make('created_at')
-                ->label('Created Date'),
-        ]);
-}
-```
-
-### Grouping Data
-
-```php
-use Milenmk\LaravelSimpleDatatables\Table\Group;
-
-public function table(Table $table): Table
-{
-    return $table
-        ->query(User::query())
-        ->heading('Users')
-        ->schema([
-            // Columns...
-        ])
-        ->groups([
-            Group::make('role')
-                ->label('Role'),
-        ]);
-}
-```
-
-### Exporting Data
-
-The export functionality is automatically included when you use the `HasTable` trait. Users can export data to CSV,
-Excel, or PDF formats.
-
-### Available Columns
-
-- **TextColumn**: Displays text content with optional formatting
-
-    ```php
-    TextColumn::make('name')->label('Full Name')->searchable()->sortable();
-    ```
-
-- **ToggleColumn**: Creates a toggle switch for boolean values
-
-    ```php
-    ToggleColumn::make('is_active')->label('Active Status');
-    ```
-
-- **CheckBoxColumn**: Creates a checkbox for selection
-
-    ```php
-    CheckBoxColumn::make('selected')->label('Select');
-    ```
-
-- **ProgressColumn**: Displays a progress bar
-
-    ```php
-    ProgressColumn::make('completion')->label('Progress')->min(0)->max(100)->color('primary'); // primary, success, warning, danger
-    ```
-
-- **IconColumn**: Displays an icon, useful for boolean states
-
-    ```php
-    IconColumn::make('is_verified')
-        ->boolean() // Shows check or x icon based on value
-        ->label('Verified');
-    ```
-
-- **ActionColumn**: Displays action buttons with support for both URL links and Livewire actions
-
-    ```php
-    ActionColumn::make('actions')
-        ->label('Actions')
-        ->actions([
-            // URL-based action (opens a new page)
-            EditAction::make('edit')->label('Edit')->icon('pencil')->url(fn($row) => route('users.edit', $row)),
-
-            // Livewire action (calls a method in your component)
-            DeleteAction::make('delete')->label('Delete')->icon('trash')->action('deleteRecord'),
-        ]);
-    ```
-
-### Column Options/Settings
-
-- `label` (string|array|callable) - The column header label
-- `value` (callable) - Custom value for the column
-    ```php
-    TextColumn::make('full_name')->value(fn($row) => $row->first_name . ' ' . $row->last_name);
-    ```
-- `color` (string) - Text color using Tailwind classes (e.g., text-gray-500, text-primary, text-danger)
-- `background` (string) - Background color using Tailwind classes (e.g., bg-gray-500, bg-danger)
-- `visible` (bool) - Whether the column is visible (default: true)
-- `weight` (string) - Font weight of the text (e.g., font-bold, font-thin, font-medium)
-- `wrap` (bool) - Whether text should wrap (default: true)
-- `description` (string|callable) - Additional description text shown below the main content
-- `align` (string) - Content alignment: 'left', 'center', 'right' (default: 'left')
-- `headerAlign` (string) - Header alignment: 'left', 'center', 'right' (default: 'left')
-- `model` (string) - Custom wire:model name (default is the column key)
-- `searchable` (bool) - Whether the column is searchable (default: false)
-- `sortable` (bool) - Whether the column is sortable (default: false)
-- `format` (callable) - Format the value before display
-    ```php
-    TextColumn::make('created_at')->format(fn($value) => $value->format('Y-m-d H:i'));
-    ```
-- `tooltip` (string|callable) - Add a tooltip to the column
-- `hidden` (bool) - Hide the column but keep it available for export (default: false)
-- `exportOnly` (bool) - Only include this column in exports (default: false)
-
-    #### Icon Column options
-
-    ```php
-    //Change both default color and icon
-    IconColumn::make('status')
-        ->boolean()
-        ->label('Status')
-        ->true('icon', 'color')
-        ->false('icon', 'color')
-
-    // Change only the icon
-    IconColumn::make('status')
-        ->boolean()
-        ->label('Status')
-        ->trueIcon('icon')
-        ->falseIcon('icon')
-
-    // Change only the color
-    IconColumn::make('status')
-        ->boolean()
-        ->label('Status')
-        ->trueColor('color')
-        ->falseColor('color')
-    ```
-
-    #### Action Column options
-
-    ```php
-    // To group the action in a dropdown use groupActions()
-    ActionColumn::make('actions')->groupActions();
-
-    // Action styles: 'icon', 'badge', 'button', or default (text link)
-    ActionColumn::make('actions')
-        ->actions([
-            EditAction::make('edit')->actionView('icon'),
-            DeleteAction::make('delete')->actionView('badge'),
-            ViewAction::make('view')->actionView('button'),
-        ]);
-
-    // Handling Livewire actions
-    ActionColumn::make('actions')
-        ->actions([
-            DeleteAction::make('delete')
-                ->action('deleteRecord') // This will call the deleteRecord method in your Livewire component
-                ->icon('trash')
-                ->actionView('icon'),
-        ]);
-
-    // In your Livewire component, implement the action method:
-    public function deleteRecord($id)
-    {
-        // $id is the ID of the record to delete
-        $record = YourModel::find($id);
-        if ($record) {
-            $record->delete();
-            $this->notification()->success('Record deleted successfully');
-        }
-    }
-    ```
-
-## DISCLAIMER
-
-This package is provided ”as is”, without warranty of any kind, either express or implied, including but not limited to
-the warranties of merchantability, fitness for a particular
-purpose, or noninfringement.
-
-The author(s) make no representations or warranties regarding the accuracy, reliability or completeness of the code or
-its suitability for any specific use case. It is recommended
-that you thoroughly test this package in your environment before deploying it to production.
-
-By using this package, you acknowledge and agree that the author(s) shall not be held liable for any damages, losses or
-other issues arising from the use of this software.
 
 ## Contributing
 
-You can review the source code, report bugs, or contribute to the project by visiting the GitHub repository:
+Contributions are welcome! Please visit
+our [GitHub repository](https://github.com/milenmk/laravel-simple-datatables-and-forms) to:
 
-[GitHub Repository](https://github.com/milenmk/laravel-simple-datatables)
+- Report bugs or request features
+- Submit pull requests
+- Browse existing issues
+- Join discussions
 
-Feel free to open issues or submit pull requests. Contributions are welcome!
+## Support
 
-## Documentation
-
-### Data Tables
-
-- [Configuration](docs/configuration.md)
-- [Search](docs/search.md)
-- [Export](docs/export.md)
-- [Caching](docs/caching.md)
-- [Pagination](docs/pagination.md)
-- [Actions](docs/actions.md)
-- [Filter Grouping](docs/filters-group-class.md)
+- **[Documentation](docs/README.md)** - Comprehensive guides and examples
+- **[GitHub Issues](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues)** - Bug reports and feature
+  requests
+- **[Email Support](mailto:support@minkov.dev)** - Direct support for complex issues
 
 ## License
 
 This package is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Disclaimer
+
+This package is provided "as is", without warranty of any kind. Please thoroughly test in your environment before
+deploying to production.

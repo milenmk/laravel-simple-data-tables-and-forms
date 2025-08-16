@@ -137,7 +137,7 @@
     @apply w-full;
 }
 
-/* tables */
+/* Table */
 .table-responsive {
     @apply overflow-auto;
 }
@@ -201,6 +201,152 @@ table.dataTable-table tbody tr:last-child td {
     background-color: rgb(67 97 238 / var(--tw-bg-opacity, 1));
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+/* Form */
+.form-input,
+.form-textarea,
+.form-select,
+.form-multiselect {
+    @apply focus:border-primary dark:text-white-dark dark:focus:border-primary w-full rounded-md border border-[#e0e6ed] bg-white px-4 py-2 text-sm font-semibold text-black !outline-none focus:ring-transparent dark:border-[#17263c] dark:bg-[#121e32];
+}
+
+.form-input-lg,
+.form-textarea-lg,
+.form-select-lg,
+.form-multiselect-lg {
+    @apply py-2.5 text-base;
+}
+
+.form-input-sm,
+.form-textarea-sm,
+.form-select-sm,
+.form-multiselect-sm {
+    @apply py-1.5 text-xs;
+}
+
+label {
+    @apply mb-1.5 block font-semibold;
+}
+
+.has-error .form-input,
+.has-error .form-textarea,
+.has-error .form-select,
+.has-error .form-multiselect,
+.has-error .multiselect__tags {
+    @apply border-danger bg-danger/[0.08] text-danger placeholder-danger/70 focus:border-danger;
+}
+
+.has-error .form-label,
+.has-error .form-help,
+.has-error .form-icon,
+.has-error .multiselect__placeholder {
+    @apply text-danger;
+}
+
+.has-error .multiselect__input {
+    @apply !placeholder-danger/70 bg-[#F7ECF0];
+}
+
+.has-error .multiselect__tags:hover,
+.has-error .form-checkbox {
+    @apply border-danger;
+}
+
+.has-success .form-input,
+.has-success .form-textarea,
+.has-success .form-select,
+.has-success .form-multiselect,
+.has-success .multiselect__tags {
+    @apply border-success bg-success/[0.08] text-success placeholder-success/70 focus:border-success;
+}
+
+.has-success .form-label,
+.has-success .form-help,
+.has-success .form-icon,
+.has-success .multiselect__placeholder {
+    @apply text-success;
+}
+
+.has-success .multiselect__input {
+    @apply !placeholder-success/70 bg-[#F7ECF0];
+}
+
+.has-success .multiselect__tags:hover {
+    @apply border-success;
+}
+
+/* checkbox & radio */
+.form-radio,
+.form-checkbox {
+    @apply text-primary h-5 w-5 cursor-pointer rounded border-2 border-[#e0e6ed] bg-transparent !shadow-none !ring-0 !ring-offset-0 !outline-none checked:bg-[length:90%_90%] disabled:cursor-not-allowed disabled:bg-[#eee] ltr:mr-1.5 rtl:ml-1.5 dark:border-[#253b5c] dark:checked:border-transparent dark:disabled:bg-[#1b2e4b];
+}
+
+.form-checkbox.outline-primary:checked {
+    @apply border-primary bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%234361ee' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+}
+
+.form-checkbox.outline-secondary:checked {
+    @apply border-secondary bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23805dca' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+}
+
+.form-checkbox.outline-success:checked {
+    @apply border-success bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%2300ab55' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+}
+
+.form-checkbox.outline-danger:checked {
+    @apply border-danger bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23e7515a' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+}
+
+.form-checkbox.outline-warning:checked {
+    @apply border-warning bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23e2a03f' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+}
+
+.form-checkbox.outline-info:checked {
+    @apply border-info bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%232196f3' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+}
+
+.form-checkbox.outline-dark:checked {
+    @apply border-dark bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%233b3f5c' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+}
+
+.form-radio {
+    @apply rounded-full;
+}
+
+.form-radio.outline-primary:checked {
+    @apply border-primary bg-transparent bg-none;
+}
+
+.form-radio.outline-secondary:checked {
+    @apply border-secondary bg-transparent bg-none;
+}
+
+.form-radio.outline-success:checked {
+    @apply border-success bg-transparent bg-none;
+}
+
+.form-radio.outline-danger:checked {
+    @apply border-danger bg-transparent bg-none;
+}
+
+.form-radio.outline-warning:checked {
+    @apply border-warning bg-transparent bg-none;
+}
+
+.form-radio.outline-info:checked {
+    @apply border-info bg-transparent bg-none;
+}
+
+.form-radio.outline-dark:checked {
+    @apply border-dark bg-transparent bg-none;
 }
 
 /* Buttons */
@@ -302,4 +448,613 @@ button {
 
 .grid-cols-6 {
     grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.space-y-2 & > :not(:last-child) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
+}
+
+.space-y-3 & > :not(:last-child) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
+}
+
+.space-y-4 & > :not(:last-child) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
+}
+
+.space-y-5 & > :not(:last-child) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 5) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 5) * calc(1 - var(--tw-space-y-reverse)));
+}
+
+.space-y-6 & > :not(:last-child) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));
+}
+
+/* Form */
+.form-container {
+    @apply rounded-lg bg-white p-6 shadow;
+}
+
+.form-container.dark {
+    @apply bg-gray-800 text-white;
+}
+
+.form-field {
+    @apply mb-4;
+}
+
+.field-label {
+    @apply mb-2 block text-sm font-medium text-gray-700;
+}
+
+.dark .field-label {
+    @apply text-gray-300;
+}
+
+.field-input {
+    @apply w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+}
+
+.dark .field-input {
+    @apply border-gray-600 bg-gray-700 text-white placeholder-gray-400;
+}
+
+.field-helper-text {
+    @apply mt-1 text-sm text-gray-500;
+}
+
+.dark .field-helper-text {
+    @apply text-gray-400;
+}
+
+.field-error {
+    @apply mt-1 text-sm text-red-600;
+}
+
+.dark .field-error {
+    @apply text-red-400;
+}
+
+/* Form Field Wrappers */
+.form-field-wrapper {
+    @apply mb-6;
+}
+
+.form-field-wrapper.has-error .form-label {
+    @apply text-danger;
+}
+
+/* Form Sections */
+.form-section {
+    @apply mb-8 rounded-lg border border-[#e0e6ed] bg-white p-6 dark:border-[#17263c] dark:bg-[#121e32];
+}
+
+.form-section-header {
+    @apply mb-4 flex items-center justify-between border-b border-[#e0e6ed] pb-4 dark:border-[#17263c];
+}
+
+.form-section-title {
+    @apply text-lg font-semibold text-gray-900 dark:text-white;
+}
+
+.form-section-description {
+    @apply dark:text-white-dark mt-1 text-sm text-gray-600;
+}
+
+.form-section-content {
+    @apply space-y-4;
+}
+
+.form-section.collapsible .form-section-header {
+    @apply cursor-pointer;
+}
+
+.form-section.aside {
+    @apply bg-gray-50 dark:bg-[#1a2941];
+}
+
+.form-section.compact {
+    @apply mb-4 p-4;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    @apply relative inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch.sm {
+    width: 40px;
+    height: 20px;
+}
+
+.toggle-switch.lg {
+    width: 60px;
+    height: 28px;
+}
+
+.toggle-input {
+    @apply h-0 w-0 opacity-0;
+}
+
+.toggle-slider {
+    @apply absolute top-0 right-0 bottom-0 left-0 cursor-pointer rounded-full bg-gray-300 transition-colors duration-300 dark:bg-gray-600;
+}
+
+.toggle-slider:before {
+    @apply absolute rounded-full bg-white transition-transform duration-300 content-[''];
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+}
+
+.toggle-switch.sm .toggle-slider:before {
+    height: 14px;
+    width: 14px;
+}
+
+.toggle-switch.lg .toggle-slider:before {
+    height: 22px;
+    width: 22px;
+}
+
+.toggle-input:checked + .toggle-slider {
+    @apply bg-primary;
+}
+
+.toggle-input:checked + .toggle-slider.primary {
+    @apply bg-primary;
+}
+
+.toggle-input:checked + .toggle-slider.green {
+    @apply bg-success;
+}
+
+.toggle-input:checked + .toggle-slider.red {
+    @apply bg-danger;
+}
+
+.toggle-input:checked + .toggle-slider.blue {
+    @apply bg-info;
+}
+
+.toggle-input:focus + .toggle-slider {
+    @apply ring-primary/20 ring-2;
+}
+
+.toggle-input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.toggle-switch.sm .toggle-input:checked + .toggle-slider:before {
+    transform: translateX(18px);
+}
+
+.toggle-switch.lg .toggle-input:checked + .toggle-slider:before {
+    transform: translateX(30px);
+}
+
+.toggle-labels {
+    @apply dark:text-white-dark mt-1 flex justify-between text-xs text-gray-600;
+}
+
+/* File Upload Styles */
+.file-input {
+    @apply file:bg-primary hover:file:bg-primary/90 file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white;
+}
+
+/* Repeater Field Styles */
+.repeater-field {
+    @apply rounded-lg border border-[#e0e6ed] dark:border-[#17263c];
+}
+
+.repeater-item {
+    @apply relative mb-4 rounded-lg border border-[#e0e6ed] bg-white p-4 dark:border-[#17263c] dark:bg-[#121e32];
+}
+
+.repeater-header {
+    @apply mb-4 flex items-center justify-between border-b border-[#e0e6ed] pb-2 dark:border-[#17263c];
+}
+
+.repeater-content {
+    @apply grid gap-4;
+}
+
+.repeater-actions {
+    @apply mt-4 flex justify-end space-x-2 border-t border-[#e0e6ed] pt-4 dark:border-[#17263c];
+}
+
+.repeater-add-button {
+    @apply mt-4 flex justify-center;
+}
+
+/* Form Grid */
+.form-grid {
+    @apply grid gap-6;
+}
+
+.form-grid.cols-1 {
+    @apply grid-cols-1;
+}
+
+.form-grid.cols-2 {
+    @apply grid-cols-1 md:grid-cols-2;
+}
+
+.form-grid.cols-3 {
+    @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+}
+
+.form-grid.cols-4 {
+    @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-4;
+}
+
+/* Form Field Column Spanning */
+.field-col-span-full {
+    @apply col-span-full;
+}
+
+.field-col-span-2 {
+    @apply col-span-2;
+}
+
+.field-col-span-3 {
+    @apply col-span-3;
+}
+
+/* Form Validation States */
+.form-field-wrapper.has-success .form-input,
+.form-field-wrapper.has-success .form-textarea,
+.form-field-wrapper.has-success .form-select,
+.form-field-wrapper.has-success .form-multiselect {
+    @apply border-success bg-success/5 text-success placeholder-success/70 focus:border-success;
+}
+
+.form-field-wrapper.has-success .form-label,
+.form-field-wrapper.has-success .form-help {
+    @apply text-success;
+}
+
+/* Multi-step Form Progress */
+.form-steps {
+    @apply mb-8 flex items-center justify-between;
+}
+
+.form-step {
+    @apply flex items-center;
+}
+
+.form-step-number {
+    @apply flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-medium;
+}
+
+.form-step.active .form-step-number {
+    @apply bg-primary border-primary text-white;
+}
+
+.form-step.completed .form-step-number {
+    @apply bg-success border-success text-white;
+}
+
+.form-step.inactive .form-step-number {
+    @apply border-gray-300 bg-gray-100 text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400;
+}
+
+.form-step-connector {
+    @apply mx-4 h-0.5 flex-1 bg-gray-300 dark:bg-gray-600;
+}
+
+.form-step.completed + .form-step .form-step-connector {
+    @apply bg-success;
+}
+
+/* Form Label Styles */
+.form-label {
+    @apply mb-1.5 block font-semibold text-gray-900 dark:text-white;
+}
+
+.form-label.required::after {
+    content: '*';
+    @apply text-danger ml-1;
+}
+
+/* Form Help Text */
+.form-help {
+    @apply dark:text-white-dark mt-1 text-sm text-gray-600;
+}
+
+/* Form Actions */
+.form-actions {
+    @apply mt-8 flex items-center justify-between border-t border-[#e0e6ed] pt-6 dark:border-[#17263c];
+}
+
+.form-actions-left {
+    @apply flex items-center space-x-3;
+}
+
+.form-actions-right {
+    @apply flex items-center space-x-3;
+}
+
+/* Form Field States */
+.form-field-disabled {
+    @apply pointer-events-none opacity-60;
+}
+
+.form-field-readonly .form-input,
+.form-field-readonly .form-textarea,
+.form-field-readonly .form-select {
+    @apply cursor-not-allowed bg-gray-50 dark:bg-gray-800/50;
+}
+
+/* Form Field Sizes */
+.form-field-sm .form-input,
+.form-field-sm .form-textarea,
+.form-field-sm .form-select {
+    @apply py-1.5 text-xs;
+}
+
+.form-field-lg .form-input,
+.form-field-lg .form-textarea,
+.form-field-lg .form-select {
+    @apply py-2.5 text-base;
+}
+
+/* Form Input Groups */
+.form-input-group {
+    @apply flex;
+}
+
+.form-input-group .form-input {
+    @apply rounded-none;
+}
+
+.form-input-group .form-input:first-child {
+    @apply rounded-l-md;
+}
+
+.form-input-group .form-input:last-child {
+    @apply rounded-r-md;
+}
+
+.form-input-addon {
+    @apply dark:text-white-dark flex items-center border border-[#e0e6ed] bg-gray-50 px-3 py-2 text-sm text-gray-600 dark:border-[#17263c] dark:bg-gray-800;
+}
+
+.form-input-addon:first-child {
+    @apply rounded-l-md border-r-0;
+}
+
+.form-input-addon:last-child {
+    @apply rounded-r-md border-l-0;
+}
+
+/* Checkbox Group Styles */
+.form-checkbox-group {
+    @apply space-y-2;
+}
+
+.form-checkbox-group.inline {
+    @apply flex flex-wrap gap-4 space-y-0;
+}
+
+.form-checkbox-item {
+    @apply flex items-center;
+}
+
+.form-checkbox-item .form-checkbox {
+    @apply mr-2;
+}
+
+/* Radio Group Styles */
+.form-radio-group {
+    @apply space-y-2;
+}
+
+.form-radio-group.inline {
+    @apply flex flex-wrap gap-4 space-y-0;
+}
+
+.form-radio-item {
+    @apply flex items-center;
+}
+
+.form-radio-item .form-radio {
+    @apply mr-2;
+}
+
+/* File Upload Drag & Drop */
+.file-upload-dropzone {
+    @apply hover:border-primary dark:hover:border-primary relative rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors duration-200 dark:border-gray-600;
+}
+
+.file-upload-dropzone.dragover {
+    @apply border-primary bg-primary/5;
+}
+
+.file-upload-dropzone input[type='file'] {
+    @apply absolute inset-0 h-full w-full cursor-pointer opacity-0;
+}
+
+.file-upload-preview {
+    @apply mt-4 grid grid-cols-2 gap-4 md:grid-cols-4;
+}
+
+.file-upload-preview-item {
+    @apply relative rounded-lg border border-[#e0e6ed] bg-gray-50 p-2 dark:border-[#17263c] dark:bg-gray-800;
+}
+
+.file-upload-preview-remove {
+    @apply bg-danger hover:bg-danger/80 absolute -top-2 -right-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-xs text-white;
+}
+
+/* Form Validation Summary */
+.form-validation-summary {
+    @apply bg-danger/10 border-danger/20 mb-6 rounded-lg border p-4;
+}
+
+.form-validation-summary-title {
+    @apply text-danger mb-2 font-semibold;
+}
+
+.form-validation-summary-list {
+    @apply text-danger list-inside list-disc space-y-1 text-sm;
+}
+
+/* Autocomplete/Search Field */
+.form-search-results {
+    @apply absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-[#e0e6ed] bg-white shadow-lg dark:border-[#17263c] dark:bg-[#121e32];
+}
+
+.form-search-result {
+    @apply cursor-pointer border-b border-[#e0e6ed] px-4 py-2 text-sm last:border-b-0 hover:bg-gray-50 dark:border-[#17263c] dark:hover:bg-gray-800;
+}
+
+.form-search-result.selected {
+    @apply bg-primary text-white;
+}
+
+.form-search-result.highlighted {
+    @apply bg-gray-50 dark:bg-gray-800;
+}
+
+/* Form Field With Icon */
+.form-field-with-icon {
+    @apply relative;
+}
+
+.form-field-icon {
+    @apply dark:text-white-dark absolute top-1/2 -translate-y-1/2 transform text-gray-400;
+}
+
+.form-field-icon.left {
+    @apply left-3;
+}
+
+.form-field-icon.right {
+    @apply right-3;
+}
+
+.form-field-with-icon.has-left-icon .form-input {
+    @apply pl-10;
+}
+
+.form-field-with-icon.has-right-icon .form-input {
+    @apply pr-10;
+}
+
+/* Form Loading States */
+.form-field-loading {
+    @apply relative;
+}
+
+.form-field-loading::after {
+    content: '';
+    @apply border-primary absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 transform animate-spin rounded-full border-2 border-t-transparent;
+}
+
+/* Responsive Form Layout */
+@media (max-width: 768px) {
+    .form-grid.cols-2 {
+        @apply grid-cols-1;
+    }
+
+    .form-grid.cols-3 {
+        @apply grid-cols-1;
+    }
+
+    .form-grid.cols-4 {
+        @apply grid-cols-1;
+    }
+
+    .form-actions {
+        @apply flex-col space-y-4;
+    }
+
+    .form-actions-left,
+    .form-actions-right {
+        @apply w-full justify-center;
+    }
+
+    .form-step {
+        @apply flex-col text-center;
+    }
+
+    .form-step-connector {
+        @apply hidden;
+    }
+}
+
+/* Searchable Select Component */
+.searchable-select-trigger {
+    @apply cursor-pointer;
+}
+
+.searchable-select-trigger:focus {
+    @apply ring-2 ring-blue-500;
+}
+
+.searchable-select-trigger[disabled] {
+    @apply cursor-not-allowed;
+}
+
+/* Ensure proper z-index for dropdown */
+.searchable-select-trigger + div[x-show] {
+    z-index: 1000;
+}
+
+/* Smooth transitions for searchable select */
+.searchable-select-option {
+    @apply transition-colors duration-150;
+}
+
+/* Focus styles for keyboard navigation */
+.searchable-select-option[data-highlighted='true'] {
+    @apply bg-blue-50 dark:bg-blue-900/20;
+}
+
+/* Selected option styling */
+.searchable-select-option.selected {
+    @apply bg-blue-100 text-blue-900 dark:bg-blue-900/40 dark:text-blue-100;
+}
+
+/* Tag styling for multiple select */
+.searchable-select-tag {
+    @apply inline-flex items-center gap-1 rounded-md bg-blue-100 px-2 py-1 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+}
+
+.searchable-select-tag button {
+    @apply transition-colors hover:text-blue-600 dark:hover:text-blue-300;
+}
+
+/* Search input styling */
+.searchable-select-search {
+    @apply w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+}
+
+/* Dropdown container */
+.searchable-select-dropdown {
+    @apply absolute z-50 mt-1 w-full rounded-md border border-gray-300 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800;
+}
+
+/* Options container */
+.searchable-select-options {
+    @apply max-h-60 overflow-y-auto;
+}
+
+/* Empty state */
+.searchable-select-empty {
+    @apply px-3 py-2 text-sm text-gray-500 dark:text-gray-400;
 }

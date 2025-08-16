@@ -1,19 +1,21 @@
 # Caching Strategies
 
-Laravel Simple Datatables implements caching strategies to improve performance, especially for tables with complex configurations or large datasets.
+Laravel Simple Datatables And Forms implements caching strategies to improve performance, especially for tables with
+complex
+configurations or large datasets.
 
 ## Cache Configuration
 
-You can configure caching behavior in the `simple-datatables.php` configuration file:
+You can configure caching behavior in the `simple-datatables-and-forms.php` configuration file:
 
 ```php
 'cache' => [
     // Enable caching for column definitions
     'enable' => true,
-    
+
     // Cache lifetime in seconds (default: 1 hour)
     'lifetime' => 3600,
-    
+
     // Cache key prefix
     'prefix' => 'simple_datatables_',
 ],
@@ -32,27 +34,27 @@ The package caches several types of data:
 You can use the cache service directly in your components:
 
 ```php
-use Milenmk\LaravelSimpleDatatables\Services\CacheService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\CacheService;
 
 public function someMethod()
 {
     $cacheService = app(CacheService::class);
-    
+
     // Get cached data or compute it if not cached
     $result = $cacheService->remember('my_cache_key', function() {
         // This will only execute if the data is not in cache
         return $this->expensiveOperation();
     });
-    
+
     // Store data in cache
     $cacheService->put('another_key', $value);
-    
+
     // Get data from cache (with default fallback)
     $data = $cacheService->get('some_key', 'default_value');
-    
+
     // Remove data from cache
     $cacheService->forget('some_key');
-    
+
     // Clear all cache for this package
     $cacheService->clear();
 }
@@ -60,7 +62,8 @@ public function someMethod()
 
 ## Cache Keys
 
-Cache keys are automatically prefixed with the value from the configuration. You should use descriptive keys that include relevant parameters:
+Cache keys are automatically prefixed with the value from the configuration. You should use descriptive keys that
+include relevant parameters:
 
 ```php
 $key = "users_table_columns_{$this->componentName}";
@@ -84,16 +87,16 @@ You can set up automatic cache invalidation by implementing model observers or u
 public function boot()
 {
     User::observe(UserObserver::class);
-    
+
     // Or using closures
     User::created(function ($user) {
         app(CacheService::class)->forget('users_table_data');
     });
-    
+
     User::updated(function ($user) {
         app(CacheService::class)->forget('users_table_data');
     });
-    
+
     User::deleted(function ($user) {
         app(CacheService::class)->forget('users_table_data');
     });
@@ -120,7 +123,7 @@ public function bulkDelete()
 {
     // Perform bulk delete
     User::whereIn('id', $ids)->delete();
-    
+
     // Clear cache
     app(CacheService::class)->forget('users_table_data');
 }
@@ -135,19 +138,19 @@ For more granular control, you can invalidate specific cache entries based on th
 public function saved(User $user)
 {
     $cacheService = app(CacheService::class);
-    
+
     // Clear specific user cache
     $cacheService->forget("user_data_{$user->id}");
-    
+
     // Clear department-specific cache if department changed
     if ($user->isDirty('department_id')) {
         $cacheService->forget("department_users_{$user->department_id}");
-        
+
         if ($user->getOriginal('department_id')) {
             $cacheService->forget("department_users_{$user->getOriginal('department_id')}");
         }
     }
-    
+
     // Only clear global cache for significant changes
     if ($user->isDirty(['role', 'is_active'])) {
         $cacheService->forget('users_table_data');
@@ -157,7 +160,9 @@ public function saved(User $user)
 
 ### Cache Tags (Not Currently Implemented)
 
-**Important Note**: While Laravel supports cache tags with certain cache drivers (like Redis or Memcached), the current implementation of `CacheService` in this package does not include tag support. The following is an example of how you might implement tag support if needed:
+**Important Note**: While Laravel supports cache tags with certain cache drivers (like Redis or Memcached), the current
+implementation of `CacheService` in this package does not include tag support. The following is an example of how you
+might implement tag support if needed:
 
 ```php
 // This functionality is NOT currently available in the package
@@ -168,17 +173,18 @@ public function someMethod()
 {
     // Using Laravel's cache facade directly for tags
     Cache::tags(['users', "user-{$userId}"])->put('key', $value, 3600);
-    
+
     // Retrieve with tags
     $value = Cache::tags(['users', "user-{$userId}"])->get('key');
-    
+
     // Invalidate by tag
     Cache::tags(['users'])->flush(); // Clear all user-related cache
     Cache::tags(["user-{$userId}"])->flush(); // Clear specific user cache
 }
 ```
 
-If you need tag support, consider extending the `CacheService` class to add this functionality or use Laravel's Cache facade directly in your application code.
+If you need tag support, consider extending the `CacheService` class to add this functionality or use Laravel's Cache
+facade directly in your application code.
 
 ## Performance Tips
 
@@ -186,7 +192,8 @@ If you need tag support, consider extending the `CacheService` class to add this
 
 2. **Cache Selectively**: Cache expensive operations but don't cache everything.
 
-3. **Use Query Caching**: For read-heavy applications, consider using Laravel's query cache in addition to this package's caching.
+3. **Use Query Caching**: For read-heavy applications, consider using Laravel's query cache in addition to this package'
+   s caching.
 
 4. **Monitor Cache Size**: Large caches can consume significant memory. Monitor your cache size and adjust as needed.
 

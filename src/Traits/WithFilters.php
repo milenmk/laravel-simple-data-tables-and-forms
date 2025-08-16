@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Traits;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Traits;
 
-use Milenmk\LaravelSimpleDatatables\Table\Filters\SelectFilter;
-use Milenmk\LaravelSimpleDatatables\Table\Table;
+use Livewire\Attributes\Url;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters\SelectFilter;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 
 /**
- * @see \Milenmk\LaravelSimpleDatatables\Contracts\WithFiltersInterface
+ * @see \Milenmk\LaravelSimpleDatatablesAndForms\Contracts\WithFiltersInterface
  */
 trait WithFilters
 {
@@ -16,6 +17,7 @@ trait WithFilters
 
     public array $tableFilterViews = [];
 
+    #[Url]
     public array $filters = [];
 
     public int $appliedFiltersCount = 0;
@@ -82,6 +84,14 @@ trait WithFilters
         }
 
         $this->resetPage(); // Reset pagination
+    }
+
+    /**
+     * Handle filter updates and reset pagination.
+     */
+    public function updatedFilters(): void
+    {
+        $this->resetPage();
     }
 
     protected function prepareFilterViews(): array

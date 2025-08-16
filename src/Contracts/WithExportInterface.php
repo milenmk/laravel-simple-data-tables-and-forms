@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Contracts;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Contracts;
 
 use Symfony\Component\HttpFoundation\StreamedResponse;
 

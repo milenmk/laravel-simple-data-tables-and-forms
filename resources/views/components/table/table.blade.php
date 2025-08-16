@@ -38,11 +38,11 @@
         $gridClasses .= " lg:grid-cols-{$filterResponsiveColumns["xl"]}";
     } else {
         // Use fixed columns
-        $gridClasses .= " grid-cols-{$filterColumns}";
+        $gridClasses .= " grid-cols-$filterColumns";
     }
 @endphp
 
-<div class="panel">
+<div>
     @if ($heading)
         <h5 class="dark:text-white-light mb-5 text-lg font-semibold md:top-[25px] md:mb-5">
             {{ $heading }}
@@ -62,7 +62,7 @@
                     @click="columnDropdown = ! columnDropdown"
                 >
                     <span class="ltr:mr-1 rtl:ml-1">{{ __("Columns") }}</span>
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M19 9L12 15L5 9"
                             stroke="currentColor"
@@ -117,7 +117,7 @@
             <div class="ml-auto flex flex-wrap">
                 @if ($exportEnabled)
                     <div class="mr-2 mb-2 sm:mb-0">
-                        <x-laravel-simple-datatables::export :formats="$exportFormats" />
+                        <x-laravel-simple-datatables-and-forms::export :formats="$exportFormats" />
                     </div>
                 @endif
 
@@ -133,7 +133,6 @@
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
-                            fill="currentColor"
                             class="absolute top-2.5 left-2.5 h-5 w-5 text-slate-600 opacity-50"
                         >
                             <path
@@ -270,7 +269,7 @@
                                             type="button"
                                             class="text-gray-500 hover:text-gray-700 focus:outline-none"
                                         >
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg class="h-4 w-4" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
@@ -296,7 +295,7 @@
                                         type="button"
                                         class="text-gray-500 hover:text-gray-700 focus:outline-none"
                                     >
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" stroke="currentColor">
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
@@ -446,7 +445,7 @@
                 </div>
 
                 <div class="dataTable-bottom mt-4">
-                    {{ $data->links("laravel-simple-datatables::components.pagination.tailwind") }}
+                    {{ $data->links("laravel-simple-datatables-and-forms::components.pagination.tailwind") }}
                 </div>
 
                 @if (! empty($csrfField))

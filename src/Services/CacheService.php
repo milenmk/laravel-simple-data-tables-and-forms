@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Services;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Cache;
@@ -59,7 +59,7 @@ class CacheService
      */
     public function clear(): bool
     {
-        $prefix = Config::get('simple-datatables.cache.prefix', 'simple_datatables_');
+        $prefix = Config::get('simple-datatables-and-forms.cache.prefix', 'simple_datatables_');
 
         try {
             // For Redis driver
@@ -107,7 +107,7 @@ class CacheService
      */
     protected function isCacheEnabled(): bool
     {
-        return Config::get('simple-datatables.cache.enable', true);
+        return Config::get('simple-datatables-and-forms.cache.enable', true);
     }
 
     /**
@@ -115,7 +115,7 @@ class CacheService
      */
     protected function getCacheKey(string $key): string
     {
-        $prefix = Config::get('simple-datatables.cache.prefix', 'simple_datatables_');
+        $prefix = Config::get('simple-datatables-and-forms.cache.prefix', 'simple_datatables_');
 
         return $prefix . $key;
     }
@@ -125,7 +125,7 @@ class CacheService
      */
     protected function getCacheLifetime(): int
     {
-        $lifetime = Config::get('simple-datatables.cache.lifetime', 3600);
+        $lifetime = Config::get('simple-datatables-and-forms.cache.lifetime', 3600);
 
         // Ensure we always return an integer
         return $lifetime !== null ? (int) $lifetime : 3600;

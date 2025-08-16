@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Commands;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Milenmk\LaravelSimpleDatatables\Services\AssetService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\AssetService;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
 class PublishAssetsCommand extends Command
@@ -16,7 +16,7 @@ class PublishAssetsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'simple-datatables:publish-assets';
+    protected $signature = 'simple-datatables-and-forms:publish-assets';
 
     /**
      * The console command description.
@@ -32,7 +32,7 @@ class PublishAssetsCommand extends Command
     {
         $this->info('Publishing Laravel Simple Datatables assets...');
 
-        $vendorPath = 'vendor/milenmk/laravel-simple-datatables';
+        $vendorPath = 'vendor/milenmk/laravel-simple-datatables-and-forms';
         $cssDestPath = public_path($vendorPath . '/css');
         $jsDestPath = public_path($vendorPath . '/js');
 

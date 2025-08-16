@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Columns;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns;
 
 class Column
 {
     public string|array|null $label;
     public bool $sortable = false;
     public bool $searchable = false;
-    public bool $visible = true;
+    public mixed $visible = true;
     public mixed $description = null;
     public mixed $value = null;
     public ?string $weight = null;
@@ -117,7 +117,7 @@ class Column
         return $this;
     }
 
-    public function visible(bool $value = true): self
+    public function visible(bool|callable $value = true): self
     {
         $this->visible = $value;
 
@@ -126,7 +126,10 @@ class Column
 
     public function getVisibility(): bool
     {
-        return $this->visible;
+        return match (true) {
+            is_callable($this->visible) => call_user_func($this->visible),
+            default => $this->visible,
+        };
     }
 
     /**

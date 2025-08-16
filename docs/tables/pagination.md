@@ -1,10 +1,10 @@
 ## Pagination
 
-Laravel Simple Datatables provides flexible pagination options to help manage large datasets efficiently.
+Laravel Simple Datatables And Forms provides flexible pagination options to help manage large datasets efficiently.
 
 ## Basic Configuration
 
-Pagination is enabled by default. You can configure it in the `simple-datatables.php` configuration file:
+Pagination is enabled by default. You can configure it in the `simple-datatables-and-forms.php` configuration file:
 
 ```php
 'pagination' => [
@@ -94,11 +94,11 @@ The package provides standard pagination controls that allow users to navigate b
 You can customize the appearance of pagination controls by publishing the package views:
 
 ```bash
-php artisan vendor:publish --tag=laravel-simple-datatables-views
+php artisan vendor:publish --tag=laravel-simple-datatables-and-forms-views
 ```
 
 Then edit the pagination component in
-`resources/views/vendor/laravel-simple-datatables/components/pagination.blade.php`.
+`resources/views/vendor/laravel-simple-datatables-and-forms/components/pagination.blade.php`.
 
 ## Handling Pagination State
 
@@ -109,6 +109,25 @@ is refreshed with the new data.
 
 Pagination works seamlessly with filters and sorting. When a user applies a filter or sorts a column, the pagination is
 reset to the first page to avoid confusion.
+
+## Pagination with multiple table in one view
+
+If you have multiple tables in one view file (presume as nested components i.e. each table comes from a separate
+Livewire component), changing the par page value from the dropdown will apply it for the current table. However, since
+it is saved as parameter in the URL, upon refreshing the page, all other tables will be affected too. To prevent this,
+use unique parameters inside each component like this:
+
+```php
+    #[Url(as: 'unique_value_per_page')]
+    public int $perPage = 10;
+
+    public function updatedPerPage(): void
+    {
+        $this->resetPage();
+    }
+
+    public function table(....
+```
 
 ## Performance Considerations
 

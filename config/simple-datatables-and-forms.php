@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -157,6 +159,40 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Form Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure form behavior and appearance.
+    |
+    */
+    'form' => [
+        // Default theme: 'light', 'dark', or 'auto'
+        'theme' => 'light',
+
+        // Default number of columns in forms
+        'columns' => 2,
+
+        // Enable client-side validation
+        'client_validation' => true,
+
+        // Enable real-time validation
+        'realtime_validation' => false,
+
+        // Default field appearance
+        'field_appearance' => [
+            'size' => 'md', // 'sm', 'md', 'lg'
+            'border_radius' => 'md', // 'sm', 'md', 'lg', 'full'
+        ],
+
+        // Form animations
+        'animations' => [
+            'enable' => true,
+            'duration' => 300, // milliseconds
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Filters Configuration
     |--------------------------------------------------------------------------
     |
@@ -191,7 +227,7 @@ return [
         // Enable CSRF protection for all forms
         'csrf_protection' => true,
 
-        // Enable rate limiting for search operations
+        // Enable rate limiting for search operations and form submissions
         'rate_limiting' => [
             'enable' => true,
             'max_attempts' => 60,
@@ -200,5 +236,43 @@ return [
 
         // Enable input sanitization
         'sanitize_input' => true,
+
+        // File upload security settings
+        'max_file_size' => 10240, // KB (10MB)
+        'allowed_file_types' => [
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'webp',
+            'svg',
+            'pdf',
+            'doc',
+            'docx',
+            'xls',
+            'xlsx',
+            'ppt',
+            'pptx',
+            'txt',
+            'csv',
+            'zip',
+            'rar',
+        ],
+
+        // Content Security Policy settings
+        'csp' => [
+            'enable' => true,
+            'script_src' => "'self' 'unsafe-inline'",
+            'style_src' => "'self' 'unsafe-inline'",
+            'img_src' => "'self' data: https:",
+        ],
+
+        // Additional security headers
+        'security_headers' => [
+            'x_frame_options' => 'DENY',
+            'x_content_type_options' => 'nosniff',
+            'x_xss_protection' => '1; mode=block',
+            'referrer_policy' => 'strict-origin-when-cross-origin',
+        ],
     ],
 ];

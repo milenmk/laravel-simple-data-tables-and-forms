@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\View as FacadesView;
+use Illuminate\Support\Facades\View as ViewFacade;
 use Illuminate\View\View;
-use Milenmk\LaravelSimpleDatatables\Exceptions\InvalidFilterTypeException;
-use Milenmk\LaravelSimpleDatatables\Services\SecurityService;
-use Milenmk\LaravelSimpleDatatables\Table\Filters\BaseFilter;
-use Milenmk\LaravelSimpleDatatables\Table\Filters\FiltersGroup;
-use Milenmk\LaravelSimpleDatatables\Table\Grouping\Group;
+use Milenmk\LaravelSimpleDatatablesAndForms\Exceptions\InvalidFilterTypeException;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\SecurityService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters\BaseFilter;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters\FiltersGroup;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Grouping\Group;
 
 class Table
 {
@@ -73,10 +73,10 @@ class Table
         return $this->columns;
     }
 
-    public function render(): View
+    public function render(): ViewFacade|View
     {
         // Get appearance settings from config
-        $config = config('simple-datatables.appearance', []);
+        $config = config('simple-datatables-and-forms.appearance', []);
         $theme = $config['theme'] ?? 'light';
         $striped = $this->striped ?? ($config['striped'] ?? true);
         $hover = $config['hover'] ?? true;
@@ -89,7 +89,7 @@ class Table
         // Generate CSRF field if enabled
         $csrfField = $securityService->getCsrfField();
 
-        return FacadesView::make('laravel-simple-datatables::components.table.table', [
+        return ViewFacade::make('laravel-simple-datatables-and-forms::components.table.table', [
             'data' => $this->data(),
             'columns' => $this->columns,
             'heading' => $this->heading,
@@ -105,8 +105,8 @@ class Table
             'tableFilters' => $this->tableFilters,
             'filters' => $this->getFiltersValues(),
             'csrfField' => $csrfField,
-            'exportEnabled' => config('simple-datatables.export.enable', true),
-            'exportFormats' => config('simple-datatables.export.formats', ['csv', 'excel', 'pdf']),
+            'exportEnabled' => config('simple-datatables-and-forms.export.enable', true),
+            'exportFormats' => config('simple-datatables-and-forms.export.formats', ['csv', 'excel', 'pdf']),
             'filterColumns' => $this->getFilterColumns(),
             'filterResponsive' => $this->getFilterResponsive(),
             'filterResponsiveColumns' => $this->getFilterResponsiveColumns(),
@@ -138,6 +138,27 @@ class Table
         $this->filtersValues = $filtersValues;
 
         return $this;
+    }
+
+    public function getFilterColumns(): int
+    {
+        return $this->filterColumns ?? config('simple-datatables-and-forms.filters.columns', 6);
+    }
+
+    public function getFilterResponsive(): bool
+    {
+        return $this->filterResponsive ?? config('simple-datatables-and-forms.filters.responsive', true);
+    }
+
+    public function getFilterResponsiveColumns(): array
+    {
+        return $this->filterResponsiveColumns ??
+            config('simple-datatables-and-forms.filters.responsive_columns', [
+                'sm' => 1,
+                'md' => 2,
+                'lg' => 4,
+                'xl' => 6,
+            ]);
     }
 
     public function heading(string|array $value): self
@@ -270,11 +291,6 @@ class Table
         return $this;
     }
 
-    public function getFilterColumns(): int
-    {
-        return $this->filterColumns ?? config('simple-datatables.filters.columns', 6);
-    }
-
     public function filterResponsive(bool $responsive = true): self
     {
         $this->filterResponsive = $responsive;
@@ -282,26 +298,10 @@ class Table
         return $this;
     }
 
-    public function getFilterResponsive(): bool
-    {
-        return $this->filterResponsive ?? config('simple-datatables.filters.responsive', true);
-    }
-
     public function filterResponsiveColumns(array $responsiveColumns): self
     {
         $this->filterResponsiveColumns = $responsiveColumns;
 
         return $this;
-    }
-
-    public function getFilterResponsiveColumns(): array
-    {
-        return $this->filterResponsiveColumns ??
-            config('simple-datatables.filters.responsive_columns', [
-                'sm' => 1,
-                'md' => 2,
-                'lg' => 4,
-                'xl' => 6,
-            ]);
     }
 }

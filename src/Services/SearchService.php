@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Services;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Services;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Milenmk\LaravelSimpleDatatables\Table\Table;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 
 class SearchService
 {
@@ -17,14 +17,14 @@ class SearchService
     public function applySearch(Builder $query, string $search, Table $table): Builder
     {
         // If search is empty or doesn't meet minimum character requirement, return query as is
-        $minChars = Config::get('simple-datatables.search.min_characters', 2);
+        $minChars = Config::get('simple-datatables-and-forms.search.min_characters', 2);
         if (empty($search) || strlen($search) < $minChars) {
             return $query;
         }
 
         // Get search mode from config
-        $searchMode = Config::get('simple-datatables.search.default_mode', 'like');
-        $enableFulltext = Config::get('simple-datatables.search.enable_fulltext', false);
+        $searchMode = Config::get('simple-datatables-and-forms.search.default_mode', 'like');
+        $enableFulltext = Config::get('simple-datatables-and-forms.search.enable_fulltext', false);
 
         // Apply search based on mode
         switch ($searchMode) {
@@ -142,7 +142,7 @@ class SearchService
             case 'pgsql':
                 return $query->where(function ($q) use ($searchableColumns, $search) {
                     foreach ($searchableColumns as $column) {
-                        $q->orWhereRaw("{$column}::text ILIKE ?", ["%{$search}%"]);
+                        $q->orWhereRaw("{$column}::text LIKE ?", ["%{$search}%"]);
                     }
                 });
 

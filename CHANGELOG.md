@@ -1,3 +1,95 @@
+## v2.0.0
+
+#### Published at: 2025-01-XX
+
+### 🎉 Major Release: Forms Feature Added
+
+This is a major release that introduces comprehensive form functionality alongside the existing table features,
+transforming the package from "Laravel Simple Datatables" to "Laravel Simple Datatables And Forms".
+
+### ✨ New Features
+
+#### 📝 Dynamic Forms System
+
+- **[NEW]** Complete form builder with fluent API
+- **[NEW]** Multiple field types: Input, Select, Textarea, Checkbox, Toggle, File Upload, Hidden, Radio, Repeater
+- **[NEW]** Form sections and responsive layouts
+- **[NEW]** Model binding and relationship support
+- **[NEW]** Real-time and client-side validation
+- **[NEW]** Searchable and relationship select fields
+- **[NEW]** Form actions and custom buttons
+- **[NEW]** `HasForm` trait for Livewire components
+- **[NEW]** `php artisan make:milenmk-form` command with auto-generation support
+
+#### 🛠️ Enhanced Commands & Stubs
+
+- **[NEW]** Form generation commands with `--generate` flag
+- **[NEW]** Create/Edit form stubs for different use cases
+- **[NEW]** Enhanced table generation with improved field detection
+
+#### 📚 Comprehensive Documentation Overhaul
+
+- **[NEW]** Complete documentation restructure with dedicated sections for tables and forms
+- **[NEW]** Step-by-step getting started guides
+- **[NEW]** Advanced feature documentation with practical examples
+- **[NEW]** Troubleshooting guide with common solutions
+- **[NEW]** Documentation hub with organized navigation
+
+### 🔧 Improvements & Enhancements
+
+#### 🎨 UI/UX Improvements
+
+- **[IMPROVED]** Enhanced styling and responsive design
+- **[IMPROVED]** Better icon management and display
+- **[IMPROVED]** Improved form field rendering and validation display
+- **[IMPROVED]** Enhanced table column visibility controls
+
+#### ⚡ Performance & Architecture
+
+- **[IMPROVED]** Better service organization and dependency injection
+- **[IMPROVED]** Enhanced caching mechanisms
+- **[IMPROVED]** Optimized asset management
+- **[IMPROVED]** Improved security features and input sanitization
+
+#### 🔧 Configuration & Setup
+
+- **[BREAKING]** Package renamed from `laravel-simple-datatables` to `laravel-simple-datatables-and-forms`
+- **[BREAKING]** Configuration file renamed from `simple-datatables.php` to `simple-datatables-and-forms.php`
+- **[BREAKING]** Service provider renamed to `LaravelSimpleDatatablesAndFormsServiceProvider`
+- **[IMPROVED]** Enhanced asset publishing with `simple-datatables-and-forms:publish-assets` command
+
+### 🐛 Bug Fixes
+
+- **[FIX]** Cannot assign null to property `$visibleColumns` of type object|array
+- **[FIX]** Toggle column value now properly uses `$column->getValue($item)` instead of direct property access
+- **[FIX]** Improved error handling and validation feedback
+- **[FIX]** Better handling of nullable values in various column types
+- **[FIX]** Table columns now also accept callable to set `visibility()` value
+
+### 📖 Documentation & Developer Experience
+
+- **[IMPROVED]** Streamlined main README with quick start focus
+- **[IMPROVED]** Comprehensive documentation hub with clear navigation
+- **[IMPROVED]** Consistent file naming conventions (using dashes instead of underscores)
+- **[IMPROVED]** Updated all repository references and contact information
+- **[IMPROVED]** Enhanced code examples with proper imports and best practices
+
+### 🔄 Migration Notes
+
+- Update your `composer.json` to use `milenmk/laravel-simple-datatables-and-forms`
+- Republish configuration: `php artisan vendor:publish --tag=laravel-simple-datatables-and-forms-config`
+- Update asset publishing: `php artisan simple-datatables-and-forms:publish-assets`
+- Review and update any custom configurations from the old config file
+
+### 💡 New Capabilities
+
+- Build complex forms with sections, validation, and model binding
+- Create searchable select fields with relationship support
+- Use repeater fields for dynamic form sections
+- Implement real-time validation with Livewire
+- Generate forms automatically from model schemas
+- Combine tables and forms in comprehensive admin interfaces
+
 ## v1.13.1
 
 #### Published at: 2025-08-10

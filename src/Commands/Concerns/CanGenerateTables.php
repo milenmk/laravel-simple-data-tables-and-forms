@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Commands\Concerns;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Commands\Concerns;
 
 use Illuminate\Support\Str;
-use Milenmk\LaravelSimpleDatatables\Table\Columns\IconColumn;
-use Milenmk\LaravelSimpleDatatables\Table\Columns\TextColumn;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\IconColumn;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\TextColumn;
 
 trait CanGenerateTables
 {

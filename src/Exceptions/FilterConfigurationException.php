@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Exceptions;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Exceptions;
 
 use Exception;
 

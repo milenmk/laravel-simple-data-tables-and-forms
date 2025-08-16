@@ -1,6 +1,8 @@
 <?php
 
-namespace Milenmk\LaravelSimpleDatatables\Commands\Concerns;
+declare(strict_types=1);
+
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Commands\Concerns;
 
 trait CanIndentStrings
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Filters;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters;
 
 class FiltersGroup
 {

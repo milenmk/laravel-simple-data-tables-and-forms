@@ -1,6 +1,7 @@
 # FiltersGroup Class
 
-The `FiltersGroup` class provides a more structured way to group filters together, offering better organization and control over filter grouping compared to the individual `group()` method approach.
+The `FiltersGroup` class provides a more structured way to group filters together, offering better organization and
+control over filter grouping compared to the individual `group()` method approach.
 
 ## Overview
 
@@ -16,9 +17,9 @@ The `FiltersGroup` class allows you to:
 ### Creating a FiltersGroup
 
 ```php
-use Milenmk\LaravelSimpleDatatables\Table\Filters\FiltersGroup;
-use Milenmk\LaravelSimpleDatatables\Table\Filters\TernaryFilter;
-use Milenmk\LaravelSimpleDatatables\Table\Filters\SelectFilter;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters\FiltersGroup;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters\TernaryFilter;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters\SelectFilter;
 
 public function table(Table $table): Table
 {

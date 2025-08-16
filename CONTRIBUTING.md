@@ -3,10 +3,11 @@
 ## Bug reports and feature requests
 
 <a name="not-a-support-forum"></a>_Note_: **GitHub Issues is not a support forum.** If you have questions or need help
-using the software, please use [the discussions](https://github.com/milenmk/laravel-simple-datatables/discussions)
+using the software, please
+use [the discussions](https://github.com/milenmk/laravel-simple-datatables-and-forms/discussions)
 section.
 
-Issues are managed on [GitHub](https://github.com/milenmk/laravel-simple-datatables/issues).
+Issues are managed on [GitHub](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues).
 Default **language here is English**. So please prepare your contributions in English.
 
 1. Please [use the search engine](https://help.github.com/articles/searching-issues) to check if nobody's already
@@ -25,7 +26,7 @@ Default **language here is English**. So please prepare your contributions in En
 ### Basic workflow
 
 1. [Fork](https://help.github.com/articles/fork-a-repo)
-   the [GitHub repository](https://github.com/milenmk/laravel-simple-datatables).
+   the [GitHub repository](https://github.com/milenmk/laravel-simple-datatables-and-forms).
 2. Clone your fork.
 3. Choose a branch(See the [Branches](#branches) section below).
 4. Commit and push your changes.

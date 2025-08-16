@@ -1,6 +1,7 @@
 # Configuration
 
-Laravel Simple Datatables provides a comprehensive configuration system to customize the behavior and appearance of your
+Laravel Simple Datatables And Forms provides a comprehensive configuration system to customize the behavior and
+appearance of your
 tables.
 
 ## Publishing the Configuration
@@ -8,10 +9,10 @@ tables.
 To publish the configuration file, run:
 
 ```bash
-php artisan vendor:publish --tag=laravel-simple-datatables-config
+php artisan vendor:publish --tag=laravel-simple-datatables-and-forms-config
 ```
 
-This will create a `simple-datatables.php` file in your application's `config` directory.
+This will create a `simple-datatables-and-forms.php` file in your application's `config` directory.
 
 ## Pagination Settings
 

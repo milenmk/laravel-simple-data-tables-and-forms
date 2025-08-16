@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Traits;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -10,13 +10,17 @@ use Illuminate\Support\Stringable;
 use Illuminate\View\View;
 use Livewire\Attributes\Session;
 use Livewire\WithPagination;
-use Milenmk\LaravelSimpleDatatables\Services\CacheService;
-use Milenmk\LaravelSimpleDatatables\Services\SearchService;
-use Milenmk\LaravelSimpleDatatables\Services\SecurityService;
-use Milenmk\LaravelSimpleDatatables\Table\Table;
+use Milenmk\LaravelSimpleDatatablesAndForms\Exceptions\FilterConfigurationException;
+use Milenmk\LaravelSimpleDatatablesAndForms\Exceptions\InvalidFilterTypeException;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\CacheService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\SearchService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\SecurityService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
- * @see \Milenmk\LaravelSimpleDatatables\Contracts\HasTableInterface
+ * @see \Milenmk\LaravelSimpleDatatablesAndForms\Contracts\HasTableInterface
  */
 trait HasTable
 {
@@ -29,17 +33,21 @@ trait HasTable
     use WithSorting;
 
     #[Session]
-    public array|object $visibleColumns;
+    public null|array|object $visibleColumns = null;
 
     public Stringable $componentName;
 
+    /**
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     */
     public function mount(): void
     {
         $this->componentName = Str::of(class_basename($this))->snake();
 
         if (empty($this->visibleColumns)) {
             $this->visibleColumns = collect($this->table(new Table)->getColumns())
-                ->mapWithKeys(fn ($column) => ["{$this->componentName}.{$column->key}" => $column->visible])
+                ->mapWithKeys(fn ($column) => ["{$this->componentName}.{$column->key}" => $column->getVisibility()])
                 ->toArray();
         }
 
@@ -84,6 +92,12 @@ trait HasTable
         return $this->table($table)->getModelInstance($itemId);
     }
 
+    /**
+     * @throws FilterConfigurationException
+     * @throws NotFoundExceptionInterface
+     * @throws InvalidFilterTypeException
+     * @throws ContainerExceptionInterface
+     */
     public function getTableProperty(): View
     {
         // Use dependency injection through app() helper
@@ -146,6 +160,21 @@ trait HasTable
 
         // Get original columns before caching
         $originalColumns = $table->getColumns();
+
+        // Apply visibility to columns (don't cache callable visibility)
+        //        $columns = collect($originalColumns)
+        //            ->map(function ($column) {
+        //                // For callable visibility, always evaluate fresh
+        //                if (is_callable($column->visible)) {
+        //                    $column->visible = $column->getVisibility();
+        //                } else {
+        //                    // For static visibility, use session value or default
+        //                    $column->visible = $this->visibleColumns["{$this->componentName}.{$column->key}"] ?? $column->getVisibility();
+        //                }
+        //
+        //                return $column;
+        //            })
+        //            ->toArray();
 
         // Try to get cached column visibility data first
         $cacheKey = 'column_visibility_' . $this->componentName;

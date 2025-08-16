@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables;
+namespace Milenmk\LaravelSimpleDatatablesAndForms;
 
 use BladeUI\Icons\Factory;
 use BladeUI\Icons\IconsManifest;
@@ -10,11 +10,16 @@ use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Milenmk\LaravelSimpleDatatables\Commands\MakeTableCommand;
-use Milenmk\LaravelSimpleDatatables\Commands\PublishAssetsCommand;
-use Milenmk\LaravelSimpleDatatables\Services\AssetService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Commands\MakeFormCommand;
+use Milenmk\LaravelSimpleDatatablesAndForms\Commands\MakeTableCommand;
+use Milenmk\LaravelSimpleDatatablesAndForms\Commands\PublishAssetsCommand;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\AssetService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\CacheService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\ExportService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\SearchService;
+use Milenmk\LaravelSimpleDatatablesAndForms\Services\SecurityService;
 
-class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
+class LaravelSimpleDatatablesAndFormsServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -22,11 +27,27 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Merge config
-        $this->mergeConfigFrom(__DIR__ . '/../config/simple-datatables.php', 'simple-datatables');
+        $this->mergeConfigFrom(__DIR__ . '/../config/simple-datatables-and-forms.php', 'simple-datatables-and-forms');
 
-        // Register the asset service
+        // Register the package services
         $this->app->singleton(AssetService::class, function () {
             return new AssetService;
+        });
+
+        $this->app->singleton(CacheService::class, function () {
+            return new CacheService;
+        });
+
+        $this->app->singleton(ExportService::class, function () {
+            return new ExportService;
+        });
+
+        $this->app->singleton(SearchService::class, function () {
+            return new SearchService;
+        });
+
+        $this->app->singleton(SecurityService::class, function () {
+            return new SecurityService;
         });
     }
 
@@ -36,36 +57,38 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Load views
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'laravel-simple-datatables');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'laravel-simple-datatables-and-forms');
 
         // Publish views
         $this->publishes(
             [
                 __DIR__ . '/../resources/views/components' => base_path(
-                    'resources/views/vendor/laravel-simple-datatables/components',
+                    'resources/views/vendor/laravel-simple-datatables-and-forms/components',
                 ),
                 __DIR__ . '/../resources/views/exports' => base_path(
-                    'resources/views/vendor/laravel-simple-datatables/exports',
+                    'resources/views/vendor/laravel-simple-datatables-and-forms/exports',
                 ),
             ],
-            'laravel-simple-datatables-views',
+            'laravel-simple-datatables-and-forms-views',
         );
 
         // Publish CSS and JS
         $this->publishes(
             [
-                __DIR__ . '/../public/css' => public_path('vendor/milenmk/laravel-simple-datatables/css'),
-                __DIR__ . '/../public/js' => public_path('vendor/milenmk/laravel-simple-datatables/js'),
+                __DIR__ . '/../public/css' => public_path('vendor/milenmk/laravel-simple-datatables-and-forms/css'),
+                __DIR__ . '/../public/js' => public_path('vendor/milenmk/laravel-simple-datatables-and-forms/js'),
             ],
-            'laravel-simple-datatables-assets',
+            'laravel-simple-datatables-and-forms-assets',
         );
 
         // Publish config
         $this->publishes(
             [
-                __DIR__ . '/../config/simple-datatables.php' => config_path('simple-datatables.php'),
+                __DIR__ . '/../config/simple-datatables-and-forms.php' => config_path(
+                    'simple-datatables-and-forms.php',
+                ),
             ],
-            'laravel-simple-datatables-config',
+            'laravel-simple-datatables-and-forms-config',
         );
 
         // Register Blade directive for CSS
@@ -83,7 +106,7 @@ class LaravelSimpleDatatablesServiceProvider extends ServiceProvider
         });
 
         // Register commands
-        $this->commands([MakeTableCommand::class, PublishAssetsCommand::class]);
+        $this->commands([MakeTableCommand::class, MakeFormCommand::class, PublishAssetsCommand::class]);
 
         // Register Blade icons
         $this->registerBladeIcons();

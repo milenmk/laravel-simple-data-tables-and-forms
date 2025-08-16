@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Actions;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions;
 
 use Closure;
 

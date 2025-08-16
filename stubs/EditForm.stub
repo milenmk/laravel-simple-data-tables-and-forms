@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Illuminate\View\View;
+use Livewire\Component;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Form;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\InputField;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\SelectField;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\CheckboxField;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\ToggleField;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\TextareaField;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\DateTimeField;
+use Milenmk\LaravelSimpleDatatablesAndForms\Traits\HasForm;
+use App\Models\{{ model }};
+
+class {{ class }} extends Component
+{
+    use HasForm;
+
+    public {{ modelClass }} ${{ routeParameter }};
+
+    public function mount($id): void
+    {
+        $this->{{ routeParameter }} = {{ modelClass }}::findOrFail($id);
+        $this->formModel = $this->{{ routeParameter }};
+        $this->mountForm();
+    }
+
+    public function render(): View
+    {
+        return view('{{ view }}');
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->model({{ modelClass }}::class)
+            ->schema([
+{{ fields }}
+            ]);
+    }
+
+    public function save(): void
+    {
+        // Validate all form fields (including those without explicit rules)
+        $this->validate($this->getValidationRulesFromForm());
+
+        // Get only the fillable form fields data (no extra model attributes, no non-fillable fields)
+        $formData = $this->getFillableFormData();
+
+        $this->{{ routeParameter }}->update($formData);
+
+        // Add your success logic here
+        session()->flash('message', 'Record updated successfully.');
+
+        // Optionally redirect to index page
+        // return redirect()->route('{{ routeParameter }}.index');
+    }
+}

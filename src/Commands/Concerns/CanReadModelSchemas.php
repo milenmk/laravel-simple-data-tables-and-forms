@@ -1,6 +1,8 @@
 <?php
 
-namespace Milenmk\LaravelSimpleDatatables\Commands\Concerns;
+declare(strict_types=1);
+
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Commands\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,11 +30,11 @@ trait CanReadModelSchemas
         $modelInstance = app($model);
         $modelInstanceReflection = new ReflectionClass($modelInstance);
         $guessedRelationshipName = str($column)->beforeLast('_id');
-        $hasRelationship = $modelInstanceReflection->hasMethod($guessedRelationshipName);
+        $hasRelationship = $modelInstanceReflection->hasMethod((string) $guessedRelationshipName);
 
         if (! $hasRelationship) {
             $guessedRelationshipName = $guessedRelationshipName->camel();
-            $hasRelationship = $modelInstanceReflection->hasMethod($guessedRelationshipName);
+            $hasRelationship = $modelInstanceReflection->hasMethod((string) $guessedRelationshipName);
         }
 
         if (! $hasRelationship) {
@@ -40,7 +42,7 @@ trait CanReadModelSchemas
         }
 
         try {
-            $type = $modelInstanceReflection->getMethod($guessedRelationshipName)->getReturnType();
+            $type = $modelInstanceReflection->getMethod((string) $guessedRelationshipName)->getReturnType();
 
             if (! $type || ! method_exists($type, 'getName') || $type->getName() !== BelongsTo::class) {
                 return null;
@@ -51,10 +53,10 @@ trait CanReadModelSchemas
             return null;
         }
 
-        return $guessedRelationshipName;
+        return (string) $guessedRelationshipName;
     }
 
-    protected function guessBelongsToRelationshipTableName(string $column): ?string
+    protected function guessBelongsToRelationshipTableName(string $column): string|object|null
     {
         $tableName = str($column)->beforeLast('_id');
 

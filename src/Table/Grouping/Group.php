@@ -1,6 +1,8 @@
 <?php
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Grouping;
+declare(strict_types=1);
+
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Grouping;
 
 class Group
 {

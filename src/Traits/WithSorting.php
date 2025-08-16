@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Traits;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Traits;
 
 use Livewire\Attributes\Url;
 
 /**
- * @see \Milenmk\LaravelSimpleDatatables\Contracts\WithSortingInterface
+ * @see \Milenmk\LaravelSimpleDatatablesAndForms\Contracts\WithSortingInterface
  */
 trait WithSorting
 {

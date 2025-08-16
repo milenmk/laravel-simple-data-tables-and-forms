@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Commands;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
-use Milenmk\LaravelSimpleDatatables\Commands\Concerns\CanGenerateTables;
-use Milenmk\LaravelSimpleDatatables\Commands\Concerns\CanIndentStrings;
-use Milenmk\LaravelSimpleDatatables\Commands\Concerns\CanManipulateFiles;
-use Milenmk\LaravelSimpleDatatables\Commands\Concerns\CanReadModelSchemas;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use Milenmk\LaravelSimpleDatatablesAndForms\Commands\Concerns\CanGenerateTables;
+use Milenmk\LaravelSimpleDatatablesAndForms\Commands\Concerns\CanIndentStrings;
+use Milenmk\LaravelSimpleDatatablesAndForms\Commands\Concerns\CanManipulateFiles;
+use Milenmk\LaravelSimpleDatatablesAndForms\Commands\Concerns\CanReadModelSchemas;
 
 use function Laravel\Prompts\text;
 
@@ -28,8 +26,6 @@ class MakeTableCommand extends Command
     protected $signature = 'make:milenmk-datatable {name?} {model?} {--G|generate}';
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
      * @throws FileNotFoundException
      */
     public function handle(): int

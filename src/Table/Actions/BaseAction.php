@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Milenmk\LaravelSimpleDatatables\Table\Actions;
+namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions;
 
 use Closure;
 use Illuminate\Support\HtmlString;
@@ -28,7 +28,7 @@ class BaseAction
     public string|HtmlString|Closure|null $modalContent = null;
     public string|Closure|null $modalIcon = null;
 
-    protected string $view = 'laravel-simple-datatables::components.actions.index';
+    protected string $view = 'laravel-simple-datatables-and-forms::components.actions.index';
 
     public function __construct($key)
     {
@@ -242,5 +242,12 @@ class BaseAction
             is_callable($this->url) => call_user_func($this->url),
             default => $this->url ?? null,
         };
+    }
+
+    public function label(string|array|null $value): self
+    {
+        $this->label = $value;
+
+        return $this;
     }
 }
