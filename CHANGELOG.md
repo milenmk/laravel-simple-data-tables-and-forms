@@ -1,3 +1,9 @@
+## v2.1.3
+
+#### Published at: 2025-008-16
+
+- [NEW] `extraAttributes([])` now also can be used for the table feature
+
 ## v2.1.2
 
 #### Published at: 2025-008-16

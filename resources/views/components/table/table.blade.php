@@ -40,6 +40,17 @@
         // Use fixed columns
         $gridClasses .= " grid-cols-$filterColumns";
     }
+
+    $baseAttributes = [
+        "class" => "relative",
+    ];
+    $mergedAttributes = $table->getMergedAttributes($baseAttributes);
+
+    // Convert array to HTML attributes string
+    $attributesString = "";
+    foreach ($mergedAttributes as $key => $value) {
+        $attributesString .= $key . '="' . e($value) . '" ';
+    }
 @endphp
 
 <div>
@@ -49,7 +60,7 @@
         </h5>
     @endif
 
-    <div class="relative">
+    <div {!! $attributesString !!}>
         <div class="mb-4 flex flex-wrap items-center justify-between">
             <div
                 class="relative mr-2 mb-2 sm:mb-0"

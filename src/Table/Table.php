@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Table;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,6 +22,9 @@ class Table
     public ?bool $striped = null;
 
     public ?bool $showFilters = null;
+
+    public array $extraAttributes = [];
+    public ?Closure $extraAttributesCallback = null;
 
     protected LengthAwarePaginator|Builder|null $query = null;
     protected array $columns = [];
@@ -110,6 +114,7 @@ class Table
             'filterColumns' => $this->getFilterColumns(),
             'filterResponsive' => $this->getFilterResponsive(),
             'filterResponsiveColumns' => $this->getFilterResponsiveColumns(),
+            'table' => $this,
         ]);
     }
 
@@ -303,5 +308,53 @@ class Table
         $this->filterResponsiveColumns = $responsiveColumns;
 
         return $this;
+    }
+
+    /**
+     * Add extra attributes to the form wrapper
+     */
+    public function extraAttributes(array|Closure $attributes): static
+    {
+        if ($attributes instanceof Closure) {
+            $this->extraAttributesCallback = $attributes;
+        } else {
+            $this->extraAttributes = array_merge($this->extraAttributes, $attributes);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Merge extra attributes with existing class attribute
+     */
+    public function getMergedAttributes(array $baseAttributes = []): array
+    {
+        $extraAttributes = $this->getExtraAttributes();
+        $merged = array_merge($baseAttributes, $extraAttributes);
+
+        // Special handling for class attribute - merge instead of replace
+        if (isset($baseAttributes['class']) && isset($extraAttributes['class'])) {
+            $merged['class'] = trim($baseAttributes['class'] . ' ' . $extraAttributes['class']);
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Get the resolved extra attributes (including callbacks)
+     */
+    public function getExtraAttributes(): array
+    {
+        $attributes = $this->extraAttributes;
+
+        if ($this->extraAttributesCallback) {
+            $callbackAttributes = call_user_func($this->extraAttributesCallback);
+
+            if (is_array($callbackAttributes)) {
+                $attributes = array_merge($attributes, $callbackAttributes);
+            }
+        }
+
+        return $attributes;
     }
 }
