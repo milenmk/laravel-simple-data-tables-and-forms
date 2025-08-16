@@ -1,6 +1,18 @@
+## v2.1.0
+
+#### Published at: 2025-008-16
+
+- [NEW] Introduce reactivity to the form feature
+
+## v2.0.1
+
+#### Published at: 2025-008-16
+
+- Fix composer version
+
 ## v2.0.0
 
-#### Published at: 2025-01-XX
+#### Published at: 2025-008-16
 
 ### 🎉 Major Release: Forms Feature Added
 
