@@ -1,3 +1,10 @@
+## v2.1.2
+
+#### Published at: 2025-008-16
+
+- [FIX] `extraAttributes([])` was implemented only for the form when it has sections. Now it works for form without
+  sections also.
+
 ## v2.1.1
 
 #### Published at: 2025-008-16

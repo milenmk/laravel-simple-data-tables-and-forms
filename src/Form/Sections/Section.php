@@ -29,6 +29,10 @@ class Section
     public array $extraAttributes = [];
     public ?Closure $extraAttributesCallback = null;
 
+    // Form context properties
+    protected $record = null;
+    protected array $formData = [];
+
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -110,6 +114,10 @@ class Section
      */
     public function setFormContext($record, array $formData): static
     {
+        // Store form context for use in extra attributes callbacks
+        $this->record = $record;
+        $this->formData = $formData;
+
         foreach ($this->fields as $field) {
             if (method_exists($field, 'setFormContext')) {
                 $field->setFormContext($record, $formData);

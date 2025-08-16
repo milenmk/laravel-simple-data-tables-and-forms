@@ -118,7 +118,20 @@
             </div>
         @endforeach
     @else
-        <div class="grid-cols-{{ $columns }} grid gap-4">
+        @php
+            $baseAttributes = [
+                'class' => 'grid-cols-' . $columns . ' grid gap-4',
+            ];
+            $mergedAttributes = $form->getMergedAttributes($baseAttributes);
+
+            // Convert array to HTML attributes string
+            $attributesString = '';
+            foreach ($mergedAttributes as $key => $value) {
+                $attributesString .= $key . '="' . e($value) . '" ';
+            }
+        @endphp
+
+        <div {!! $attributesString !!}>
             @foreach ($fields as $field)
                 <div class="form-field {{ $field->columnSpan ? 'col-span-' . $field->columnSpan : '' }}">
                     {!! $field->render() !!}

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Form;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\View;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Get;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\SelectField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Sections\Section;
 use Milenmk\LaravelSimpleDatatablesAndForms\Services\SecurityService;
@@ -15,6 +17,9 @@ class Form
     public string|array|null $heading = '';
     public int $columns = 2;
     public string $theme = 'light';
+
+    public array $extraAttributes = [];
+    public ?Closure $extraAttributesCallback = null;
 
     protected array $fields = [];
     protected array $sections = [];
@@ -150,7 +155,10 @@ class Form
             if (method_exists($field, 'getValidationRules')) {
                 $fieldRules = $field->getValidationRules();
                 if (! empty($fieldRules)) {
-                    $rules["formData.{$field->name}"] = array_merge($rules["formData.{$field->name}"] ?? [], $fieldRules);
+                    $rules["formData.{$field->name}"] = array_merge(
+                        $rules["formData.{$field->name}"] ?? [],
+                        $fieldRules,
+                    );
                 }
             }
         }
@@ -180,7 +188,57 @@ class Form
             'model' => $this->model,
             'formData' => $this->formData,
             'csrfField' => $csrfField,
+            'form' => $this, // Pass the form instance
         ]);
+    }
+
+    /**
+     * Add extra attributes to the form wrapper
+     */
+    public function extraAttributes(array|Closure $attributes): static
+    {
+        if ($attributes instanceof Closure) {
+            $this->extraAttributesCallback = $attributes;
+        } else {
+            $this->extraAttributes = array_merge($this->extraAttributes, $attributes);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Merge extra attributes with existing class attribute
+     */
+    public function getMergedAttributes(array $baseAttributes = []): array
+    {
+        $extraAttributes = $this->getExtraAttributes();
+        $merged = array_merge($baseAttributes, $extraAttributes);
+
+        // Special handling for class attribute - merge instead of replace
+        if (isset($baseAttributes['class']) && isset($extraAttributes['class'])) {
+            $merged['class'] = trim($baseAttributes['class'] . ' ' . $extraAttributes['class']);
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Get the resolved extra attributes (including callbacks)
+     */
+    public function getExtraAttributes(): array
+    {
+        $attributes = $this->extraAttributes;
+
+        if ($this->extraAttributesCallback) {
+            $get = new Get($this->formData);
+            $callbackAttributes = call_user_func($this->extraAttributesCallback, $this->model, $get);
+
+            if (is_array($callbackAttributes)) {
+                $attributes = array_merge($attributes, $callbackAttributes);
+            }
+        }
+
+        return $attributes;
     }
 
     protected function setModelClassOnFields(): void
