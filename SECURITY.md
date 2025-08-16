@@ -18,7 +18,8 @@
 | 1.11.x  | Stable | Production  | not supported   |
 | 1.12.x  | Stable | Production  | 30.08.2025      |
 | 1.13.x  | Stable | Production  | 30.10.2025      |
-| 2.0.x   | RC     | Beta        | 30.10.2025      |
+| 2.0.x   | RC     | Beta        | TBD             |
+| 2.1.x   | Stable | Production  | TBD             |
 
 #### Stage (maturity of the release)
 

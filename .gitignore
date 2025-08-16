@@ -7,3 +7,5 @@ generate-css.php
 phpunit.xml
 .phpunit.result.cache
 .phpunit.cache
+composer.lock
+package-lock.json

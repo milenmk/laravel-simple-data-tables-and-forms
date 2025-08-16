@@ -17,8 +17,21 @@
 
     @if (count($sections) > 0)
         @foreach ($sections as $section)
+            @php
+                $baseAttributes = [
+                    'class' => 'form-section mb-8',
+                ];
+                $mergedAttributes = $section->getMergedAttributes($baseAttributes);
+
+                // Convert array to HTML attributes string
+                $attributesString = '';
+                foreach ($mergedAttributes as $key => $value) {
+                    $attributesString .= $key . '="' . e($value) . '" ';
+                }
+            @endphp
+
             <div
-                class="form-section mb-8"
+                {!! $attributesString !!}
                 @if ($section->collapsible) x-data="{ isOpen: {{ $section->collapsed ? 'false' : 'true' }} }" @endif
             >
                 @if ($section->label || $section->description)

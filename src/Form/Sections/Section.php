@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Form\Sections;
 
+use Closure;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Get;
+
 class Section
 {
     public string $name;
@@ -23,6 +26,8 @@ class Section
     public bool $visible = true;
     public ?string $view = null;
     public mixed $content = null;
+    public array $extraAttributes = [];
+    public ?Closure $extraAttributesCallback = null;
 
     public function __construct(string $name)
     {
@@ -51,6 +56,7 @@ class Section
     public function fields(array $fields): static
     {
         $this->fields = $fields;
+        $this->schema = $fields; // Keep backward compatibility
 
         return $this;
     }
@@ -87,6 +93,28 @@ class Section
     {
         $this->schema = $schema;
         $this->fields = $schema; // Keep backward compatibility
+
+        return $this;
+    }
+
+    /**
+     * Get all fields from this section
+     */
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
+    /**
+     * Set form context on all fields in this section
+     */
+    public function setFormContext($record, array $formData): static
+    {
+        foreach ($this->fields as $field) {
+            if (method_exists($field, 'setFormContext')) {
+                $field->setFormContext($record, $formData);
+            }
+        }
 
         return $this;
     }
@@ -154,5 +182,54 @@ class Section
                 ->title()
                 ->replace('_', ' ')
                 ->toString();
+    }
+
+    /**
+     * Add extra attributes to the section wrapper
+     */
+    public function extraAttributes(array|Closure $attributes): static
+    {
+        if ($attributes instanceof Closure) {
+            $this->extraAttributesCallback = $attributes;
+        } else {
+            $this->extraAttributes = array_merge($this->extraAttributes, $attributes);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Merge extra attributes with existing class attribute
+     */
+    public function getMergedAttributes(array $baseAttributes = []): array
+    {
+        $extraAttributes = $this->getExtraAttributes();
+        $merged = array_merge($baseAttributes, $extraAttributes);
+
+        // Special handling for class attribute - merge instead of replace
+        if (isset($baseAttributes['class']) && isset($extraAttributes['class'])) {
+            $merged['class'] = trim($baseAttributes['class'] . ' ' . $extraAttributes['class']);
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Get the resolved extra attributes (including callbacks)
+     */
+    public function getExtraAttributes(): array
+    {
+        $attributes = $this->extraAttributes;
+
+        if ($this->extraAttributesCallback) {
+            $get = new Get($this->formData);
+            $callbackAttributes = call_user_func($this->extraAttributesCallback, $this->record, $get);
+
+            if (is_array($callbackAttributes)) {
+                $attributes = array_merge($attributes, $callbackAttributes);
+            }
+        }
+
+        return $attributes;
     }
 }

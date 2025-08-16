@@ -10,9 +10,9 @@
 
 - Fix composer version
 
-## v2.0.0
+- ## v2.0.0
 
-#### Published at: 2025-008-16
+#### Published at: 2025-01-XX
 
 ### 🎉 Major Release: Forms Feature Added
 
