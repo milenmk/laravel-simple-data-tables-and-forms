@@ -1,3 +1,9 @@
+## v2.1.1
+
+#### Published at: 2025-008-16
+
+- Form section now also accepts `extraAttributes([])`
+
 ## v2.1.0
 
 #### Published at: 2025-008-16
