@@ -25,7 +25,7 @@
             <div
                 x-data="searchableSelect({
                             options: @js(collect($field->getOptions())->map(fn ($label, $value) => ["value" => $value, "label" => $label])->values()),
-                            value: @entangle("formData." . $field->name).defer,
+                            value: @js($field->getCurrentValue()),
                             multiple: {{ $field->multiple ? "true" : "false" }},
                             placeholder:
                                 '{{ $field->getPlaceholder() ?: ($field->emptyOption ?: "Select an option...") }}',
@@ -33,12 +33,17 @@
                         })"
                 class="relative"
                 @click.away="isOpen = false"
+                x-init="$watch('value', () => $wire.set('formData.{{ $field->name }}', value))"
             >
                 {{-- Hidden input for form submission --}}
                 <input
                     type="hidden"
                     name="{{ $field->name }}{{ $field->multiple ? "[]" : "" }}"
-                    :value="multiple ? JSON.stringify(value) : value"
+                    @if ($field->reactive)
+                        wire:model.live="formData.{{ $field->name }}"
+                    @else
+                        wire:model.defer="formData.{{ $field->name }}"
+                    @endif
                     @if ($field->required) required @endif
                 />
 

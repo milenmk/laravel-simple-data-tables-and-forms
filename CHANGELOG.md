@@ -1,3 +1,9 @@
+## v2.1.4
+
+#### Published at: 2025-008-17
+
+- [FIX] Searchable select in form not setting the selected option value
+
 ## v2.1.3
 
 #### Published at: 2025-008-16

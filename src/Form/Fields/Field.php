@@ -357,6 +357,31 @@ abstract class Field
         return $attributes;
     }
 
+    /**
+     * Get the current value of the field from form data
+     */
+    public function getCurrentValue(): mixed
+    {
+        $value = $this->formData[$this->name] ?? $this->default;
+
+        // For select fields, ensure proper handling of empty values
+        if ($this instanceof SelectField) {
+            if ($this->multiple) {
+                // For multiple selects, ensure we return an array
+                if ($value === null || $value === '') {
+                    return [];
+                }
+
+                return is_array($value) ? $value : [$value];
+            } else {
+                // For single selects, return null for empty values
+                return $value === '' || $value === null ? null : $value;
+            }
+        }
+
+        return $value;
+    }
+
     abstract public function render(): string;
 
     public function reactive(bool $condition = true): static
