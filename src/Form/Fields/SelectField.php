@@ -8,15 +8,18 @@ use Closure;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ViewErrorBag;
 use InvalidArgumentException;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Get;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Set;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 class SelectField extends Field
 {
-    public array $options = [];
+    public array|Closure $options = [];
     public bool $multiple = false;
     public ?string $emptyOption = null;
+    public string|Closure|null $placeholder = null;
     public bool $searchable = false;
 
     // Relationship properties
@@ -29,9 +32,16 @@ class SelectField extends Field
     // Form context
     protected ?string $formModelClass = null;
 
-    public function options(array $options): static
+    public function options(array|Closure $options): static
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    public function placeholder(string|Closure|null $placeholder): static
+    {
+        $this->placeholder = $placeholder;
 
         return $this;
     }
@@ -96,6 +106,15 @@ class SelectField extends Field
         // Handle relationship-based options
         if ($this->relationship && $this->titleAttribute) {
             return $this->getRelationshipOptions();
+        }
+
+        // Handle closure-based options (for reactive functionality)
+        if ($this->options instanceof Closure) {
+            $get = new Get($this->formData);
+            $set = new Set($this->formData);
+            $result = call_user_func($this->options, $this->record, $get, $set);
+
+            return is_array($result) ? $result : [];
         }
 
         if (is_callable($this->options)) {
@@ -203,6 +222,20 @@ class SelectField extends Field
     }
 
     /**
+     * Get the resolved placeholder (including callbacks)
+     */
+    public function getPlaceholder(): ?string
+    {
+        if ($this->placeholder instanceof Closure) {
+            $get = new Get($this->formData);
+
+            return call_user_func($this->placeholder, $get);
+        }
+
+        return $this->placeholder;
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Throwable
      * @throws NotFoundExceptionInterface
@@ -254,7 +287,6 @@ class SelectField extends Field
             }
 
             return $options;
-
         } catch (Throwable $e) {
             Log::error('SelectField relationship options failed: ' . $e->getMessage());
 
@@ -294,7 +326,6 @@ class SelectField extends Field
                 // For single selection (belongs-to relationships)
                 $rules[] = "exists:{$tableName},{$keyName}";
             }
-
         } catch (Throwable $e) {
             Log::error('SelectField relationship validation rules failed: ' . $e->getMessage());
         }

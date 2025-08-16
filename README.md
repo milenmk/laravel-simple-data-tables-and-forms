@@ -108,7 +108,7 @@ class UserList extends Component
 Generate a form component:
 
 ```bash
-php artisan make:milenmk-form CreateUser User --generate
+php artisan make:milenmk-form CreateUser create User --generate
 ```
 
 Or create manually:

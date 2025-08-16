@@ -71,11 +71,6 @@ class InputField extends Field
         return $this->type('file');
     }
 
-    public function hidden(): static
-    {
-        return $this->type('hidden');
-    }
-
     public function search(): static
     {
         return $this->type('search');

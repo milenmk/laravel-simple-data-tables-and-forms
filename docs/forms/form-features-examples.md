@@ -368,3 +368,39 @@ The form components use CSS classes that can be customized:
     /* Input with suffix icon */
 }
 ```
+
+8. Form Reactivity
+
+A sample code fo a reactive form is like this:
+
+```php
+SelectField::make('type')
+    ->label(__('Type'))
+    ->emptyOption(__('Select Type'))
+    ->reactive(),
+SelectField::make('parent_id')
+    ->label(__('Parent'))
+    ->options(Model::whereNull('parent_id')->pluck('name', 'id')->toArray())
+    ->emptyOption(__('Select Parent'))
+    ->hidden(fn (Get $get) => $get('type') === 'heading')
+    ->disabled(fn (Get $get) => $get('type') === 'heading'),
+InputField::make('route')
+    ->label(__('Route'))
+    ->hidden(fn (Get $get) => $get('type') === 'heading'),
+```
+
+By adding `reactive()` to the first select, we make it available for other fields. Then in each field that depends on
+the value of the first one, we use `fn(Get $get)` and `$get` will contain all values from the form.
+
+As for the input field, if we do not add `reactive()` to it, it <b>always</b> remains hidden.
+
+Why? Because of timing and default values:
+
+- InputField by default might render before Livewire has set the initial state of type.
+- When the closure runs, `$get('type')` is still null, so the condition `$get('type') === 'heading'` might evaluate as
+  true
+  in
+  some frameworks (depending on truthiness checks), or more likely the field is evaluated too early and never updated.
+- `SelectField::make('parent_id')` works without adding `reactive()`, because it’s designed for reactive option
+  handling, whereas InputField may not re-evaluate its
+  `hidden()` callback dynamically unless its own value or the parent state changes.

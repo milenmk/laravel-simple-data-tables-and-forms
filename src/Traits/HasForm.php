@@ -7,9 +7,9 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Traits;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
+use Illuminate\View\View;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\CheckboxField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\ToggleField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Form;
@@ -216,8 +216,8 @@ trait HasForm
         if (empty($fillable)) {
             Log::warning(
                 'Model ' .
-                    get_class($this->formModel) .
-                    ' has no fillable attributes defined. This may be a security risk.',
+                get_class($this->formModel) .
+                ' has no fillable attributes defined. This may be a security risk.',
             );
 
             return $formFieldsData;

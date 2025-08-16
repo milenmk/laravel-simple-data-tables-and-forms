@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields;
 
+use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Get;
+use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Set;
+use ReflectionFunction;
 
 abstract class Field
 {
@@ -12,16 +17,27 @@ abstract class Field
     public ?string $label = null;
     public mixed $default = null;
     public bool $required = false;
-    public ?string $placeholder = null;
+    public string|Closure|null $placeholder = null;
     public ?string $helperText = null;
     public array $rules = [];
     public array $validationMessages = [];
-    public bool $disabled = false;
+    public bool|Closure $disabled = false;
     public ?string $columnSpan = null;
     public array $attributes = [];
+    public array $extraAttributes = [];
     public ?string $prefixIcon = null;
     public ?string $suffixIcon = null;
     public string $type;
+    public bool $reactive = false;
+
+    // Reactive functionality
+    public ?Closure $afterStateUpdated = null;
+    public ?Closure $hidden = null;
+    public ?Closure $extraAttributesCallback = null;
+
+    // Form context for reactive functionality
+    protected ?Model $record = null;
+    protected array $formData = [];
 
     public function __construct(string $name)
     {
@@ -54,7 +70,7 @@ abstract class Field
         return $this;
     }
 
-    public function placeholder(string $placeholder): static
+    public function placeholder(string|Closure|null $placeholder): static
     {
         $this->placeholder = $placeholder;
 
@@ -83,13 +99,6 @@ abstract class Field
         return $this;
     }
 
-    public function disabled(bool $disabled = true): static
-    {
-        $this->disabled = $disabled;
-
-        return $this;
-    }
-
     public function columnSpan(string $columnSpan): static
     {
         $this->columnSpan = $columnSpan;
@@ -111,6 +120,69 @@ abstract class Field
         return $this;
     }
 
+    /**
+     * Add extra attributes to the field wrapper
+     */
+    public function extraAttributes(array|Closure $attributes): static
+    {
+        if ($attributes instanceof Closure) {
+            $this->extraAttributesCallback = $attributes;
+        } else {
+            $this->extraAttributes = array_merge($this->extraAttributes, $attributes);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set callback to execute after field state is updated
+     */
+    public function afterStateUpdated(Closure $callback): static
+    {
+        $this->afterStateUpdated = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Set callback to determine if field should be hidden
+     */
+    public function hidden(bool|Closure $hidden = true): static
+    {
+        if ($hidden instanceof Closure) {
+            $this->hidden = $hidden;
+        } else {
+            $this->hidden = fn () => $hidden;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Override the disabled method to support closures
+     */
+    public function disabled(bool|Closure $disabled = true): static
+    {
+        if ($disabled instanceof Closure) {
+            $this->disabled = $disabled;
+        } else {
+            $this->disabled = fn () => $disabled;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the form context for reactive functionality
+     */
+    public function setFormContext(?Model $record, array $formData): static
+    {
+        $this->record = $record;
+        $this->formData = $formData;
+
+        return $this;
+    }
+
     public function attributes(array $attributes): static
     {
         // Sanitize and validate attributes for security
@@ -121,6 +193,7 @@ abstract class Field
             'style',
             'data-*',
             'aria-*',
+            'x-*', // Alpine.js attributes
             'role',
             'title',
             'alt',
@@ -155,8 +228,8 @@ abstract class Field
         foreach ($attributes as $key => $value) {
             $key = strtolower($key);
 
-            // Allow data-* and aria-* attributes
-            if (str_starts_with($key, 'data-') || str_starts_with($key, 'aria-')) {
+            // Allow data-*, aria-*, and x-* attributes
+            if (str_starts_with($key, 'data-') || str_starts_with($key, 'aria-') || str_starts_with($key, 'x-')) {
                 $sanitizedAttributes[$key] = htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 
                 continue;
@@ -188,7 +261,110 @@ abstract class Field
                 ->toString();
     }
 
+    /**
+     * Check if the field should be hidden
+     */
+    public function isHidden(): bool
+    {
+        if ($this->hidden instanceof Closure) {
+            $get = new Get($this->formData);
+            $reflection = new ReflectionFunction($this->hidden);
+            $params = $reflection->getNumberOfParameters();
+
+            return match ($params) {
+                1 => call_user_func($this->hidden, $get),
+                2 => call_user_func($this->hidden, $this->record, $get),
+                default => call_user_func($this->hidden, $this->record, $get),
+            };
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the field should be disabled
+     */
+    public function isDisabled(): bool
+    {
+        if ($this->disabled instanceof Closure) {
+            $get = new Get($this->formData);
+            $reflection = new ReflectionFunction($this->disabled);
+            $params = $reflection->getNumberOfParameters();
+
+            return match ($params) {
+                1 => call_user_func($this->disabled, $get),
+                2 => call_user_func($this->disabled, $this->record, $get),
+                default => call_user_func($this->disabled, $this->record, $get),
+            };
+        }
+
+        return (bool) $this->disabled;
+    }
+
+    /**
+     * Execute the afterStateUpdated callback
+     */
+    public function executeAfterStateUpdated(mixed $state): void
+    {
+        if ($this->afterStateUpdated instanceof Closure) {
+            $get = new Get($this->formData);
+            $set = new Set($this->formData);
+            $reflection = new ReflectionFunction($this->afterStateUpdated);
+            $params = $reflection->getNumberOfParameters();
+
+            match ($params) {
+                1 => call_user_func($this->afterStateUpdated, $state),
+                2 => call_user_func($this->afterStateUpdated, $get, $state),
+                3 => call_user_func($this->afterStateUpdated, $get, $set, $state),
+                4 => call_user_func($this->afterStateUpdated, $this->record, $get, $set, $state),
+                default => call_user_func($this->afterStateUpdated, $this->record, $get, $set, $state),
+            };
+        }
+    }
+
+    /**
+     * Merge extra attributes with existing class attribute
+     */
+    public function getMergedAttributes(array $baseAttributes = []): array
+    {
+        $extraAttributes = $this->getExtraAttributes();
+        $merged = array_merge($baseAttributes, $extraAttributes);
+
+        // Special handling for class attribute - merge instead of replace
+        if (isset($baseAttributes['class']) && isset($extraAttributes['class'])) {
+            $merged['class'] = trim($baseAttributes['class'] . ' ' . $extraAttributes['class']);
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Get the resolved extra attributes (including callbacks)
+     */
+    public function getExtraAttributes(): array
+    {
+        $attributes = $this->extraAttributes;
+
+        if ($this->extraAttributesCallback) {
+            $get = new Get($this->formData);
+            $callbackAttributes = call_user_func($this->extraAttributesCallback, $this->record, $get);
+
+            if (is_array($callbackAttributes)) {
+                $attributes = array_merge($attributes, $callbackAttributes);
+            }
+        }
+
+        return $attributes;
+    }
+
     abstract public function render(): string;
+
+    public function reactive(bool $condition = true): static
+    {
+        $this->reactive = $condition;
+
+        return $this;
+    }
 
     /**
      * Validate and sanitize validation rules for security

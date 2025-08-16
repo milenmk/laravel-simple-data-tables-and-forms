@@ -160,6 +160,9 @@ class Form
 
     public function render(): View
     {
+        // Set form context on all fields for reactive functionality
+        $this->setFormContextOnFields();
+
         // Get appearance settings from config
         $config = config('simple-datatables-and-forms.form', []);
         $theme = $config['theme'] ?? 'light';
@@ -199,6 +202,21 @@ class Form
                 if ($field instanceof SelectField) {
                     $field->setFormModelClass($this->modelClass);
                 }
+            }
+        }
+    }
+
+    protected function setFormContextOnFields(): void
+    {
+        // Set form context on direct fields
+        foreach ($this->fields as $field) {
+            $field->setFormContext($this->model, $this->formData);
+        }
+
+        // Set form context on fields within sections
+        foreach ($this->sections as $section) {
+            foreach ($section->getFields() as $field) {
+                $field->setFormContext($this->model, $this->formData);
             }
         }
     }
