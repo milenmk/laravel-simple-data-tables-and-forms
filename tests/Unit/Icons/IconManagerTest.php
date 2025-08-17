@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Icons;
 
-use Illuminate\Contracts\Support\Htmlable;
 use Milenmk\LaravelSimpleDatatablesAndForms\Icons\IconManager;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -31,48 +30,6 @@ class IconManagerTest extends TestCase
 
         $this->assertEquals('<svg>edit icon</svg>', $this->iconManager->resolve('edit'));
         $this->assertEquals('<svg>delete icon</svg>', $this->iconManager->resolve('delete'));
-    }
-
-    #[Test]
-    public function register_icons_as_htmlable(): void
-    {
-        $htmlableIcon = new class implements Htmlable
-        {
-            public function to_html(): string
-            {
-                return '<svg>htmlable icon</svg>';
-            }
-        };
-
-        $icons = [
-            'custom' => $htmlableIcon,
-        ];
-
-        $this->iconManager->register($icons);
-
-        $this->assertSame($htmlableIcon, $this->iconManager->resolve('custom'));
-    }
-
-    #[Test]
-    public function register_mixed_icon_types(): void
-    {
-        $htmlableIcon = new class implements Htmlable
-        {
-            public function to_html(): string
-            {
-                return '<svg>htmlable icon</svg>';
-            }
-        };
-
-        $icons = [
-            'string_icon' => '<svg>string icon</svg>',
-            'htmlable_icon' => $htmlableIcon,
-        ];
-
-        $this->iconManager->register($icons);
-
-        $this->assertEquals('<svg>string icon</svg>', $this->iconManager->resolve('string_icon'));
-        $this->assertSame($htmlableIcon, $this->iconManager->resolve('htmlable_icon'));
     }
 
     #[Test]

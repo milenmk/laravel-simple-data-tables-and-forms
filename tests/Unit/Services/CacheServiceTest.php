@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Services;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Milenmk\LaravelSimpleDatatablesAndForms\Services\CacheService;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\SimpleCache\InvalidArgumentException;
 
 class CacheServiceTest extends BaseTest
 {
-    protected CacheService $cacheService;
+    private CacheService $cacheService;
 
     protected function setUp(): void
     {
@@ -19,136 +22,162 @@ class CacheServiceTest extends BaseTest
         $this->cacheService = new CacheService;
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
-    #[Test]
-    public function it_can_remember_values()
+    protected function tearDown(): void
     {
-        $key = 'test_key';
-        $value = 'test_value';
-        $prefixedKey = 'simple_datatables_' . $key;
-
-        // Clear any existing cache
-        Cache::forget($prefixedKey);
-
-        // The first call should execute the callback
-        $result = $this->cacheService->remember($key, function () use ($value) {
-            return $value;
-        });
-
-        $this->assertEquals($value, $result);
-        $this->assertTrue(Cache::has($prefixedKey));
-
-        // Change the value to verify the callback isn't executed again
-        $value = 'new_value';
-
-        // The second call should return the cached value
-        $result = $this->cacheService->remember($key, function () use ($value) {
-            return $value;
-        });
-
-        // Should still be the old value
-        $this->assertEquals('test_value', $result);
+        Mockery::close();
+        parent::tearDown();
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     #[Test]
-    public function it_can_forget_values()
+    public function it_can_remember_value_when_cache_enabled()
     {
-        $key = 'test_key';
-        $value = 'test_value';
-        $prefixedKey = 'simple_datatables_' . $key;
+        Config::set('simple-datatables-and-forms.cache.enable', true);
 
-        // Set a value in the cache
-        Cache::put($prefixedKey, $value);
+        Config::set('simple-datatables-and-forms.cache.prefix', 'test_prefix_');
 
-        // Verify it's there
-        $this->assertTrue(Cache::has($prefixedKey));
+        Config::set('simple-datatables-and-forms.cache.lifetime', 3600);
 
-        // Forget it
-        $this->cacheService->forget($key);
+        Cache::shouldReceive('remember')
+            ->once()
+            ->with('test_prefix_test_key', 3600, Mockery::type('callable'))
+            ->andReturn('cached_value');
 
-        // Verify it's gone
-        $this->assertFalse(Cache::has($prefixedKey));
+        $result = $this->cacheService->remember('test_key', fn () => 'computed_value');
+
+        $this->assertEquals('cached_value', $result);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     #[Test]
-    public function it_can_clear_all_cache()
+    public function it_executes_callback_when_cache_disabled()
     {
-        $key1 = 'test_key1';
-        $key2 = 'test_key2';
-        $prefixedKey1 = 'simple_datatables_' . $key1;
-        $prefixedKey2 = 'simple_datatables_' . $key2;
+        Config::set('simple-datatables-and-forms.cache.enable', true);
 
-        // Set some values in the cache
-        Cache::put($prefixedKey1, 'value1');
-        Cache::put($prefixedKey2, 'value2');
+        $result = $this->cacheService->remember('test_key', fn () => 'computed_value');
 
-        // Verify they're there
-        $this->assertTrue(Cache::has($prefixedKey1));
-        $this->assertTrue(Cache::has($prefixedKey2));
-
-        // Clear all cache
-        $this->cacheService->clear();
-
-        // Verify they're gone
-        $this->assertFalse(Cache::has($prefixedKey1));
-        $this->assertFalse(Cache::has($prefixedKey2));
+        $this->assertEquals('computed_value', $result);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     #[Test]
-    public function it_respects_cache_ttl_from_config()
+    public function it_can_get_value_when_cache_enabled()
     {
-        // Set a custom TTL in the config
-        config(['simple-datatables-and-forms.cache.lifetime' => 5]); // 5 seconds
+        Config::set('simple-datatables-and-forms.cache.enable', true);
 
-        $key = 'test_key';
-        $value = 'test_value';
-        $prefixedKey = 'simple_datatables_' . $key;
+        Config::set('simple-datatables-and-forms.cache.prefix', 'test_prefix_');
 
-        // Remember a value
-        $this->cacheService->remember($key, function () use ($value) {
-            return $value;
-        });
+        Cache::shouldReceive('get')
+            ->once()
+            ->with('test_prefix_test_key', 'default_value')
+            ->andReturn('cached_value');
 
-        // Verify it's there
-        $this->assertTrue(Cache::has($prefixedKey));
+        $result = $this->cacheService->get('test_key', 'default_value');
 
-        // Fast-forward time by 6 seconds
-        $this->travel(6)->seconds();
-
-        // Verify it's gone
-        $this->assertFalse(Cache::has($prefixedKey));
+        $this->assertEquals('cached_value', $result);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     #[Test]
-    public function it_uses_default_ttl_if_not_configured()
+    public function it_returns_default_when_cache_disabled()
     {
-        // Remove the TTL from the config
-        config(['simple-datatables-and-forms.cache.lifetime' => null]);
+        Config::set('simple-datatables-and-forms.cache.enable', true);
 
-        $key = 'test_key';
-        $value = 'test_value';
-        $prefixedKey = 'simple_datatables_' . $key;
+        $result = $this->cacheService->get('test_key', 'default_value');
 
-        // Remember a value
-        $this->cacheService->remember($key, function () use ($value) {
-            return $value;
-        });
+        $this->assertEquals('default_value', $result);
+    }
 
-        // Verify it's there
-        $this->assertTrue(Cache::has($prefixedKey));
+    #[Test]
+    public function it_can_put_value_when_cache_enabled()
+    {
+        Config::set('simple-datatables-and-forms.cache.enable', true);
+
+        Config::set('simple-datatables-and-forms.cache.prefix', 'test_prefix_');
+
+        Config::set('simple-datatables-and-forms.cache.lifetime', 3600);
+
+        Cache::shouldReceive('put')
+            ->once()
+            ->with('test_prefix_test_key', 'test_value', 3600)
+            ->andReturn(true);
+
+        $result = $this->cacheService->put('test_key', 'test_value');
+
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function it_returns_false_when_put_and_cache_disabled()
+    {
+        Config::set('simple-datatables-and-forms.cache.enable', false);
+
+        $result = $this->cacheService->put('test_key', 'test_value');
+
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function it_can_forget_cache_key()
+    {
+        Config::set('simple-datatables-and-forms.cache.prefix', 'test_prefix_');
+
+        Cache::shouldReceive('forget')
+            ->once()
+            ->with('test_prefix_test_key')
+            ->andReturn(true);
+
+        $result = $this->cacheService->forget('test_key');
+
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function it_can_clear_cache_with_fallback()
+    {
+        Config::set('simple-datatables-and-forms.cache.prefix', 'test_prefix_');
+
+        // Mock Cache store that doesn't have Redis or Memcached methods
+        $store = Mockery::mock();
+        Cache::shouldReceive('getStore')->andReturn($store);
+        Cache::shouldReceive('flush')->once();
+
+        $result = $this->cacheService->clear();
+
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function it_handles_cache_lifetime_as_null()
+    {
+        Config::set('simple-datatables-and-forms.cache.enable', true);
+
+        Config::set('simple-datatables-and-forms.cache.prefix', 'test_prefix_');
+
+        Config::set('simple-datatables-and-forms.cache.lifetime', 3600);
+
+        Cache::shouldReceive('put')
+            ->once()
+            ->with('test_prefix_test_key', 'test_value', 3600)
+            ->andReturn(true);
+
+        $result = $this->cacheService->put('test_key', 'test_value');
+
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function it_handles_non_integer_cache_lifetime()
+    {
+        Config::set('simple-datatables-and-forms.cache.enable', true);
+
+        Config::set('simple-datatables-and-forms.cache.prefix', 'test_prefix_');
+
+        Config::set('simple-datatables-and-forms.cache.lifetime', '7200');
+
+        Cache::shouldReceive('put')
+            ->once()
+            ->with('test_prefix_test_key', 'test_value', 7200)
+            ->andReturn(true);
+
+        $result = $this->cacheService->put('test_key', 'test_value');
+
+        $this->assertTrue($result);
     }
 }

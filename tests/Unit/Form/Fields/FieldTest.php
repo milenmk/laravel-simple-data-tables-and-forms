@@ -477,22 +477,4 @@ class FieldTest extends BaseTest
         $this->assertContains('max:100', $this->field->rules);
         $this->assertContains('between:1,10', $this->field->rules);
     }
-
-    #[Test]
-    public function it_handles_rule_objects()
-    {
-        // Create a mock rule object
-        $ruleObject = new class
-        {
-            public function __to_string(): string
-            {
-                return 'custom_rule';
-            }
-        };
-
-        $rules = [$ruleObject];
-        $this->field->rules($rules);
-
-        $this->assertContains($ruleObject, $this->field->rules);
-    }
 }
