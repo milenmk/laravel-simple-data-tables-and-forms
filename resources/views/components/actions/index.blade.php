@@ -76,7 +76,7 @@
                         const params = actionCall.match(/\(([^)]+)\)/)
                         if (params && params[1]) {
                             // Remove quotes and spaces from parameter
-                            const paramValue = params[1].replace(/[\x27" ]/g, '')
+                            const paramValue = params[1].replace(/[\x27\x22 ]/g, '')
                             $wire.call(methodName, paramValue)
                         } else {
                             $wire.call(methodName)
