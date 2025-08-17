@@ -34,7 +34,11 @@
                 </template>
                 <div class="mt-8 flex items-center justify-end space-x-2">
                     <button type="button" @click="confirmModalAction()" class="btn btn-danger">
-                        {{ __('Confirm') }}
+                        <span
+                            x-show="modalData.confirmationButtonLabel"
+                            x-html="modalData.confirmationButtonLabel"
+                        ></span>
+                        <span x-show="!modalData.confirmationButtonLabel">{{ __('Confirm') }}</span>
                     </button>
                     <button
                         type="button"

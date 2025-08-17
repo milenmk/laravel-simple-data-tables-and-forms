@@ -1,3 +1,10 @@
+## 2.1.6
+
+#### Published at: 2025-08-17
+
+- [FIX] Table action modal not rendering
+- Improved Confirmation modal customization options
+
 ## v2.1.5
 
 #### Published at: 2025-08-17

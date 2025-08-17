@@ -169,6 +169,54 @@ ActionColumn::make('actions')->actions([
 ]);
 ```
 
+## Confirmation Modals
+
+For destructive or important actions, you can add confirmation modals to prevent accidental clicks:
+
+```php
+DeleteAction::make('delete')
+    ->label('Delete')
+    ->icon('heroicon-o-trash')
+    ->action('deleteUser')
+    ->requiresConfirmation()
+    ->modalHeading('Delete User')
+    ->modalDescription('Are you sure you want to delete this user?')
+    ->modalContent('This action cannot be undone.')
+    ->modalConfirmationButtonLabel('Delete User');
+```
+
+### Confirmation Modal Options
+
+- **`requiresConfirmation()`**: Enables the confirmation modal
+- **`modalHeading()`**: Sets the modal title
+- **`modalDescription()`**: Sets the modal description text
+- **`modalContent()`**: Sets additional content in the modal body
+- **`modalConfirmationButtonLabel()`**: Customizes the confirmation button text
+
+### Dynamic Confirmation Content
+
+All modal methods accept closures for dynamic content based on the record:
+
+```php
+DeleteAction::make('delete')
+    ->requiresConfirmation()
+    ->modalHeading(fn($record) => "Delete {$record->name}")
+    ->modalDescription(fn($record) => "Are you sure you want to delete {$record->name}?")
+    ->modalConfirmationButtonLabel(fn($record) => "Delete {$record->name}");
+```
+
+### HTML Content in Modals
+
+You can use HTML content in modals by returning an `HtmlString`:
+
+```php
+use Illuminate\Support\HtmlString;
+
+DeleteAction::make('delete')
+    ->requiresConfirmation()
+    ->modalConfirmationButtonLabel(fn($record) => new HtmlString("<strong>Delete {$record->name}</strong>"));
+```
+
 ## Creating Custom Actions
 
 You can create custom actions by extending the `BaseAction` class:
@@ -245,7 +293,11 @@ public function table(Table $table): Table
                     DeleteAction::make('delete')
                         ->icon('heroicon-o-trash')
                         ->actionView('icon')
-                        ->action('deleteUser'),
+                        ->action('deleteUser')
+                        ->requiresConfirmation()
+                        ->modalHeading('Delete User')
+                        ->modalDescription('Are you sure you want to delete this user?')
+                        ->modalConfirmationButtonLabel('Delete User'),
                 ]),
         ]);
 }

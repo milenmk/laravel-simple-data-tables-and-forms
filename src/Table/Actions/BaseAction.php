@@ -27,6 +27,7 @@ class BaseAction
     public string|HtmlString|Closure|null $modalDescription = null;
     public string|HtmlString|Closure|null $modalContent = null;
     public string|Closure|null $modalIcon = null;
+    public string|HtmlString|Closure|null $modalConfirmationButtonLabel = null;
 
     protected string $view = 'laravel-simple-datatables-and-forms::components.actions.index';
 
@@ -159,16 +160,27 @@ class BaseAction
         return $this;
     }
 
+    public function modalConfirmationButtonLabel(string|HtmlString|Closure $label): static
+    {
+        $this->modalConfirmationButtonLabel = $label;
+
+        return $this;
+    }
+
     public function confirmationModalContent($record = null): array
     {
         $heading = $this->getModalHeading($record) ?? 'Confirm Action';
         $description = $this->getModalDescription($record) ?? 'Are you sure you want to perform this action?';
         $content = $this->getModalContent($record);
+        $confirmationButtonLabel = $this->getModalConfirmationButtonLabel($record);
 
         return [
             'heading' => $heading instanceof HtmlString ? $heading->toHtml() : $heading,
             'description' => $description instanceof HtmlString ? $description->toHtml() : $description,
             'content' => $content instanceof HtmlString ? $content->toHtml() : $content,
+            'confirmationButtonLabel' => $confirmationButtonLabel instanceof HtmlString
+                    ? $confirmationButtonLabel->toHtml()
+                    : $confirmationButtonLabel,
             'icon' => $this->getModalIcon($record),
             'hasUrl' => $this->hasUrl(),
             'hasAction' => $this->hasAction(),
@@ -214,6 +226,18 @@ class BaseAction
             is_callable($this->modalIcon) && $record !== null => call_user_func($this->modalIcon, $record),
             is_callable($this->modalIcon) => call_user_func($this->modalIcon),
             default => $this->modalIcon,
+        };
+    }
+
+    public function getModalConfirmationButtonLabel($record = null): string|HtmlString|null
+    {
+        return match (true) {
+            is_callable($this->modalConfirmationButtonLabel) && $record !== null => call_user_func(
+                $this->modalConfirmationButtonLabel,
+                $record,
+            ),
+            is_callable($this->modalConfirmationButtonLabel) => call_user_func($this->modalConfirmationButtonLabel),
+            default => $this->modalConfirmationButtonLabel,
         };
     }
 
