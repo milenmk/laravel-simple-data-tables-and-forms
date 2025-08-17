@@ -87,7 +87,7 @@ class DateTimeField extends Field
 
     public function getValidationRules(): array
     {
-        $rules = [];
+        $rules = parent::getValidationRules();
 
         if ($this->type === 'date') {
             $rules[] = 'date';

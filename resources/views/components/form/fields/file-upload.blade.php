@@ -1,6 +1,19 @@
+@php
+    $baseAttributes = [
+        'class' => 'form-field-wrapper ' . ($errors->has('formData' . $field->name) ? 'has-error' : ''),
+    ];
+    $mergedAttributes = $field->getMergedAttributes($baseAttributes);
+
+    // Convert array to HTML attributes string
+    $attributesString = '';
+    foreach ($mergedAttributes as $key => $value) {
+        $attributesString .= $key . '="' . e($value) . '" ';
+    }
+@endphp
+
 <div
-    class="form-field-wrapper {{ $errors->has('formData.' . $field->name) ? 'has-error' : '' }}"
-    x-data="fileUpload(@entangle('formData.{{ $field->name }}').defer, {
+    class="{!! $attributesString !!}"
+    x-data="fileUpload(@entangle('formData.' . $field->name).defer, {
                 multiple: {{ $field->multiple ? 'true' : 'false' }},
                 maxFiles: {{ $field->maxFiles ?? 1 }},
                 maxSize: {{ $field->maxSize ?? 'null' }},

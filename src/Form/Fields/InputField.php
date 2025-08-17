@@ -120,7 +120,7 @@ class InputField extends Field
 
     public function getValidationRules(): array
     {
-        $rules = [];
+        $rules = parent::getValidationRules();
 
         // Add type-specific validation rules
         if ($this->type === 'email') {

@@ -3,7 +3,6 @@
 /node_modules
 npm-debug.log
 generate-css.php
-/tests
 phpunit.xml
 .phpunit.result.cache
 .phpunit.cache

@@ -1,6 +1,19 @@
+@php
+    $baseAttributes = [
+        'class' => 'form-field-wrapper repeater-field ' . ($errors->has('formData' . $field->name) ? 'has-error' : ''),
+    ];
+    $mergedAttributes = $field->getMergedAttributes($baseAttributes);
+
+    // Convert array to HTML attributes string
+    $attributesString = '';
+    foreach ($mergedAttributes as $key => $value) {
+        $attributesString .= $key . '="' . e($value) . '" ';
+    }
+@endphp
+
 <div
-    class="form-field-wrapper repeater-field {{ $errors->has('formData.' . $field->name) ? 'has-error' : '' }}"
-    x-data="repeater(@entangle('formData.{{ $field->name }}').defer)"
+    {!! $attributesString !!}
+    x-data="repeater(@entangle('formData.' . $field->name).defer)"
 >
     @if ($field->getLabel())
         <label class="form-label">
@@ -109,31 +122,31 @@
 
 <script>
     function repeater(value) {
-    return {
-        items: value || [],
+        return {
+            items: value || [],
 
-        addItem() {
-            if (this.items.length < {{ $field->maxItems }}) {
-                this.items.push({
-                    @foreach ($field->schema as $schemaField)
-                        {{ $schemaField->name }}: '{{ $schemaField->default ?? "" }}',
-                    @endforeach
-                    collapsed: false
-                });
-            }
-        },
+            addItem() {
+                if (this.items.length < {{ $field->maxItems }}) {
+                    this.items.push({
+                        @foreach ($field->schema as $schemaField)
+                                {{ $schemaField->name }}: '{{ $schemaField->default ?? "" }}',
+                        @endforeach
+                        collapsed: false
+                    });
+                }
+            },
 
-        removeItem(index) {
-            if (this.items.length > {{ $field->minItems }}) {
-                this.items.splice(index, 1);
-            }
-        },
+            removeItem(index) {
+                if (this.items.length > {{ $field->minItems }}) {
+                    this.items.splice(index, 1);
+                }
+            },
 
-        cloneItem(index) {
-            if (this.items.length < {{ $field->maxItems }}) {
-                this.items.push({...this.items[index], collapsed: false});
+            cloneItem(index) {
+                if (this.items.length < {{ $field->maxItems }}) {
+                    this.items.push({...this.items[index], collapsed: false});
+                }
             }
         }
     }
-}
 </script>

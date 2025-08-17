@@ -391,6 +391,26 @@ abstract class Field
 
     abstract public function render(): string;
 
+    /**
+     * Get validation rules for this field
+     */
+    public function getValidationRules(): array
+    {
+        $rules = [];
+
+        // Add basic validation rules
+        if ($this->required) {
+            $rules[] = 'required';
+        }
+
+        // Add custom rules
+        if (! empty($this->rules)) {
+            $rules = array_merge($rules, $this->validateRules($this->rules));
+        }
+
+        return $rules;
+    }
+
     public function reactive(bool $condition = true): static
     {
         $this->reactive = $condition;
