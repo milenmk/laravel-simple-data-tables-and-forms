@@ -1,6 +1,7 @@
 @php
     $value = $column->getValue($item);
     $actionName = $action->actionName ?? null;
+    $actionString = $action->getActionString($item);
     $url = $action->getUrl($item);
     $hasAction = ! empty($actionName) || $action->actionClosure !== null;
     $hasUrl = ! empty($url);
@@ -8,12 +9,12 @@
     $modalContent = $requiresConfirmation ? $action->confirmationModalContent($item) : null;
 
     // Generate click handler for actions with confirmation
-    $getActionClick = function () use ($requiresConfirmation, $actionName, $item, $modalContent) {
+    $getActionClick = function () use ($requiresConfirmation, $actionString, $item, $modalContent) {
         if ($requiresConfirmation) {
             $modalData = json_encode($modalContent);
-            return "showConfirmationModal(" . $modalData . ", '{$item->id}')";
+            return "showConfirmationModal(" . $modalData . ", '$item->id')";
         }
-        return "{$actionName}('{$item->id}')";
+        return $actionString;
     };
 
     // Generate click handler for URL actions with confirmation
@@ -22,7 +23,7 @@
             $modalData = json_encode($modalContent);
             return "showConfirmationModal(" . $modalData . ")";
         }
-        return "window.location.href = '{$url}'";
+        return "window.location.href = '$url'";
     };
 
     // Determine the appropriate class based on action type and color
@@ -65,15 +66,36 @@
             this.actionConfirmModal = true
         },
         confirmModalAction() {
-            if (this.modalData.hasAction && this.modalData.actionName) {
-                if (this.currentItemId) {
-                    $wire.call(this.modalData.actionName, this.currentItemId)
-                } else {
-                    $wire.call(this.modalData.actionName)
+            if (this.modalData.hasAction) {
+                if (this.modalData.actionString) {
+                    // For closures, the actionString contains the complete function call
+                    // We need to parse it and execute it safely
+                    const actionCall = this.modalData.actionString
+                    if (actionCall.includes('(')) {
+                        const methodName = actionCall.split('(')[0]
+                        const params = actionCall.match(/\(([^)]+)\)/)
+                        if (params && params[1]) {
+                            // Remove quotes and spaces from parameter
+                            const paramValue = params[1].replace(/[\x27" ]/g, '')
+                            $wire.call(methodName, paramValue)
+                        } else {
+                            $wire.call(methodName)
+                        }
+                    } else {
+                        $wire.call(actionCall)
+                    }
+                } else if (this.modalData.actionName) {
+                    // Use actionName for regular actions
+                    if (this.currentItemId) {
+                        $wire.call(this.modalData.actionName, this.currentItemId)
+                    } else {
+                        $wire.call(this.modalData.actionName)
+                    }
                 }
             } else if (this.modalData.hasUrl && this.modalData.url) {
                 window.location.href = this.modalData.url
             }
+
             this.actionConfirmModal = false
             this.modalData = {}
             this.currentItemId = null
@@ -87,7 +109,7 @@
                 @if ($requiresConfirmation)
                     @click="{{ $getActionClick() }}"
                 @else
-                    wire:click="{{ $actionName }}('{{ $item->id }}')"
+                    wire:click="{{ $actionString }}"
                 @endif
                 @class([
                     "cursor-pointer",
@@ -159,7 +181,7 @@
                 @if ($requiresConfirmation)
                     @click="{{ $getActionClick() }}"
                 @else
-                    wire:click="{{ $actionName }}('{{ $item->id }}')"
+                    wire:click="{{ $actionString }}"
                 @endif
                 @class([
                     "badge cursor-pointer text-sm",
@@ -199,7 +221,7 @@
                 @if ($requiresConfirmation)
                     @click="{{ $getActionClick() }}"
                 @else
-                    wire:click="{{ $actionName }}('{{ $item->id }}')"
+                    wire:click="{{ $actionString }}"
                 @endif
                 @class([
                     "btn flex cursor-pointer justify-center px-1.5 py-1 !font-semibold",
@@ -287,7 +309,7 @@
                 @if ($requiresConfirmation)
                     @click="{{ $getActionClick() }}"
                 @else
-                    wire:click="{{ $actionName }}('{{ $item->id }}')"
+                    wire:click="{{ $actionString }}"
                 @endif
                 @class(["flex cursor-pointer items-center justify-start font-semibold ltr:mr-2 rtl:ml-2", $colorClass])
             >

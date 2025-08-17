@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Get;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Set;
+use ReflectionException;
 use ReflectionFunction;
 
 abstract class Field
@@ -263,6 +264,8 @@ abstract class Field
 
     /**
      * Check if the field should be hidden
+     *
+     * @throws ReflectionException
      */
     public function isHidden(): bool
     {
@@ -283,6 +286,8 @@ abstract class Field
 
     /**
      * Check if the field should be disabled
+     *
+     * @throws ReflectionException
      */
     public function isDisabled(): bool
     {
@@ -303,6 +308,8 @@ abstract class Field
 
     /**
      * Execute the afterStateUpdated callback
+     *
+     * @throws ReflectionException
      */
     public function executeAfterStateUpdated(mixed $state): void
     {

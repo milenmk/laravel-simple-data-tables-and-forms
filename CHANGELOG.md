@@ -1,3 +1,11 @@
+## v2.1.5
+
+#### Published at: 2025-08-17
+
+- [FIX] Table actions had recordId attached permanently. Not is have to be explicitly set.
+- [FIX] Table action `action()` cannot accept closure, resulting to an empty `wire:click`
+- fixed some code style warnings
+
 ## v2.1.4
 
 #### Published at: 2025-008-17
@@ -78,7 +86,7 @@ transforming the package from "Laravel Simple Datatables" to "Laravel Simple Dat
 
 - **[IMPROVED]** Enhanced styling and responsive design
 - **[IMPROVED]** Better icon management and display
-- **[IMPROVED]** Improved form field rendering and validation display
+- **[IMPROVED]** Form field rendering and validation display
 - **[IMPROVED]** Enhanced table column visibility controls
 
 #### ⚡ Performance & Architecture
@@ -86,7 +94,7 @@ transforming the package from "Laravel Simple Datatables" to "Laravel Simple Dat
 - **[IMPROVED]** Better service organization and dependency injection
 - **[IMPROVED]** Enhanced caching mechanisms
 - **[IMPROVED]** Optimized asset management
-- **[IMPROVED]** Improved security features and input sanitization
+- **[IMPROVED]** Security features and input sanitization
 
 #### 🔧 Configuration & Setup
 

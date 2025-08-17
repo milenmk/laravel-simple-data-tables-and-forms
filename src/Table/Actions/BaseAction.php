@@ -113,16 +113,16 @@ class BaseAction
 
     public function action(string|Closure $action): self
     {
-        if (is_string($action)) {
-            $this->actionName = $action;
-        } else {
+        if ($action instanceof Closure) {
             $this->actionClosure = $action;
+        } else {
+            $this->actionName = $action;
         }
 
         return $this;
     }
 
-    public function requiresConfirmation(bool $value): static
+    public function requiresConfirmation(bool $value = true): static
     {
         if ($value === true) {
             $this->requiresConfirmation = true;
@@ -159,15 +159,6 @@ class BaseAction
         return $this;
     }
 
-    public function executeAction($record = null): mixed
-    {
-        if ($this->actionClosure) {
-            return call_user_func($this->actionClosure, $record);
-        }
-
-        return null;
-    }
-
     public function confirmationModalContent($record = null): array
     {
         $heading = $this->getModalHeading($record) ?? 'Confirm Action';
@@ -183,6 +174,7 @@ class BaseAction
             'hasAction' => $this->hasAction(),
             'url' => $this->getUrl($record),
             'actionName' => $this->actionName,
+            'actionString' => $this->getActionString($record),
         ];
     }
 
@@ -242,6 +234,35 @@ class BaseAction
             is_callable($this->url) => call_user_func($this->url),
             default => $this->url ?? null,
         };
+    }
+
+    /**
+     * Get the action string to be used in wire:click or @click attributes
+     * For closures, it returns the result of executing the closure with the record
+     * For action names, it returns the action name with the record ID
+     */
+    public function getActionString($record = null): ?string
+    {
+        if ($this->actionClosure) {
+            $result = $this->executeAction($record);
+
+            return is_string($result) ? $result : null;
+        }
+
+        if ($this->actionName) {
+            return $this->actionName;
+        }
+
+        return null;
+    }
+
+    public function executeAction($record = null): mixed
+    {
+        if ($this->actionClosure) {
+            return call_user_func($this->actionClosure, $record);
+        }
+
+        return null;
     }
 
     public function label(string|array|null $value): self

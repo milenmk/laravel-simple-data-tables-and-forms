@@ -1,6 +1,7 @@
 # Laravel Simple Datatables And Forms Documentation
 
-Welcome to the comprehensive documentation for Laravel Simple Datatables And Forms. This package provides powerful data table and dynamic form functionality for Laravel applications with seamless Livewire integration.
+Welcome to the comprehensive documentation for Laravel Simple Datatables And Forms. This package provides powerful data
+table and dynamic form functionality for Laravel applications with seamless Livewire integration.
 
 ## 🚀 Getting Started
 
@@ -59,7 +60,8 @@ Comprehensive guides for creating dynamic forms with validation and model bindin
 1. **[Package Overview](../README.md)** - Understand what the package offers
 2. **[Table Getting Started](tables/getting-started.md)** - Create your first table
 3. **[Form Getting Started](forms/getting-started.md)** - Create your first form
-4. **[Quick Reference Sections](tables/getting-started.md#quick-reference--common-patterns)** - Common patterns and examples
+4. **[Quick Reference Sections](tables/getting-started.md#quick-reference--common-patterns)** - Common patterns and
+   examples
 
 ### For Intermediate Users
 
@@ -109,7 +111,8 @@ All code examples in this documentation are:
 
 ### Package Resources
 
-- **[GitHub Repository](https://github.com/milenmk/laravel-simple-datatables-and-forms)** - Source code, issues, and discussions
+- **[GitHub Repository](https://github.com/milenmk/laravel-simple-datatables-and-forms)** - Source code, issues, and
+  discussions
 - **[Changelog](../CHANGELOG.md)** - Version history and breaking changes
 - **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute to the package
 - **[Security Policy](../SECURITY.md)** - Security reporting and policies
@@ -122,8 +125,10 @@ All code examples in this documentation are:
 
 ### Community & Support
 
-- **[GitHub Discussions](https://github.com/milenmk/laravel-simple-datatables-and-forms/discussions)** - Community discussions and Q&A
-- **[GitHub Issues](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues)** - Bug reports and feature requests
+- **[GitHub Discussions](https://github.com/milenmk/laravel-simple-datatables-and-forms/discussions)** - Community
+  discussions and Q&A
+- **[GitHub Issues](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues)** - Bug reports and feature
+  requests
 - **[Email Support](mailto:support@minkov.dev)** - Direct support for complex issues
 
 ## 🐛 Troubleshooting
@@ -131,8 +136,10 @@ All code examples in this documentation are:
 ### Common Issues
 
 - **[Troubleshooting Guide](troubleshooting.md)** - Comprehensive troubleshooting guide
-- **[Performance Issues](tables/caching.md#troubleshooting)** - Performance-related problems
-- **[Validation Problems](forms/validation.md#troubleshooting)** - Form validation issues
+- **Performance Issues [Cashing](tables/caching.md) [Troubleshooting](troubleshooting.md)** - Performance-related
+  problems
+- **Validation Problems [Validation](forms/validation.md) [Troubleshooting](troubleshooting.md)** - Form validation
+  issues
 
 ### Getting Help
 
@@ -166,14 +173,17 @@ Found an error or want to improve the documentation? We welcome contributions!
 
 **Quick Solutions:**
 
-- 🔍 **[Search the documentation](https://github.com/milenmk/laravel-simple-datatables-and-forms/tree/main/docs)** - Use your browser's search function
+- 🔍 **[Search the documentation](https://github.com/milenmk/laravel-simple-datatables-and-forms/tree/main/docs)** - Use
+  your browser's search function
 - 🐛 **[Check troubleshooting guide](troubleshooting.md)** - Common issues and solutions
 - 💬 **[Browse discussions](https://github.com/milenmk/laravel-simple-datatables-and-forms/discussions)** - Community Q&A
 
 **Still Need Help?**
 
-- 🐛 **[Report a bug](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues/new)** - Include code examples and error messages
-- 💡 **[Request a feature](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues/new)** - Describe your use case
+- 🐛 **[Report a bug](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues/new)** - Include code
+  examples and error messages
+- 💡 **[Request a feature](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues/new)** - Describe your
+  use case
 - 📧 **[Email support](mailto:support@minkov.dev)** - For complex integration questions
 
 ---

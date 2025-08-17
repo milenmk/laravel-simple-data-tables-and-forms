@@ -369,7 +369,7 @@ The form components use CSS classes that can be customized:
 }
 ```
 
-8. Form Reactivity
+## 8. Form Reactivity
 
 A sample code fo a reactive form is like this:
 

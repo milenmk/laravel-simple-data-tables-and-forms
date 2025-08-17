@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="p-5">
-                <h6 class="text-lg font-bold uppercase" x-html="modalData.description"></h6>
+                <h6 class="text-md mb-4 font-bold uppercase" x-html="modalData.description"></h6>
                 <template x-if="modalData.content">
                     <div
                         class="dark:text-white-dark/70 text-base font-medium text-[#1f2937]"

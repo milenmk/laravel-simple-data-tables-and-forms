@@ -47,6 +47,14 @@
                     @if ($field->required) required @endif
                 />
 
+                @php
+                    $attributes = "";
+
+                    foreach ($field->attributes as $key => $value) {
+                        $attributes .= $key . '="' . e($value) . '" ';
+                    }
+                @endphp
+
                 {{-- Trigger Button --}}
                 <button
                     type="button"
@@ -54,9 +62,7 @@
                     :disabled="{{ $field->isDisabled() ? "true" : "false" }}"
                     class="searchable-select-trigger {{ $field->multiple ? "form-multiselect" : "form-select" }} {{ $field->isDisabled() ? "cursor-not-allowed opacity-50" : "" }} flex w-full items-center justify-between text-left"
                     :class="{ 'text-gray-400': selectedOptions.length === 0 }"
-                    @foreach ($field->attributes as $key => $value)
-                        {{ $key }}="{{ $value }}"
-                    @endforeach
+                    {{ $attributes }}
                 >
                     <div class="flex min-w-0 flex-1 flex-wrap gap-1">
                         <template x-if="!multiple && selectedOptions.length === 0">

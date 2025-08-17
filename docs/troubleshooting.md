@@ -650,6 +650,6 @@ If you're still experiencing issues:
 
 For more specific issues, refer to the individual documentation sections:
 
-- [Tables Documentation](tables/)
-- [Forms Documentation](forms/)
+- [Tables Documentation](tables/getting-started.md)
+- [Forms Documentation](forms/getting-started.md)
 - [Configuration Guide](tables/configuration.md)
