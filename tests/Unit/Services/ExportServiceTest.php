@@ -12,6 +12,7 @@ use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\TextColumn;
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -32,9 +33,7 @@ class ExportServiceTest extends BaseTest
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function is_package_available_for_excel_formats(): void
     {
         $this->assertTrue($this->exportService->isPackageAvailable('csv'));
@@ -50,9 +49,7 @@ class ExportServiceTest extends BaseTest
         $this->assertEquals($hasDomPdf, $this->exportService->isPackageAvailable('pdf'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_required_package_returns_correct_packages(): void
     {
         $this->assertEquals('phpoffice/phpspreadsheet', $this->exportService->getRequiredPackage('xls'));
@@ -63,9 +60,7 @@ class ExportServiceTest extends BaseTest
         $this->assertNull($this->exportService->getRequiredPackage('unknown'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function to_csv_export(): void
     {
         // Mock the query builder
@@ -107,9 +102,8 @@ class ExportServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function format_value_handles_different_types(): void
     {
         $reflection = new ReflectionClass($this->exportService);
@@ -127,7 +121,7 @@ class ExportServiceTest extends BaseTest
         // Test object with __toString
         $obj = new class
         {
-            public function __toString(): string
+            public function __to_string(): string
             {
                 return 'stringable object';
             }
@@ -144,9 +138,8 @@ class ExportServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function format_value_handles_enum(): void
     {
         if (PHP_VERSION_ID < 80100) {
@@ -172,9 +165,8 @@ class ExportServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function get_export_filename_generates_correct_format(): void
     {
         Config::set('simple-datatables-and-forms.export.filename_prefix', 'test_export');
@@ -189,9 +181,7 @@ class ExportServiceTest extends BaseTest
         $this->assertMatchesRegularExpression('/test_export_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.csv/', $filename);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function to_excel_delegates_to_correct_format(): void
     {
         if (! class_exists('\PhpOffice\PhpSpreadsheet\Spreadsheet')) {

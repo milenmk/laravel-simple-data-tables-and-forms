@@ -6,13 +6,12 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Table\Columns;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\CheckBoxColumn;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 
 class CheckBoxColumnTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_column_creation(): void
     {
         $column = new CheckBoxColumn('selected');
@@ -20,9 +19,7 @@ class CheckBoxColumnTest extends BaseTest
         $this->assertEquals('selected', $column->key);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_column_has_correct_view(): void
     {
         $column = new CheckBoxColumn('selected');
@@ -36,9 +33,7 @@ class CheckBoxColumnTest extends BaseTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_column_inherits_column_functionality(): void
     {
         $column = new CheckBoxColumn('bulk_select');
@@ -53,9 +48,7 @@ class CheckBoxColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_column_with_fluent_interface(): void
     {
         $column = new CheckBoxColumn('select_item');

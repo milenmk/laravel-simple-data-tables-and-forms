@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Exceptions;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Exceptions\FilterConfigurationException;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class FilterConfigurationExceptionTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function conflicting_configuration_creates_exception_with_message(): void
     {
         $message = 'Filter configuration conflict detected';
@@ -21,9 +20,7 @@ class FilterConfigurationExceptionTest extends TestCase
         $this->assertEquals($message, $exception->getMessage());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function conflicting_configuration_with_empty_message(): void
     {
         $message = '';
@@ -33,9 +30,7 @@ class FilterConfigurationExceptionTest extends TestCase
         $this->assertEquals($message, $exception->getMessage());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function conflicting_configuration_with_complex_message(): void
     {
         $message = 'Cannot use both "options" and "query" parameters simultaneously in SelectFilter configuration';

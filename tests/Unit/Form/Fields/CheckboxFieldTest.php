@@ -6,15 +6,14 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Fields;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\CheckboxField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 class CheckboxFieldTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_field_creation(): void
     {
         $field = new CheckboxField('active');
@@ -25,9 +24,7 @@ class CheckboxFieldTest extends BaseTest
         $this->assertFalse($field->inline);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_field_checked_value_configuration(): void
     {
         $field = new CheckboxField('active');
@@ -37,9 +34,7 @@ class CheckboxFieldTest extends BaseTest
         $this->assertSame($field, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_field_unchecked_value_configuration(): void
     {
         $field = new CheckboxField('active');
@@ -49,9 +44,7 @@ class CheckboxFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_field_inline_configuration(): void
     {
         $field = new CheckboxField('active');
@@ -70,9 +63,7 @@ class CheckboxFieldTest extends BaseTest
         $this->assertTrue($field->inline);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_field_with_boolean_values(): void
     {
         $field = new CheckboxField('terms_accepted');
@@ -82,9 +73,7 @@ class CheckboxFieldTest extends BaseTest
         $this->assertFalse($field->uncheckedValue);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_field_with_string_values(): void
     {
         $field = new CheckboxField('newsletter');
@@ -94,9 +83,7 @@ class CheckboxFieldTest extends BaseTest
         $this->assertEquals('unsubscribe', $field->uncheckedValue);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkbox_field_fluent_interface(): void
     {
         $field = new CheckboxField('active');
@@ -116,9 +103,8 @@ class CheckboxFieldTest extends BaseTest
      * @throws ContainerExceptionInterface
      * @throws Throwable
      * @throws NotFoundExceptionInterface
-     *
-     * @test
      */
+    #[Test]
     public function checkbox_field_render(): void
     {
         $field = new CheckboxField('active');

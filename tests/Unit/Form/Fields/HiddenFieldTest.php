@@ -6,13 +6,12 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Fields;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\HiddenField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use Throwable;
 
 class HiddenFieldTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function hidden_field_creation(): void
     {
         $field = new HiddenField('user_id');
@@ -23,9 +22,8 @@ class HiddenFieldTest extends BaseTest
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function hidden_field_render(): void
     {
         $field = new HiddenField('user_id');
@@ -38,9 +36,8 @@ class HiddenFieldTest extends BaseTest
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function hidden_field_render_without_value(): void
     {
         $field = new HiddenField('token');

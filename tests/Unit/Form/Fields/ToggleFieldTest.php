@@ -6,15 +6,14 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Fields;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\ToggleField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 class ToggleFieldTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_creation(): void
     {
         $field = new ToggleField('active');
@@ -28,9 +27,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertEquals('primary', $field->color);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_on_value_configuration(): void
     {
         $field = new ToggleField('active');
@@ -40,9 +37,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertSame($field, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_off_value_configuration(): void
     {
         $field = new ToggleField('active');
@@ -52,9 +47,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_on_label_configuration(): void
     {
         $field = new ToggleField('active');
@@ -64,9 +57,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_off_label_configuration(): void
     {
         $field = new ToggleField('active');
@@ -76,9 +67,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_color_configuration(): void
     {
         $field = new ToggleField('active');
@@ -88,9 +77,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_size_configuration(): void
     {
         $field = new ToggleField('active');
@@ -100,9 +87,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_small_helper(): void
     {
         $field = new ToggleField('active');
@@ -112,9 +97,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_large_helper(): void
     {
         $field = new ToggleField('active');
@@ -124,9 +107,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_with_boolean_values(): void
     {
         $field = new ToggleField('terms_accepted');
@@ -136,9 +117,7 @@ class ToggleFieldTest extends BaseTest
         $this->assertFalse($field->offValue);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_field_fluent_interface(): void
     {
         $field = new ToggleField('notifications');
@@ -164,9 +143,8 @@ class ToggleFieldTest extends BaseTest
      * @throws ContainerExceptionInterface
      * @throws Throwable
      * @throws NotFoundExceptionInterface
-     *
-     * @test
      */
+    #[Test]
     public function toggle_field_render(): void
     {
         $field = new ToggleField('active');

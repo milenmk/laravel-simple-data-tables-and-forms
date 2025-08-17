@@ -6,6 +6,7 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Icons;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Milenmk\LaravelSimpleDatatablesAndForms\Icons\IconManager;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class IconManagerTest extends TestCase
@@ -18,9 +19,7 @@ class IconManagerTest extends TestCase
         $this->iconManager = new IconManager;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_icons_as_strings(): void
     {
         $icons = [
@@ -34,14 +33,12 @@ class IconManagerTest extends TestCase
         $this->assertEquals('<svg>delete icon</svg>', $this->iconManager->resolve('delete'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_icons_as_htmlable(): void
     {
         $htmlableIcon = new class implements Htmlable
         {
-            public function toHtml(): string
+            public function to_html(): string
             {
                 return '<svg>htmlable icon</svg>';
             }
@@ -56,14 +53,12 @@ class IconManagerTest extends TestCase
         $this->assertSame($htmlableIcon, $this->iconManager->resolve('custom'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_mixed_icon_types(): void
     {
         $htmlableIcon = new class implements Htmlable
         {
-            public function toHtml(): string
+            public function to_html(): string
             {
                 return '<svg>htmlable icon</svg>';
             }
@@ -80,9 +75,7 @@ class IconManagerTest extends TestCase
         $this->assertSame($htmlableIcon, $this->iconManager->resolve('htmlable_icon'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_multiple_times_merges_icons(): void
     {
         $firstBatch = [
@@ -104,9 +97,7 @@ class IconManagerTest extends TestCase
         $this->assertEquals('<svg>view icon</svg>', $this->iconManager->resolve('view'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_overwrites_existing_icons(): void
     {
         $firstBatch = [
@@ -123,9 +114,7 @@ class IconManagerTest extends TestCase
         $this->assertEquals('<svg>new edit icon</svg>', $this->iconManager->resolve('edit'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resolve_with_string_alias(): void
     {
         $icons = [
@@ -137,9 +126,7 @@ class IconManagerTest extends TestCase
         $this->assertEquals('<svg>edit icon</svg>', $this->iconManager->resolve('edit'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resolve_with_array_alias_returns_first_match(): void
     {
         $icons = [
@@ -154,9 +141,7 @@ class IconManagerTest extends TestCase
         $this->assertEquals('<svg>pencil icon</svg>', $this->iconManager->resolve(['missing', 'pencil']));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resolve_with_array_alias_returns_null_when_no_match(): void
     {
         $icons = [
@@ -168,9 +153,7 @@ class IconManagerTest extends TestCase
         $this->assertNull($this->iconManager->resolve(['missing1', 'missing2']));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resolve_returns_null_for_non_existent_icon(): void
     {
         $icons = [
@@ -182,17 +165,13 @@ class IconManagerTest extends TestCase
         $this->assertNull($this->iconManager->resolve('non_existent'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resolve_returns_null_for_empty_icons(): void
     {
         $this->assertNull($this->iconManager->resolve('any_icon'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_empty_array(): void
     {
         $this->iconManager->register([]);

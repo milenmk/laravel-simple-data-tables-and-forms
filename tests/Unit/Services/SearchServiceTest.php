@@ -13,6 +13,7 @@ use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\TextColumn;
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use ReflectionException;
 
@@ -32,9 +33,7 @@ class SearchServiceTest extends BaseTest
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function apply_search_returns_query_when_search_is_empty(): void
     {
         $query = Mockery::mock(Builder::class);
@@ -45,9 +44,7 @@ class SearchServiceTest extends BaseTest
         $this->assertSame($query, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function apply_search_with_like_mode(): void
     {
         Config::set('simple-datatables-and-forms.search.min_characters', 2);
@@ -76,9 +73,7 @@ class SearchServiceTest extends BaseTest
         $this->assertSame($query, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function apply_search_with_exact_mode(): void
     {
         Config::set('simple-datatables-and-forms.search.min_characters', 2);
@@ -105,9 +100,7 @@ class SearchServiceTest extends BaseTest
         $this->assertSame($query, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function apply_search_with_fulltext_mode_fallback_to_like(): void
     {
         Config::set('simple-datatables-and-forms.search.min_characters', 2);
@@ -145,9 +138,7 @@ class SearchServiceTest extends BaseTest
         $this->assertSame($query, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function apply_search_returns_query_when_no_searchable_columns(): void
     {
         Config::set('simple-datatables-and-forms.search.min_characters', 2);
@@ -170,9 +161,8 @@ class SearchServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function can_use_fulltext_returns_false_for_non_mysql(): void
     {
         $query = Mockery::mock(Builder::class);
@@ -192,9 +182,8 @@ class SearchServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function can_use_fulltext_returns_false_when_no_table_name(): void
     {
         $query = Mockery::mock(Builder::class);
@@ -218,9 +207,8 @@ class SearchServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function can_use_fulltext_returns_false_when_no_searchable_columns(): void
     {
         $query = Mockery::mock(Builder::class);
@@ -248,9 +236,8 @@ class SearchServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function apply_fulltext_search_mysql(): void
     {
         $query = Mockery::mock(Builder::class);
@@ -284,9 +271,8 @@ class SearchServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function apply_fulltext_search_postgresql(): void
     {
         $query = Mockery::mock(Builder::class);
@@ -318,9 +304,8 @@ class SearchServiceTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function apply_fulltext_search_returns_query_when_no_searchable_columns(): void
     {
         $query = Mockery::mock(Builder::class);

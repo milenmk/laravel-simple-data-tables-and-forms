@@ -9,6 +9,7 @@ use Milenmk\LaravelSimpleDatatablesAndForms\Commands\PublishAssetsCommand;
 use Milenmk\LaravelSimpleDatatablesAndForms\Services\AssetService;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Command\Command;
 
 class PublishAssetsCommandTest extends BaseTest
@@ -27,18 +28,14 @@ class PublishAssetsCommandTest extends BaseTest
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function command_has_correct_signature_and_description(): void
     {
         $this->assertEquals('simple-datatables-and-forms:publish-assets', $this->command->getName());
         $this->assertEquals('Publish assets for Laravel Simple Datatables', $this->command->getDescription());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handle_creates_directories_and_copies_files_when_they_exist(): void
     {
         // Mock File facade
@@ -89,9 +86,7 @@ class PublishAssetsCommandTest extends BaseTest
         $result->assertExitCode(Command::SUCCESS);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handle_creates_placeholder_files_when_package_files_dont_exist(): void
     {
         // Mock File facade
@@ -141,9 +136,7 @@ class PublishAssetsCommandTest extends BaseTest
         $result->assertExitCode(Command::SUCCESS);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handle_skips_directory_creation_when_directories_exist(): void
     {
         // Mock directories already exist

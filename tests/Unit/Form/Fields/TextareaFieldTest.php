@@ -6,15 +6,14 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Fields;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\TextareaField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 class TextareaFieldTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function textarea_field_creation(): void
     {
         $field = new TextareaField('description');
@@ -27,9 +26,7 @@ class TextareaFieldTest extends BaseTest
         $this->assertFalse($field->autosize);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function textarea_field_rows_configuration(): void
     {
         $field = new TextareaField('description');
@@ -39,9 +36,7 @@ class TextareaFieldTest extends BaseTest
         $this->assertSame($field, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function textarea_field_cols_configuration(): void
     {
         $field = new TextareaField('description');
@@ -51,9 +46,7 @@ class TextareaFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function textarea_field_min_length_configuration(): void
     {
         $field = new TextareaField('description');
@@ -63,9 +56,7 @@ class TextareaFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function textarea_field_max_length_configuration(): void
     {
         $field = new TextareaField('description');
@@ -75,9 +66,7 @@ class TextareaFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function textarea_field_autosize_configuration(): void
     {
         $field = new TextareaField('description');
@@ -96,9 +85,7 @@ class TextareaFieldTest extends BaseTest
         $this->assertTrue($field->autosize);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function textarea_field_fluent_interface(): void
     {
         $field = new TextareaField('description');
@@ -122,9 +109,8 @@ class TextareaFieldTest extends BaseTest
      * @throws ContainerExceptionInterface
      * @throws Throwable
      * @throws NotFoundExceptionInterface
-     *
-     * @test
      */
+    #[Test]
     public function textarea_field_render(): void
     {
         $field = new TextareaField('description');

@@ -22,9 +22,6 @@ class InputFieldTest extends BaseTest
         View::share('errors', new ViewErrorBag);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_be_created()
     {
@@ -33,9 +30,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('name', $field->name);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_label()
     {
@@ -44,9 +38,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('Full Name', $field->getLabel());
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_placeholder()
     {
@@ -55,9 +46,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('Enter your name', $field->placeholder);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_be_required()
     {
@@ -68,8 +56,6 @@ class InputFieldTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
     #[Test]
     public function input_field_can_be_disabled()
@@ -79,9 +65,6 @@ class InputFieldTest extends BaseTest
         $this->assertTrue($field->isDisabled());
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_default_value()
     {
@@ -90,9 +73,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('John Doe', $field->default);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_max_length()
     {
@@ -101,9 +81,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals(255, $field->maxLength);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_min_length()
     {
@@ -112,9 +89,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals(3, $field->minLength);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_email_type()
     {
@@ -123,9 +97,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('email', $field->type);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_password_type()
     {
@@ -134,9 +105,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('password', $field->type);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_number_type()
     {
@@ -145,9 +113,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('number', $field->type);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_url_type()
     {
@@ -156,9 +121,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('url', $field->type);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_tel_type()
     {
@@ -167,9 +129,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('tel', $field->type);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_date_type()
     {
@@ -178,9 +137,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('date', $field->type);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_time_type()
     {
@@ -189,9 +145,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('time', $field->type);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_datetime_type()
     {
@@ -200,9 +153,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('datetime-local', $field->type);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_pattern()
     {
@@ -211,9 +161,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('[A-Z0-9]+', $field->pattern);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_min_max_for_numbers()
     {
@@ -226,9 +173,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals(120, $field->max);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_step()
     {
@@ -239,9 +183,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals(1, $field->step);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_helper_text()
     {
@@ -250,9 +191,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('Must be unique', $field->helperText);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_column_span()
     {
@@ -261,9 +199,6 @@ class InputFieldTest extends BaseTest
         $this->assertEquals('2', $field->columnSpan);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_can_set_attributes()
     {
@@ -277,8 +212,6 @@ class InputFieldTest extends BaseTest
      * @throws ContainerExceptionInterface
      * @throws Throwable
      * @throws NotFoundExceptionInterface
-     *
-     * @test
      */
     #[Test]
     public function input_field_renders_as_string()
@@ -295,9 +228,6 @@ class InputFieldTest extends BaseTest
         $this->assertStringContainsString('name="name"', $rendered);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function input_field_gets_validation_rules()
     {

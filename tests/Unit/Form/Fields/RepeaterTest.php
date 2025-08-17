@@ -8,15 +8,14 @@ use Livewire\Component;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\InputField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\Repeater;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 class RepeaterTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_creation(): void
     {
         $field = new Repeater('items');
@@ -33,9 +32,7 @@ class RepeaterTest extends BaseTest
         $this->assertEquals('Delete', $field->deleteLabel);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_schema_configuration(): void
     {
         $field = new Repeater('items');
@@ -47,9 +44,7 @@ class RepeaterTest extends BaseTest
         $this->assertSame($field, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_min_items_configuration(): void
     {
         $field = new Repeater('items');
@@ -59,9 +54,7 @@ class RepeaterTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_max_items_configuration(): void
     {
         $field = new Repeater('items');
@@ -71,9 +64,7 @@ class RepeaterTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_relationship_configuration(): void
     {
         $field = new Repeater('items');
@@ -83,9 +74,7 @@ class RepeaterTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_collapsible_configuration(): void
     {
         $field = new Repeater('items');
@@ -104,9 +93,7 @@ class RepeaterTest extends BaseTest
         $this->assertTrue($field->collapsible);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_cloneable_configuration(): void
     {
         $field = new Repeater('items');
@@ -125,9 +112,7 @@ class RepeaterTest extends BaseTest
         $this->assertTrue($field->cloneable);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_deletable_configuration(): void
     {
         $field = new Repeater('items');
@@ -146,9 +131,7 @@ class RepeaterTest extends BaseTest
         $this->assertTrue($field->deletable);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_add_label_configuration(): void
     {
         $field = new Repeater('items');
@@ -158,9 +141,7 @@ class RepeaterTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_delete_label_configuration(): void
     {
         $field = new Repeater('items');
@@ -170,9 +151,7 @@ class RepeaterTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_validation_rules_basic(): void
     {
         $field = new Repeater('items');
@@ -185,9 +164,7 @@ class RepeaterTest extends BaseTest
         $this->assertContains('max:5', $rules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_validation_rules_without_min_max(): void
     {
         $field = new Repeater('items');
@@ -200,9 +177,7 @@ class RepeaterTest extends BaseTest
         $this->assertContains('max:10', $rules); // maxItems is 10 by default
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_validation_rules_with_schema(): void
     {
         $field = new Repeater('items');
@@ -229,9 +204,7 @@ class RepeaterTest extends BaseTest
         $this->assertContains('email', $emailRules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_validation_rules_with_schema_without_validation(): void
     {
         $field = new Repeater('items');
@@ -251,9 +224,7 @@ class RepeaterTest extends BaseTest
         $this->assertArrayNotHasKey('items.*.mock_field', $rules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repeater_field_fluent_interface(): void
     {
         $field = new Repeater('addresses');
@@ -286,9 +257,8 @@ class RepeaterTest extends BaseTest
      * @throws ContainerExceptionInterface
      * @throws Throwable
      * @throws NotFoundExceptionInterface
-     *
-     * @test
      */
+    #[Test]
     public function repeater_field_render(): void
     {
         $field = new Repeater('items');

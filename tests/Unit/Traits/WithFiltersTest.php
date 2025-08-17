@@ -10,6 +10,7 @@ use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use Milenmk\LaravelSimpleDatatablesAndForms\Traits\WithFilters;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use ReflectionException;
 
@@ -44,9 +45,7 @@ class WithFiltersTest extends BaseTest
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function with_filters_initialization(): void
     {
         $this->assertFalse($this->component->showFilters);
@@ -55,9 +54,7 @@ class WithFiltersTest extends BaseTest
         $this->assertEquals(0, $this->component->appliedFiltersCount);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_show_filters(): void
     {
         $this->assertFalse($this->component->getShowFilters());
@@ -66,9 +63,7 @@ class WithFiltersTest extends BaseTest
         $this->assertTrue($this->component->getShowFilters());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function set_show_filters(): void
     {
         $this->component->setShowFilters(true);
@@ -78,9 +73,7 @@ class WithFiltersTest extends BaseTest
         $this->assertFalse($this->component->showFilters);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_filters(): void
     {
         $this->assertFalse($this->component->showFilters);
@@ -92,9 +85,7 @@ class WithFiltersTest extends BaseTest
         $this->assertFalse($this->component->showFilters);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_table_filter_views(): void
     {
         $views = ['filter1' => 'view1'];
@@ -103,9 +94,7 @@ class WithFiltersTest extends BaseTest
         $this->assertEquals($views, $this->component->getTableFilterViews());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_applied_filters_count(): void
     {
         $this->assertEquals(0, $this->component->getAppliedFiltersCount());
@@ -114,9 +103,7 @@ class WithFiltersTest extends BaseTest
         $this->assertEquals(3, $this->component->getAppliedFiltersCount());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function remove_filter_with_array_value(): void
     {
         $this->component->filters = [
@@ -128,9 +115,7 @@ class WithFiltersTest extends BaseTest
         $this->assertEquals(['active', 'inactive'], $this->component->filters['status']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function remove_filter_removes_empty_array(): void
     {
         $this->component->filters = [
@@ -142,9 +127,7 @@ class WithFiltersTest extends BaseTest
         $this->assertArrayNotHasKey('status', $this->component->filters);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function remove_filter_with_non_array_value(): void
     {
         $this->component->filters = [
@@ -158,9 +141,7 @@ class WithFiltersTest extends BaseTest
         $this->assertArrayHasKey('status', $this->component->filters);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function remove_filter_with_non_existent_value(): void
     {
         $this->component->filters = [
@@ -173,9 +154,7 @@ class WithFiltersTest extends BaseTest
         $this->assertEquals(['active', 'pending'], $this->component->filters['status']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updated_filters_resets_page(): void
     {
         // This test verifies that the updatedFilters method exists and can be called
@@ -187,9 +166,8 @@ class WithFiltersTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function apply_filters_to_query(): void
     {
         // Create a mock filter
@@ -235,9 +213,8 @@ class WithFiltersTest extends BaseTest
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function apply_filters_to_query_with_empty_filter(): void
     {
         // Create a mock filter

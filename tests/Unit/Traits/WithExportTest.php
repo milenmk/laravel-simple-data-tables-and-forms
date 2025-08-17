@@ -12,6 +12,7 @@ use Milenmk\LaravelSimpleDatatablesAndForms\Table\Table;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use Milenmk\LaravelSimpleDatatablesAndForms\Traits\WithExport;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class WithExportTest extends BaseTest
@@ -50,9 +51,7 @@ class WithExportTest extends BaseTest
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function export_returns_null_when_disabled_in_config(): void
     {
         Config::set('simple-datatables-and-forms.export.enable', false);
@@ -62,9 +61,7 @@ class WithExportTest extends BaseTest
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function export_uses_default_format_when_invalid_format_provided(): void
     {
         Config::set('simple-datatables-and-forms.export.enable', true);
@@ -92,9 +89,7 @@ class WithExportTest extends BaseTest
         $this->assertInstanceOf(StreamedResponse::class, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function export_returns_null_when_required_package_not_available(): void
     {
         Config::set('simple-datatables-and-forms.export.enable', true);
@@ -118,9 +113,7 @@ class WithExportTest extends BaseTest
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function export_csv_success(): void
     {
         Config::set('simple-datatables-and-forms.export.enable', true);
@@ -146,9 +139,7 @@ class WithExportTest extends BaseTest
         $this->assertInstanceOf(StreamedResponse::class, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function export_excel_success(): void
     {
         Config::set('simple-datatables-and-forms.export.enable', true);
@@ -174,9 +165,7 @@ class WithExportTest extends BaseTest
         $this->assertInstanceOf(StreamedResponse::class, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function export_filename_generation(): void
     {
         Config::set('simple-datatables-and-forms.export.filename_prefix', 'test_export');
@@ -189,9 +178,7 @@ class WithExportTest extends BaseTest
         $this->assertMatchesRegularExpression('/test_export_.*_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.csv/', $filename);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function export_applies_search_when_present(): void
     {
         Config::set('simple-datatables-and-forms.export.enable', true);

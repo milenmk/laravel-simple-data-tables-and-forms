@@ -7,6 +7,7 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Services;
 use Illuminate\Support\Facades\Config;
 use Milenmk\LaravelSimpleDatatablesAndForms\Services\AssetService;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 
 class AssetServiceTest extends BaseTest
 {
@@ -18,9 +19,7 @@ class AssetServiceTest extends BaseTest
         $this->assetService = new AssetService;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_css_path_returns_correct_path(): void
     {
         $path = $this->assetService->getCssPath();
@@ -28,9 +27,7 @@ class AssetServiceTest extends BaseTest
         $this->assertStringContainsString('vendor/milenmk/laravel-simple-datatables-and-forms/css/package.css', $path);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_js_path_returns_correct_path(): void
     {
         $path = $this->assetService->getJsPath();
@@ -38,9 +35,7 @@ class AssetServiceTest extends BaseTest
         $this->assertStringContainsString('vendor/milenmk/laravel-simple-datatables-and-forms/js/package.js', $path);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_css_tag_with_lazy_load_enabled(): void
     {
         Config::set('simple-datatables-and-forms.assets.lazy_load', true);
@@ -54,9 +49,7 @@ class AssetServiceTest extends BaseTest
         $this->assertStringContainsString('crossorigin', $tag);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_css_tag_with_lazy_load_disabled(): void
     {
         Config::set('simple-datatables-and-forms.assets.lazy_load', false);
@@ -70,9 +63,7 @@ class AssetServiceTest extends BaseTest
         $this->assertStringNotContainsString('<noscript>', $tag);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_js_tag_with_defer_enabled(): void
     {
         Config::set('simple-datatables-and-forms.assets.defer_js', true);
@@ -85,9 +76,7 @@ class AssetServiceTest extends BaseTest
         $this->assertStringContainsString('</script>', $tag);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_js_tag_with_defer_disabled(): void
     {
         Config::set('simple-datatables-and-forms.assets.defer_js', false);
@@ -100,9 +89,7 @@ class AssetServiceTest extends BaseTest
         $this->assertStringNotContainsString('defer', $tag);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function css_and_js_tags_contain_correct_paths(): void
     {
         // Config::shouldReceive('get')->andReturn(true);

@@ -7,15 +7,14 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Fields;
 use Livewire\Component;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\FileUploadField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 class FileUploadFieldTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_creation(): void
     {
         $field = new FileUploadField('document');
@@ -32,9 +31,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertFalse($field->imagePreview);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_multiple_configuration(): void
     {
         $field = new FileUploadField('documents');
@@ -45,9 +42,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertSame($field, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_multiple_disabled(): void
     {
         $field = new FileUploadField('document');
@@ -57,9 +52,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertFalse($field->multiple);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_accept_configuration(): void
     {
         $field = new FileUploadField('document');
@@ -69,9 +62,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_max_size_configuration(): void
     {
         $field = new FileUploadField('document');
@@ -81,9 +72,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_max_files_configuration(): void
     {
         $field = new FileUploadField('documents');
@@ -93,9 +82,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_directory_configuration(): void
     {
         $field = new FileUploadField('document');
@@ -105,9 +92,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_visibility_configuration(): void
     {
         $field = new FileUploadField('document');
@@ -117,9 +102,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_image_configuration(): void
     {
         $field = new FileUploadField('avatar');
@@ -130,9 +113,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_accepted_file_types_with_common_types(): void
     {
         $field = new FileUploadField('document');
@@ -146,9 +127,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_accepted_file_types_with_image_types(): void
     {
         $field = new FileUploadField('image');
@@ -158,9 +137,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertEquals('image/jpeg,image/png,image/gif', $field->accept);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_accepted_file_types_with_unknown_type(): void
     {
         $field = new FileUploadField('file');
@@ -170,9 +147,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertEquals('.xyz', $field->accept);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_validation_rules_single_file(): void
     {
         $field = new FileUploadField('document');
@@ -185,9 +160,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertContains('mimes:pdf,doc', $rules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_validation_rules_multiple_files(): void
     {
         $field = new FileUploadField('documents');
@@ -209,9 +182,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertContains('mimes:pdf,docx', $fileRules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_validation_rules_without_constraints(): void
     {
         $field = new FileUploadField('document');
@@ -223,9 +194,7 @@ class FileUploadFieldTest extends BaseTest
         $this->assertStringNotContainsString('mimes:', implode('', $rules));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function file_upload_field_fluent_interface(): void
     {
         $field = new FileUploadField('avatar');
@@ -252,9 +221,8 @@ class FileUploadFieldTest extends BaseTest
      * @throws ContainerExceptionInterface
      * @throws Throwable
      * @throws NotFoundExceptionInterface
-     *
-     * @test
      */
+    #[Test]
     public function file_upload_field_render(): void
     {
         $field = new FileUploadField('document');

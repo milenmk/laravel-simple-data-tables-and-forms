@@ -11,9 +11,6 @@ use Throwable;
 
 class FormTest extends BaseTest
 {
-    /**
-     * @test
-     */
     #[Test]
     public function form_can_set_model()
     {
@@ -23,9 +20,6 @@ class FormTest extends BaseTest
         $this->assertEquals('App\\Models\\User', $form->getModelClass());
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function form_can_set_columns()
     {
@@ -35,9 +29,6 @@ class FormTest extends BaseTest
         $this->assertEquals(3, $form->columns);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function form_can_set_heading()
     {
@@ -52,9 +43,6 @@ class FormTest extends BaseTest
         $this->assertEquals($heading, $form->heading);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function form_can_add_fields()
     {
@@ -70,9 +58,6 @@ class FormTest extends BaseTest
         $this->assertEquals('email', $fields[1]->name);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function form_can_add_sections()
     {
@@ -92,8 +77,6 @@ class FormTest extends BaseTest
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
     #[Test]
     public function form_renders_without_errors()
@@ -110,9 +93,6 @@ class FormTest extends BaseTest
         $this->assertStringContainsString('form-container', $rendered);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function form_can_set_theme()
     {
@@ -122,9 +102,6 @@ class FormTest extends BaseTest
         $this->assertEquals('dark', $form->theme);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function form_validation_rules_are_collected()
     {
@@ -145,9 +122,6 @@ class FormTest extends BaseTest
         $this->assertContains('required', $rules['formData.email']);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function form_can_fill_data()
     {

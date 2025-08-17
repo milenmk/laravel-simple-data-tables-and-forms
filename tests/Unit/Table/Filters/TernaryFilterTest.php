@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Filters\TernaryFilter;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 
 class TernaryFilterTest extends BaseTest
 {
@@ -17,9 +18,7 @@ class TernaryFilterTest extends BaseTest
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_creation(): void
     {
         $filter = new TernaryFilter('active');
@@ -28,9 +27,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertTrue($filter->toggle);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_toggle_configuration(): void
     {
         $filter = new TernaryFilter('published');
@@ -49,9 +46,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertTrue($filter->toggle);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_apply_with_true_boolean(): void
     {
         $filter = new TernaryFilter('active');
@@ -69,9 +64,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_apply_with_true_string(): void
     {
         $filter = new TernaryFilter('active');
@@ -89,9 +82,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_apply_with_false_boolean(): void
     {
         $filter = new TernaryFilter('active');
@@ -109,9 +100,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_apply_with_false_string(): void
     {
         $filter = new TernaryFilter('active');
@@ -129,9 +118,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_apply_with_null_value(): void
     {
         $filter = new TernaryFilter('active');
@@ -146,9 +133,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_apply_with_custom_closure(): void
     {
         $customQuery = function ($query, $value) {
@@ -171,9 +156,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_render(): void
     {
         $filter = new TernaryFilter('active');
@@ -185,9 +168,7 @@ class TernaryFilterTest extends BaseTest
         $this->assertEquals($filter, $view->getData()['filter']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ternary_filter_fluent_interface(): void
     {
         $filter = new TernaryFilter('published');

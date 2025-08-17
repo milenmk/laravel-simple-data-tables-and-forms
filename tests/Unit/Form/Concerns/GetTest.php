@@ -6,12 +6,11 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Concerns;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Get;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 
 class GetTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function get_creation_with_empty_data(): void
     {
         $get = new Get;
@@ -19,9 +18,7 @@ class GetTest extends BaseTest
         $this->assertEquals([], $get->all());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_creation_with_initial_data(): void
     {
         $data = ['name' => 'John', 'email' => 'john@example.com'];
@@ -30,9 +27,7 @@ class GetTest extends BaseTest
         $this->assertEquals($data, $get->all());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_invoke_method(): void
     {
         $data = ['name' => 'John', 'email' => 'john@example.com'];
@@ -43,9 +38,7 @@ class GetTest extends BaseTest
         $this->assertNull($get('nonexistent'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_method(): void
     {
         $data = ['name' => 'John', 'email' => 'john@example.com'];
@@ -56,9 +49,7 @@ class GetTest extends BaseTest
         $this->assertNull($get->get('nonexistent'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function set_form_data(): void
     {
         $get = new Get;
@@ -71,9 +62,7 @@ class GetTest extends BaseTest
         $this->assertEquals(25, $get->get('age'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function has_method(): void
     {
         $data = ['name' => 'John', 'email' => null, 'active' => false];
@@ -85,9 +74,7 @@ class GetTest extends BaseTest
         $this->assertFalse($get->has('nonexistent'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function is_empty_method(): void
     {
         $data = [
@@ -109,9 +96,7 @@ class GetTest extends BaseTest
         $this->assertTrue($get->isEmpty('nonexistent'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function is_not_empty_method(): void
     {
         $data = [
@@ -127,9 +112,7 @@ class GetTest extends BaseTest
         $this->assertFalse($get->isNotEmpty('nonexistent'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function all_method(): void
     {
         $data = ['name' => 'John', 'email' => 'john@example.com', 'age' => 30];
@@ -138,9 +121,7 @@ class GetTest extends BaseTest
         $this->assertEquals($data, $get->all());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updating_form_data(): void
     {
         $initialData = ['name' => 'John'];

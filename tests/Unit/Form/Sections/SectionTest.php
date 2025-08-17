@@ -7,12 +7,11 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Sections;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\InputField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Sections\Section;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 
 class SectionTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function section_creation(): void
     {
         $section = new Section('personal_info');
@@ -38,9 +37,7 @@ class SectionTest extends BaseTest
         $this->assertNull($section->extraAttributesCallback);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_make_static_method(): void
     {
         $section = Section::make('contact_info');
@@ -48,9 +45,7 @@ class SectionTest extends BaseTest
         $this->assertEquals('contact_info', $section->name);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_label_configuration(): void
     {
         $section = new Section('personal_info');
@@ -60,9 +55,7 @@ class SectionTest extends BaseTest
         $this->assertSame($section, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_description_configuration(): void
     {
         $section = new Section('personal_info');
@@ -72,9 +65,7 @@ class SectionTest extends BaseTest
         $this->assertSame($section, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_fields_configuration(): void
     {
         $section = new Section('personal_info');
@@ -87,9 +78,7 @@ class SectionTest extends BaseTest
         $this->assertSame($section, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_schema_configuration(): void
     {
         $section = new Section('personal_info');
@@ -102,9 +91,7 @@ class SectionTest extends BaseTest
         $this->assertSame($section, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_columns_configuration(): void
     {
         $section = new Section('personal_info');
@@ -114,9 +101,7 @@ class SectionTest extends BaseTest
         $this->assertSame($section, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_collapsible_configuration(): void
     {
         $section = new Section('personal_info');
@@ -135,9 +120,7 @@ class SectionTest extends BaseTest
         $this->assertTrue($section->collapsible);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_collapsed_configuration(): void
     {
         $section = new Section('personal_info');
@@ -156,9 +139,7 @@ class SectionTest extends BaseTest
         $this->assertTrue($section->collapsed);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_icon_configuration(): void
     {
         $section = new Section('personal_info');
@@ -168,9 +149,7 @@ class SectionTest extends BaseTest
         $this->assertSame($section, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_fluent_interface(): void
     {
         $fields = [new InputField('name'), new InputField('email')];
@@ -194,9 +173,7 @@ class SectionTest extends BaseTest
         $this->assertEquals('heroicon-o-phone', $section->icon);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function section_backward_compatibility_fields_and_schema(): void
     {
         $section = new Section('test');

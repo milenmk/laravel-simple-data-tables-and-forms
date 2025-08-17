@@ -6,12 +6,11 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Table\Actions;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\DeleteAction;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 
 class DeleteActionTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function delete_action_creation(): void
     {
         $action = new DeleteAction('name');
@@ -19,9 +18,7 @@ class DeleteActionTest extends BaseTest
         $this->assertEquals('heroicon-o-trash', $action->icon);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function delete_action_label_with_string(): void
     {
         $action = new DeleteAction('name');
@@ -31,9 +28,7 @@ class DeleteActionTest extends BaseTest
         $this->assertSame($action, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function delete_action_label_with_array(): void
     {
         $action = new DeleteAction('name');
@@ -44,9 +39,7 @@ class DeleteActionTest extends BaseTest
         $this->assertSame($action, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function delete_action_label_with_null_uses_default(): void
     {
         $action = new DeleteAction('name');

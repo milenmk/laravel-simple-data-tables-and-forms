@@ -6,13 +6,12 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Table\Columns;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\ToggleColumn;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 
 class ToggleColumnTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_column_creation(): void
     {
         $column = new ToggleColumn('active');
@@ -20,9 +19,7 @@ class ToggleColumnTest extends BaseTest
         $this->assertEquals('active', $column->key);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_column_has_correct_view(): void
     {
         $column = new ToggleColumn('active');
@@ -36,9 +33,7 @@ class ToggleColumnTest extends BaseTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_column_inherits_column_functionality(): void
     {
         $column = new ToggleColumn('is_enabled');
@@ -53,9 +48,7 @@ class ToggleColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function toggle_column_with_fluent_interface(): void
     {
         $column = new ToggleColumn('notifications');

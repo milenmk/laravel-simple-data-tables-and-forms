@@ -7,13 +7,12 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Table\Columns;
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\IconColumn;
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\IconColumn\IconColumnSize;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 
 class IconColumnTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_creation(): void
     {
         $column = new IconColumn('status');
@@ -21,9 +20,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('status', $column->key);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_has_correct_view(): void
     {
         $column = new IconColumn('status');
@@ -37,9 +34,7 @@ class IconColumnTest extends BaseTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_icon_configuration(): void
     {
         $column = new IconColumn('status');
@@ -52,9 +47,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_boolean_configuration(): void
     {
         $column = new IconColumn('active');
@@ -67,9 +60,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_true_icon_configuration(): void
     {
         $column = new IconColumn('active');
@@ -79,9 +70,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_false_icon_configuration(): void
     {
         $column = new IconColumn('active');
@@ -91,9 +80,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_true_color_configuration(): void
     {
         $column = new IconColumn('active');
@@ -103,9 +90,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_false_color_configuration(): void
     {
         $column = new IconColumn('active');
@@ -115,9 +100,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_true_helper_method(): void
     {
         $column = new IconColumn('active');
@@ -128,9 +111,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_false_helper_method(): void
     {
         $column = new IconColumn('active');
@@ -141,9 +122,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_size_configuration(): void
     {
         $column = new IconColumn('status');
@@ -156,9 +135,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_get_icon_for_boolean_true(): void
     {
         $column = new IconColumn('active');
@@ -171,9 +148,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('heroicon-o-check', $icon);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_get_icon_for_boolean_false(): void
     {
         $column = new IconColumn('active');
@@ -186,9 +161,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('heroicon-o-x', $icon);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_get_icon_for_null_value(): void
     {
         $column = new IconColumn('active');
@@ -198,9 +171,7 @@ class IconColumnTest extends BaseTest
         $this->assertNull($icon);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_get_icon_when_not_boolean(): void
     {
         $column = new IconColumn('status');
@@ -210,9 +181,7 @@ class IconColumnTest extends BaseTest
         $this->assertNull($icon);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_get_color_for_boolean_true(): void
     {
         $column = new IconColumn('active');
@@ -225,9 +194,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('green', $color);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_get_color_for_boolean_false(): void
     {
         $column = new IconColumn('active');
@@ -240,9 +207,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('red', $color);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_get_color_for_null_value(): void
     {
         $column = new IconColumn('active');
@@ -252,9 +217,7 @@ class IconColumnTest extends BaseTest
         $this->assertNull($color);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_get_color_when_not_boolean(): void
     {
         $column = new IconColumn('status');
@@ -264,9 +227,7 @@ class IconColumnTest extends BaseTest
         $this->assertNull($color);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_default_true_icon(): void
     {
         $column = new IconColumn('active');
@@ -275,9 +236,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('heroicon-o-check-circle', $column->getTrueIcon());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_default_false_icon(): void
     {
         $column = new IconColumn('active');
@@ -286,9 +245,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('heroicon-o-x-circle', $column->getFalseIcon());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_default_true_color(): void
     {
         $column = new IconColumn('active');
@@ -297,9 +254,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('success', $column->getTrueColor());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_default_false_color(): void
     {
         $column = new IconColumn('active');
@@ -308,9 +263,7 @@ class IconColumnTest extends BaseTest
         $this->assertEquals('danger', $column->getFalseColor());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_fluent_interface(): void
     {
         $column = new IconColumn('status');
@@ -328,9 +281,7 @@ class IconColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function icon_column_inherits_column_functionality(): void
     {
         $column = new IconColumn('status');

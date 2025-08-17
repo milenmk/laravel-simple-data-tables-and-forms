@@ -6,12 +6,11 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Table\Actions;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Actions\ViewAction;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 
 class ViewActionTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function view_action_creation(): void
     {
         $action = new ViewAction('view');
@@ -19,9 +18,7 @@ class ViewActionTest extends BaseTest
         $this->assertEquals('heroicon-o-eye', $action->icon);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function view_action_label_with_string(): void
     {
         $action = new ViewAction('view');
@@ -31,9 +28,7 @@ class ViewActionTest extends BaseTest
         $this->assertSame($action, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function view_action_label_with_array(): void
     {
         $action = new ViewAction('view');
@@ -44,9 +39,7 @@ class ViewActionTest extends BaseTest
         $this->assertSame($action, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function view_action_label_with_null_uses_default(): void
     {
         $action = new ViewAction('view');

@@ -6,15 +6,14 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Fields;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\DateTimeField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 class DateTimeFieldTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_creation(): void
     {
         $field = new DateTimeField('created_at');
@@ -28,9 +27,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertFalse($field->withSeconds);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_date_type(): void
     {
         $field = new DateTimeField('birth_date');
@@ -41,9 +38,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result); // Test fluent interface
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_time_type(): void
     {
         $field = new DateTimeField('start_time');
@@ -54,9 +49,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_datetime_type(): void
     {
         $field = new DateTimeField('appointment');
@@ -67,9 +60,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_with_seconds_for_time(): void
     {
         $field = new DateTimeField('precise_time');
@@ -81,9 +72,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_with_seconds_for_datetime(): void
     {
         $field = new DateTimeField('precise_datetime');
@@ -95,9 +84,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_with_seconds_disabled(): void
     {
         $field = new DateTimeField('appointment');
@@ -107,9 +94,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertFalse($field->withSeconds);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_min_configuration(): void
     {
         $field = new DateTimeField('appointment');
@@ -119,9 +104,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_max_configuration(): void
     {
         $field = new DateTimeField('appointment');
@@ -131,9 +114,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_step_configuration(): void
     {
         $field = new DateTimeField('appointment');
@@ -143,9 +124,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_format_configuration(): void
     {
         $field = new DateTimeField('appointment');
@@ -155,9 +134,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertSame($field, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_validation_rules_for_date(): void
     {
         $field = new DateTimeField('birth_date');
@@ -173,9 +150,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertContains('before_or_equal:2024-12-31', $rules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_validation_rules_for_time(): void
     {
         $field = new DateTimeField('start_time');
@@ -186,9 +161,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertContains('date_format:H:i', $rules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_validation_rules_for_time_with_seconds(): void
     {
         $field = new DateTimeField('precise_time');
@@ -199,9 +172,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertContains('date_format:H:i:s', $rules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_validation_rules_for_datetime(): void
     {
         $field = new DateTimeField('appointment');
@@ -217,9 +188,7 @@ class DateTimeFieldTest extends BaseTest
         $this->assertContains('before_or_equal:2024-12-31T23:59', $rules);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datetime_field_fluent_interface(): void
     {
         $field = new DateTimeField('appointment');
@@ -244,9 +213,8 @@ class DateTimeFieldTest extends BaseTest
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function datetime_field_render(): void
     {
         $field = new DateTimeField('appointment');

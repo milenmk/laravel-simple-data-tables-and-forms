@@ -6,13 +6,12 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Table\Columns;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\ProgressColumn;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 
 class ProgressColumnTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function progress_column_creation(): void
     {
         $column = new ProgressColumn('completion');
@@ -20,9 +19,7 @@ class ProgressColumnTest extends BaseTest
         $this->assertEquals('completion', $column->key);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function progress_column_has_correct_view(): void
     {
         $column = new ProgressColumn('completion');
@@ -36,9 +33,7 @@ class ProgressColumnTest extends BaseTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function progress_column_inherits_column_functionality(): void
     {
         $column = new ProgressColumn('task_progress');
@@ -53,9 +48,7 @@ class ProgressColumnTest extends BaseTest
         $this->assertSame($column, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function progress_column_with_fluent_interface(): void
     {
         $column = new ProgressColumn('upload_progress');

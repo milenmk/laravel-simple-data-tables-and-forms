@@ -6,12 +6,11 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Concerns;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Concerns\Set;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
+use PHPUnit\Framework\Attributes\Test;
 
 class SetTest extends BaseTest
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function set_creation_with_empty_data(): void
     {
         $formData = [];
@@ -20,9 +19,7 @@ class SetTest extends BaseTest
         $this->assertEquals([], $set->getPendingUpdates());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function set_creation_with_initial_data(): void
     {
         $formData = ['name' => 'John', 'email' => 'john@example.com'];
@@ -31,9 +28,7 @@ class SetTest extends BaseTest
         $this->assertEquals([], $set->getPendingUpdates());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function set_invoke_method(): void
     {
         $formData = [];
@@ -47,9 +42,7 @@ class SetTest extends BaseTest
         $this->assertEquals(['name' => 'John', 'email' => 'john@example.com'], $set->getPendingUpdates());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function set_method(): void
     {
         $formData = [];
@@ -63,9 +56,7 @@ class SetTest extends BaseTest
         $this->assertEquals(['name' => 'Jane', 'age' => 25], $set->getPendingUpdates());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fill_method(): void
     {
         $formData = [];
@@ -80,9 +71,7 @@ class SetTest extends BaseTest
         $this->assertEquals($data, $set->getPendingUpdates());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function clear_method(): void
     {
         $formData = ['name' => 'John', 'email' => 'john@example.com'];
@@ -95,9 +84,7 @@ class SetTest extends BaseTest
         $this->assertEquals(['name' => null], $set->getPendingUpdates());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function forget_method(): void
     {
         $formData = ['name' => 'John', 'email' => 'john@example.com'];
@@ -110,9 +97,7 @@ class SetTest extends BaseTest
         $this->assertEquals(['name' => null], $set->getPendingUpdates());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pending_updates_tracking(): void
     {
         $formData = [];
@@ -130,9 +115,7 @@ class SetTest extends BaseTest
         $this->assertEquals([], $set->getPendingUpdates());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function clear_pending_updates(): void
     {
         $formData = [];
@@ -151,9 +134,7 @@ class SetTest extends BaseTest
         $this->assertEquals('john@example.com', $formData['email']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function set_form_data_reference(): void
     {
         $originalData = ['name' => 'John'];
@@ -171,9 +152,7 @@ class SetTest extends BaseTest
         $this->assertArrayNotHasKey('age', $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function reference_behavior(): void
     {
         $formData = ['name' => 'John'];
@@ -190,9 +169,7 @@ class SetTest extends BaseTest
         $this->assertEquals('New York', $formData['city']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function overwriting_values(): void
     {
         $formData = ['name' => 'John'];
