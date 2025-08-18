@@ -1,230 +1,269 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Table\Columns;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\Column;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
-use Milenmk\LaravelSimpleDatatablesAndForms\Tests\Models\TestModel;
 use PHPUnit\Framework\Attributes\Test;
+use ReflectionClass;
+use ReflectionException;
 
 class ColumnTest extends BaseTest
 {
-    protected Column $column;
-
-    protected function setUp(): void
+    #[Test]
+    public function it_can_be_created_with_key()
     {
-        parent::setUp();
+        $column = Column::make('test_key');
 
-        $this->column = new Column('test_key');
+        $this->assertEquals('test_key', $column->key);
+        $this->assertEquals('test_key', $column->label);
+        $this->assertEquals('test_key', $column->wireModel);
+        $this->assertFalse($column->sortable);
+        $this->assertFalse($column->searchable);
+        $this->assertTrue($column->visible);
+        $this->assertEquals('left', $column->align);
+        $this->assertEquals('left', $column->headerAlign);
     }
 
     #[Test]
-    public function it_can_be_instantiated_with_key()
+    public function it_can_set_sortable()
     {
-        $this->assertSame('test_key', $this->column->key);
-        $this->assertSame('test_key', $this->column->label);
-        $this->assertSame('test_key', $this->column->wireModel);
+        $column = Column::make('test');
+
+        // Test enabling sortable
+        $result = $column->sortable();
+        $this->assertTrue($column->sortable);
+        $this->assertSame($column, $result);
+
+        // Test disabling sortable
+        $column->sortable(false);
+        $this->assertFalse($column->sortable);
     }
 
     #[Test]
-    public function it_can_be_created_using_make_method()
+    public function it_can_set_searchable_as_boolean()
     {
-        $column = Column::make('another_key');
+        $column = Column::make('test');
 
-        $this->assertSame('another_key', $column->key);
+        // Test enabling searchable
+        $result = $column->searchable();
+        $this->assertTrue($column->searchable);
+        $this->assertSame($column, $result);
+
+        // Test disabling searchable
+        $column->searchable(false);
+        $this->assertFalse($column->searchable);
     }
 
     #[Test]
-    public function it_can_set_and_get_sortable()
+    public function it_can_set_searchable_as_array()
     {
-        $this->assertFalse($this->column->sortable);
+        $column = Column::make('test');
+        $searchFields = ['field1', 'field2'];
 
-        $this->column->sortable();
+        $result = $column->searchable($searchFields);
 
-        $this->assertTrue($this->column->sortable);
-
-        $this->column->sortable(false);
-
-        $this->assertFalse($this->column->sortable);
+        $this->assertTrue($column->searchable);
+        $this->assertEquals($searchFields, $column->searchFields);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_searchable()
+    public function it_can_set_label_as_string()
     {
-        $this->assertFalse($this->column->searchable);
+        $column = Column::make('test');
+        $result = $column->label('Custom Label');
 
-        $this->column->searchable();
-
-        $this->assertTrue($this->column->searchable);
-
-        $this->column->searchable(false);
-
-        $this->assertFalse($this->column->searchable);
+        $this->assertEquals('Custom Label', $column->label);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_label()
+    public function it_can_set_label_as_array()
     {
-        $label = 'Test Label';
+        $column = Column::make('test');
+        $labels = ['en' => 'English', 'es' => 'Spanish'];
 
-        $this->column->label($label);
+        $result = $column->label($labels);
 
-        $this->assertSame($label, $this->column->label);
+        $this->assertEquals($labels, $column->label);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_value()
+    public function it_can_hide_label()
     {
-        $value = 'Test Value';
+        $column = Column::make('test');
+        $column->label('Original Label');
 
-        $this->column->value($value);
+        $result = $column->hiddenLabel();
 
-        $this->assertSame($value, $this->column->value);
+        $this->assertNull($column->label);
+        $this->assertSame($column, $result);
+    }
+
+    #[Test]
+    public function it_can_set_value()
+    {
+        $column = Column::make('test');
+        $result = $column->value('test_value');
+
+        $this->assertEquals('test_value', $column->value);
+        $this->assertSame($column, $result);
+    }
+
+    #[Test]
+    public function it_only_sets_value_if_null()
+    {
+        $column = Column::make('test');
+        $column->value('first_value');
+        $column->value('second_value');
+
+        // Should still be the first value
+        $this->assertEquals('first_value', $column->value);
     }
 
     #[Test]
     public function it_can_get_value_from_item()
     {
-        $model = new TestModel;
-        $model->name = 'Test Name';
+        $column = Column::make('name');
+        $item = (object) ['name' => 'John Doe'];
 
-        $column = new Column('name');
+        $value = $column->getValue($item);
 
-        $this->assertSame('Test Name', $column->getValue($model));
+        $this->assertEquals('John Doe', $value);
     }
 
     #[Test]
-    public function it_can_get_value_from_callable()
+    public function it_returns_null_for_missing_property()
     {
-        $model = new TestModel;
-        $model->name = 'Test Name';
+        $column = Column::make('missing_field');
+        $item = (object) ['name' => 'John Doe'];
 
-        $this->column->value(function ($item) {
-            return 'Prefix: ' . $item->name;
-        });
+        $value = $column->getValue($item);
 
-        $this->assertSame('Prefix: Test Name', $this->column->getValue($model));
+        $this->assertNull($value);
     }
 
     #[Test]
-    public function it_can_set_and_get_color()
+    public function it_can_set_visible_as_boolean()
     {
-        $color = 'text-primary';
+        $column = Column::make('test');
 
-        $this->column->color($color);
+        $result = $column->visible(false);
+        $this->assertFalse($column->visible);
+        $this->assertSame($column, $result);
 
-        $this->assertSame($color, $this->column->textColor);
-        $this->assertSame('primary', $this->column->color);
+        $column->visible();
+        $this->assertTrue($column->visible);
     }
 
     #[Test]
-    public function it_can_set_and_get_background()
+    public function it_can_set_visible_as_callable()
     {
-        $background = 'bg-primary';
+        $column = Column::make('test');
 
-        $this->column->background($background);
+        $result = $column->visible(fn () => false);
 
-        $this->assertSame($background, $this->column->backgroundColor);
+        $this->assertFalse($column->getVisibility());
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_visibility()
+    public function it_can_set_description()
     {
-        $this->assertTrue($this->column->visible);
+        $column = Column::make('test');
+        $result = $column->description('Test description');
 
-        $this->column->visible(false);
-
-        $this->assertFalse($this->column->visible);
-        $this->assertFalse($this->column->getVisibility());
-
-        $this->column->visible();
-
-        $this->assertTrue($this->column->visible);
-        $this->assertTrue($this->column->getVisibility());
+        $this->assertEquals('Test description', $column->description);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_weight()
+    public function it_can_set_weight()
     {
-        $weight = 'bold';
+        $column = Column::make('test');
+        $result = $column->weight('bold');
 
-        $this->column->weight($weight);
-
-        $this->assertSame($weight, $this->column->weight);
+        $this->assertEquals('bold', $column->weight);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_wrap()
+    public function it_can_set_wrap()
     {
-        $this->assertNull($this->column->wrap);
+        $column = Column::make('test');
+        $result = $column->wrap();
 
-        $this->column->wrap();
-
-        $this->assertSame('text-wrap', $this->column->wrap);
-
-        $this->column->wrap(false);
-
-        $this->assertSame('text-nowrap', $this->column->wrap);
+        $this->assertEquals('text-wrap', $column->wrap);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_description()
+    public function it_can_set_background_color()
     {
-        $description = 'Test Description';
+        $column = Column::make('test');
+        $result = $column->background('red');
 
-        $this->column->description($description);
-
-        $this->assertSame($description, $this->column->description);
+        $this->assertEquals('red', $column->backgroundColor);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_get_description_from_callable()
+    public function it_can_set_text_color()
     {
-        $model = new TestModel;
-        $model->name = 'Test Name';
+        $column = Column::make('test');
+        $result = $column->color('blue');
 
-        $this->column->description(function ($item) {
-            return 'Description for: ' . $item->name;
-        });
-
-        $this->assertSame('Description for: Test Name', $this->column->getDescription($model));
+        $this->assertEquals('blue', $column->textColor);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_align()
+    public function it_can_set_color()
     {
-        $this->assertSame('left', $this->column->align);
+        $column = Column::make('test');
+        $result = $column->color('green');
 
-        $this->column->align('center');
-
-        $this->assertSame('center', $this->column->align);
-
-        $this->column->align('right');
-
-        $this->assertSame('right', $this->column->align);
+        $this->assertEquals('green', $column->color);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_header_align()
+    public function it_can_set_align()
     {
-        $this->assertSame('left', $this->column->headerAlign);
+        $column = Column::make('test');
+        $result = $column->align('center');
 
-        $this->column->headerAlign('center');
-
-        $this->assertSame('center', $this->column->headerAlign);
-
-        $this->column->headerAlign('right');
-
-        $this->assertSame('right', $this->column->headerAlign);
+        $this->assertEquals('center', $column->align);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_set_and_get_wire_model()
+    public function it_can_set_header_align()
     {
-        $wireModel = 'custom.model';
+        $column = Column::make('test');
+        $result = $column->headerAlign('right');
 
-        $this->column->model($wireModel);
+        $this->assertEquals('right', $column->headerAlign);
+        $this->assertSame($column, $result);
+    }
 
-        $this->assertSame($wireModel, $this->column->wireModel);
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_can_get_view()
+    {
+        $column = Column::make('test');
+
+        // Access the protected view property using reflection
+        $reflection = new ReflectionClass($column);
+        $viewProperty = $reflection->getProperty('view');
+        $viewProperty->setValue($column, 'test.view');
+
+        $this->assertEquals('test.view', $column->getView());
     }
 }

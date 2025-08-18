@@ -1,75 +1,105 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Table\Columns;
 
 use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\TextColumn;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use PHPUnit\Framework\Attributes\Test;
-use ReflectionClass;
-use ReflectionException;
 
 class TextColumnTest extends BaseTest
 {
-    protected TextColumn $column;
-
-    protected function setUp(): void
+    #[Test]
+    public function it_can_be_created_with_key()
     {
-        parent::setUp();
+        $column = TextColumn::make('test_key');
 
-        $this->column = new TextColumn('test_key');
+        $this->assertEquals('test_key', $column->key);
+        $this->assertFalse($column->isNumeric);
+        $this->assertFalse($column->isDate);
+        $this->assertFalse($column->isBadge);
+        $this->assertEquals(2, $column->decimalPlaces);
+        $this->assertEquals('Y-m-d H:i:s', $column->dateFormat);
     }
 
     #[Test]
-    public function it_has_correct_default_values()
+    public function it_can_set_numeric_with_default_decimals()
     {
-        $this->assertFalse($this->column->isNumeric);
-        $this->assertFalse($this->column->isDate);
-        $this->assertFalse($this->column->isBadge);
-        $this->assertEquals(2, $this->column->decimalPlaces);
+        $column = TextColumn::make('price');
+
+        $result = $column->numeric();
+
+        $this->assertTrue($column->isNumeric);
+        $this->assertEquals(2, $column->decimalPlaces);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_be_set_as_numeric()
+    public function it_can_set_numeric_with_custom_decimals()
     {
-        $this->column->numeric();
+        $column = TextColumn::make('price');
 
-        $this->assertTrue($this->column->isNumeric);
-        $this->assertEquals(2, $this->column->decimalPlaces);
+        $result = $column->numeric(4);
 
-        $this->column->numeric(4);
-
-        $this->assertTrue($this->column->isNumeric);
-        $this->assertEquals(4, $this->column->decimalPlaces);
+        $this->assertTrue($column->isNumeric);
+        $this->assertEquals(4, $column->decimalPlaces);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_be_set_as_date()
+    public function it_can_set_date_with_default_format()
     {
-        $this->column->date();
+        $column = TextColumn::make('created_at');
 
-        $this->assertTrue($this->column->isDate);
+        $result = $column->date();
+
+        $this->assertTrue($column->isDate);
+        $this->assertEquals('Y-m-d H:i:s', $column->dateFormat);
+        $this->assertSame($column, $result);
     }
 
     #[Test]
-    public function it_can_be_set_as_badge()
+    public function it_can_set_date_with_custom_format()
     {
-        $this->column->badge();
+        $column = TextColumn::make('created_at');
 
-        $this->assertTrue($this->column->isBadge);
+        $result = $column->date('d/m/Y');
+
+        $this->assertTrue($column->isDate);
+        $this->assertEquals('d/m/Y', $column->dateFormat);
+        $this->assertSame($column, $result);
     }
 
-    /**
-     * @throws ReflectionException
-     */
     #[Test]
-    public function it_has_correct_view_path()
+    public function it_can_set_badge()
     {
-        $reflectionClass = new ReflectionClass($this->column);
-        $property = $reflectionClass->getProperty('view');
+        $column = TextColumn::make('status');
 
-        $this->assertEquals(
-            'laravel-simple-datatables-and-forms::components.table.columns.text',
-            $property->getValue($this->column),
-        );
+        $result = $column->badge();
+
+        $this->assertTrue($column->isBadge);
+        $this->assertSame($column, $result);
+    }
+
+    #[Test]
+    public function it_can_chain_multiple_configurations()
+    {
+        $column = TextColumn::make('amount')
+            ->numeric(3)
+            ->badge();
+
+        $this->assertTrue($column->isNumeric);
+        $this->assertEquals(3, $column->decimalPlaces);
+        $this->assertTrue($column->isBadge);
+        $this->assertFalse($column->isDate);
+    }
+
+    #[Test]
+    public function it_has_correct_view()
+    {
+        $column = TextColumn::make('test');
+
+        $this->assertEquals('laravel-simple-datatables-and-forms::components.table.columns.text', $column->getView());
     }
 }

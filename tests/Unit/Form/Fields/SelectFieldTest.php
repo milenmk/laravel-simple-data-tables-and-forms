@@ -8,8 +8,11 @@ use Exception;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\SelectField;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
+use Throwable;
 use TypeError;
 
 class SelectFieldTest extends TestCase
@@ -302,6 +305,7 @@ class SelectFieldTest extends TestCase
         }
     }
 
+    /** @noinspection PhpParamsInspection */
     #[Test]
     public function it_validates_callable_security()
     {
@@ -342,6 +346,11 @@ class SelectFieldTest extends TestCase
         $this->assertContains('string', $rules);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Throwable
+     */
     #[Test]
     public function it_can_render()
     {
@@ -374,5 +383,225 @@ class SelectFieldTest extends TestCase
         $field = SelectField::make('test_field')->placeholder('Static placeholder');
 
         $this->assertEquals('Static placeholder', $field->getPlaceholder());
+    }
+
+    #[Test]
+    public function it_can_set_and_get_default_value()
+    {
+        $field = SelectField::make('test_field')->default('default_value');
+
+        $this->assertEquals('default_value', $field->default);
+    }
+
+    #[Test]
+    public function it_can_set_and_get_default_array_value()
+    {
+        $defaultValues = ['value1', 'value2'];
+        $field = SelectField::make('test_field')->default($defaultValues);
+
+        $this->assertEquals($defaultValues, $field->default);
+    }
+
+    #[Test]
+    public function it_can_check_if_relationship_based()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertFalse($field->isRelationshipBased());
+
+        $field->relationship('users', 'name');
+        $this->assertTrue($field->isRelationshipBased());
+    }
+
+    #[Test]
+    public function it_can_check_if_has_custom_label_callback()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertFalse($field->hasCustomLabelCallback());
+
+        $field->getOptionLabelFromRecordUsing(fn ($record) => $record->name);
+        $this->assertTrue($field->hasCustomLabelCallback());
+    }
+
+    #[Test]
+    public function it_can_check_if_has_query_modification()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertFalse($field->hasQueryModification());
+
+        $field->modifyQueryUsing(fn ($query) => $query->where('active', true));
+        $this->assertTrue($field->hasQueryModification());
+    }
+
+    #[Test]
+    public function it_can_get_searchable_columns()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertEquals([], $field->getSearchableColumns());
+
+        $columns = ['name', 'email'];
+        $field->searchable($columns);
+        $this->assertEquals($columns, $field->getSearchableColumns());
+    }
+
+    #[Test]
+    public function it_can_get_title_attribute()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertNull($field->titleAttribute);
+
+        $field->relationship('users', 'name');
+        $this->assertEquals('name', $field->titleAttribute);
+    }
+
+    #[Test]
+    public function it_can_get_relationship_name()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertNull($field->relationship);
+
+        $field->relationship('users', 'name');
+        $this->assertEquals('users', $field->relationship);
+    }
+
+    #[Test]
+    public function it_handles_multiple_select_with_string_default()
+    {
+        $field = SelectField::make('test_field')
+            ->multiple()
+            ->default('single_value');
+
+        $field->setFormContext(null, []);
+
+        // Should convert string default to array for multiple select
+        $this->assertEquals(['single_value'], $field->getCurrentValue());
+    }
+
+    #[Test]
+    public function it_handles_form_data_priority_over_default()
+    {
+        $field = SelectField::make('test_field')->default('default_value');
+
+        $field->setFormContext(null, ['test_field' => 'form_value']);
+
+        // Form data should take priority over default
+        $this->assertEquals('form_value', $field->getCurrentValue());
+    }
+
+    #[Test]
+    public function it_can_chain_multiple_configurations()
+    {
+        $field = SelectField::make('test_field')
+            ->options(['1' => 'Option 1', '2' => 'Option 2'])
+            ->multiple()
+            ->searchable(['name', 'email'])
+            ->placeholder('Select options')
+            ->emptyOption('-- None --')
+            ->default(['1'])
+            ->relationship('users', 'name');
+
+        $this->assertTrue($field->multiple);
+        $this->assertTrue($field->searchable);
+        $this->assertEquals(['name', 'email'], $field->getSearchableColumns());
+        $this->assertEquals('Select options', $field->placeholder);
+        $this->assertEquals('-- None --', $field->emptyOption);
+        $this->assertEquals(['1'], $field->default);
+        $this->assertEquals('users', $field->relationship);
+        $this->assertEquals('name', $field->titleAttribute);
+    }
+
+    #[Test]
+    public function it_handles_empty_options_array()
+    {
+        $field = SelectField::make('test_field')->options([]);
+
+        $this->assertEquals([], $field->getOptions());
+    }
+
+    #[Test]
+    public function it_handles_null_options()
+    {
+        $field = SelectField::make('test_field');
+
+        // Should return empty array when no options are set
+        $this->assertEquals([], $field->getOptions());
+    }
+
+    #[Test]
+    public function it_can_set_searchable_with_true_boolean()
+    {
+        $field = SelectField::make('test_field')->searchable();
+
+        $this->assertTrue($field->searchable);
+        $this->assertEquals([], $field->getSearchableColumns());
+    }
+
+    #[Test]
+    public function it_can_set_searchable_with_false_boolean()
+    {
+        $field = SelectField::make('test_field')->searchable(false);
+
+        $this->assertFalse($field->searchable);
+        $this->assertEquals([], $field->getSearchableColumns());
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_inherits_from_field_class()
+    {
+        $field = SelectField::make('test_field')
+            ->label('Test Select Field')
+            ->required()
+            ->disabled()
+            ->rules(['required']);
+
+        $this->assertEquals('Test Select Field', $field->label);
+        $this->assertTrue($field->required);
+        $this->assertTrue($field->isDisabled());
+        $this->assertEquals(['required'], $field->rules);
+    }
+
+    #[Test]
+    public function it_can_handle_complex_options_structure()
+    {
+        $options = [
+            'group1' => [
+                '1' => 'Option 1',
+                '2' => 'Option 2',
+            ],
+            'group2' => [
+                '3' => 'Option 3',
+                '4' => 'Option 4',
+            ],
+        ];
+
+        $field = SelectField::make('test_field')->options($options);
+
+        $this->assertEquals($options, $field->getOptions());
+    }
+
+    #[Test]
+    public function it_handles_closure_options_with_form_context()
+    {
+        $field = SelectField::make('test_field')->options(function () {
+            return ['dynamic' => 'Dynamic Option'];
+        });
+
+        $field->setFormContext(null, ['some_field' => 'some_value']);
+
+        $this->assertEquals(['dynamic' => 'Dynamic Option'], $field->getOptions());
+    }
+
+    #[Test]
+    public function it_handles_closure_placeholder_with_form_context()
+    {
+        $field = SelectField::make('test_field')->placeholder(function () {
+            return 'Dynamic Placeholder';
+        });
+
+        $field->setFormContext(null, ['some_field' => 'some_value']);
+
+        $this->assertEquals('Dynamic Placeholder', $field->getPlaceholder());
     }
 }

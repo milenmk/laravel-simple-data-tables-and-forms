@@ -3,6 +3,8 @@
 #### Published at: 2025-08-17
 
 - [FIX] Form input field now also accepts float as min, max and step value
+- Improved table filter handling
+- Improved form actions blade template
 
 ## 2.1.6
 
