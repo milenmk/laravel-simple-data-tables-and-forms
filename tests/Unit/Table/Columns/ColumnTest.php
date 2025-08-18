@@ -485,4 +485,168 @@ class ColumnTest extends BaseTest
         $this->assertEquals('text-wrap', $column->wrap);
         $this->assertSame($column, $result);
     }
+
+    #[Test]
+    public function it_can_set_value_as_callable()
+    {
+        $column = Column::make('test');
+        $callable = fn ($item) => 'Computed: ' . $item->name;
+        $column->value($callable);
+
+        $item = (object) ['name' => 'John'];
+        $value = $column->getValue($item);
+
+        $this->assertEquals('Computed: John', $value);
+    }
+
+    #[Test]
+    public function it_can_get_description_with_callable()
+    {
+        $column = Column::make('test');
+        $callable = fn ($item) => 'Description for: ' . $item->name;
+        $column->description($callable);
+
+        $item = (object) ['name' => 'John'];
+        $description = $column->getDescription($item);
+
+        $this->assertEquals('Description for: John', $description);
+    }
+
+    #[Test]
+    public function it_can_get_description_with_static_value()
+    {
+        $column = Column::make('test');
+        $column->description('Static description');
+
+        $item = (object) ['name' => 'John'];
+        $description = $column->getDescription($item);
+
+        $this->assertEquals('Static description', $description);
+    }
+
+    #[Test]
+    public function it_can_get_description_from_item_property()
+    {
+        $column = Column::make('test');
+        $item = (object) ['test' => 'Item description'];
+
+        $description = $column->getDescription($item);
+
+        $this->assertEquals('Item description', $description);
+    }
+
+    #[Test]
+    public function it_returns_null_for_missing_description_property()
+    {
+        $column = Column::make('missing_field');
+        $item = (object) ['test' => 'value'];
+
+        $description = $column->getDescription($item);
+
+        $this->assertNull($description);
+    }
+
+    #[Test]
+    public function it_can_set_custom_wire_model()
+    {
+        $column = Column::make('test');
+        $result = $column->model('custom_model');
+
+        $this->assertEquals('custom_model', $column->wireModel);
+        $this->assertSame($column, $result);
+    }
+
+    #[Test]
+    public function it_only_sets_description_if_null()
+    {
+        $column = Column::make('test');
+        $column->description('First description');
+        $column->description('Second description');
+
+        // Should still be the first description
+        $this->assertEquals('First description', $column->description);
+    }
+
+    #[Test]
+    public function it_can_set_label_as_callable()
+    {
+        $column = Column::make('test');
+        $callable = fn () => 'Dynamic Label';
+        $result = $column->label($callable);
+
+        $this->assertEquals($callable, $column->label);
+        $this->assertSame($column, $result);
+    }
+
+    #[Test]
+    public function it_handles_serialization()
+    {
+        $column = Column::make('test')
+            ->label('Test Label')
+            ->value(fn ($item) => 'callable value')
+            ->description(fn ($item) => 'callable description')
+            ->sortable()
+            ->searchable();
+
+        // Test __sleep method
+        $serializable = $column->__sleep();
+
+        // Should exclude callable properties
+        $this->assertContains('label', $serializable);
+        $this->assertContains('sortable', $serializable);
+        $this->assertContains('searchable', $serializable);
+        $this->assertContains('key', $serializable);
+    }
+
+    #[Test]
+    public function it_handles_unserialization()
+    {
+        $column = Column::make('test');
+        $column->value(fn ($item) => 'callable value');
+        $column->description(fn ($item) => 'callable description');
+
+        // Test __wakeup method
+        $column->__wakeup();
+
+        // Callable properties should be reset to null
+        $this->assertNull($column->value);
+        $this->assertNull($column->description);
+    }
+
+    #[Test]
+    public function it_handles_wakeup_with_non_callable_values()
+    {
+        $column = Column::make('test');
+        $column->value('static value');
+        $column->description('static description');
+
+        // Test __wakeup method
+        $column->__wakeup();
+
+        // Non-callable properties should remain unchanged
+        $this->assertEquals('static value', $column->value);
+        $this->assertEquals('static description', $column->description);
+    }
+
+    #[Test]
+    public function it_handles_color_with_text_prefix()
+    {
+        $column = Column::make('test');
+        $result = $column->color('text-blue-500');
+
+        $this->assertEquals('text-blue-500', $column->textColor);
+        $this->assertEquals('blue-500', $column->color);
+        $this->assertSame($column, $result);
+    }
+
+    #[Test]
+    public function it_handles_color_without_text_prefix()
+    {
+        $column = Column::make('test');
+        $result = $column->color('primary');
+
+        $this->assertEquals('primary', $column->textColor);
+        $this->assertEquals('primary', $column->color);
+        $this->assertSame($column, $result);
+    }
 }

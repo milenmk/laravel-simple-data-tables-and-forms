@@ -15,7 +15,7 @@ use ReflectionFunction;
 abstract class Field
 {
     public string $name;
-    public ?string $label = null;
+    public mixed $label = null;
     public mixed $default = null;
     public bool $required = false;
     public string|Closure|null $placeholder = null;
@@ -50,9 +50,12 @@ abstract class Field
         return new static($name);
     }
 
-    public function label(string $label): static
+    /**
+     * Set the label for the field. This can be a string, array, or callable.
+     */
+    public function label(string|array|callable $value): self
     {
-        $this->label = $label;
+        $this->label = $value;
 
         return $this;
     }
@@ -255,6 +258,10 @@ abstract class Field
 
     public function getLabel(): string
     {
+        if (is_callable($this->label)) {
+            return ($this->label)();
+        }
+
         return $this->label ??
             str($this->name)
                 ->title()
@@ -276,7 +283,6 @@ abstract class Field
 
             return match ($params) {
                 1 => call_user_func($this->hidden, $get),
-                2 => call_user_func($this->hidden, $this->record, $get),
                 default => call_user_func($this->hidden, $this->record, $get),
             };
         }
@@ -298,7 +304,6 @@ abstract class Field
 
             return match ($params) {
                 1 => call_user_func($this->disabled, $get),
-                2 => call_user_func($this->disabled, $this->record, $get),
                 default => call_user_func($this->disabled, $this->record, $get),
             };
         }
@@ -323,7 +328,6 @@ abstract class Field
                 1 => call_user_func($this->afterStateUpdated, $state),
                 2 => call_user_func($this->afterStateUpdated, $get, $state),
                 3 => call_user_func($this->afterStateUpdated, $get, $set, $state),
-                4 => call_user_func($this->afterStateUpdated, $this->record, $get, $set, $state),
                 default => call_user_func($this->afterStateUpdated, $this->record, $get, $set, $state),
             };
         }

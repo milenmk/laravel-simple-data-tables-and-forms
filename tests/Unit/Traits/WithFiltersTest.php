@@ -148,4 +148,150 @@ class WithFiltersTest extends BaseTest
         // Should count 3: status, price array, and featured boolean
         $this->assertEquals(3, $this->testClass->getAppliedFiltersCount());
     }
+
+    #[Test]
+    public function it_can_remove_filter_from_array()
+    {
+        $this->testClass->filters = [
+            'categories' => ['electronics', 'books', 'clothing'],
+            'status' => 'active',
+        ];
+
+        $this->testClass->removeFilter('categories', 'books');
+
+        $this->assertEquals(['electronics', 'clothing'], $this->testClass->filters['categories']);
+        $this->assertEquals('active', $this->testClass->filters['status']);
+    }
+
+    #[Test]
+    public function it_can_remove_entire_filter_when_array_becomes_empty()
+    {
+        $this->testClass->filters = [
+            'categories' => ['electronics'],
+            'status' => 'active',
+        ];
+
+        $this->testClass->removeFilter('categories', 'electronics');
+
+        $this->assertArrayNotHasKey('categories', $this->testClass->filters);
+        $this->assertEquals('active', $this->testClass->filters['status']);
+    }
+
+    #[Test]
+    public function it_can_remove_non_array_filter()
+    {
+        $this->testClass->filters = [
+            'status' => 'active',
+            'category' => 'electronics',
+        ];
+
+        $this->testClass->removeFilter('status', 'active');
+
+        $this->assertArrayNotHasKey('status', $this->testClass->filters);
+        $this->assertEquals('electronics', $this->testClass->filters['category']);
+    }
+
+    #[Test]
+    public function it_handles_removing_non_existent_filter_value()
+    {
+        $this->testClass->filters = [
+            'categories' => ['electronics', 'books'],
+            'status' => 'active',
+        ];
+
+        $this->testClass->removeFilter('categories', 'non-existent');
+
+        // Should remain unchanged
+        $this->assertEquals(['electronics', 'books'], $this->testClass->filters['categories']);
+    }
+
+    #[Test]
+    public function it_handles_updated_filters()
+    {
+        // This method should call resetPage, which we've mocked
+        $this->testClass->updatedFilters();
+
+        // If we get here without exception, the test passes
+        $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function it_can_set_table_filter_views()
+    {
+        $views = ['view1', 'view2', 'view3'];
+        $this->testClass->tableFilterViews = $views;
+
+        $this->assertEquals($views, $this->testClass->getTableFilterViews());
+    }
+
+    #[Test]
+    public function it_handles_boolean_filter_values_correctly()
+    {
+        $this->testClass->filters = [
+            'is_active' => true,
+            'is_featured' => false,
+            'status' => '',
+            'category' => null,
+        ];
+
+        // Boolean values (both true and false) should be counted as applied
+        $this->assertEquals(2, $this->testClass->getAppliedFiltersCount());
+    }
+
+    #[Test]
+    public function it_handles_zero_values_in_filters()
+    {
+        $this->testClass->filters = [
+            'price' => 0,
+            'quantity' => '0',
+            'rating' => 0.0,
+            'status' => '',
+        ];
+
+        // Zero values should not be counted as applied (they're considered empty)
+        $this->assertEquals(0, $this->testClass->getAppliedFiltersCount());
+    }
+
+    #[Test]
+    public function it_handles_nested_array_filters()
+    {
+        $this->testClass->filters = [
+            'price_range' => ['min' => 10, 'max' => 100],
+            'empty_range' => [],
+            'categories' => ['electronics', 'books'],
+            'empty_categories' => [],
+        ];
+
+        // Should count 2: price_range and categories (non-empty arrays)
+        $this->assertEquals(2, $this->testClass->getAppliedFiltersCount());
+    }
+
+    #[Test]
+    public function it_resets_array_keys_after_removing_filter_value()
+    {
+        $this->testClass->filters = [
+            'categories' => ['electronics', 'books', 'clothing'],
+        ];
+
+        // Remove middle element
+        $this->testClass->removeFilter('categories', 'books');
+
+        // Array should have sequential keys
+        $this->assertEquals(['electronics', 'clothing'], $this->testClass->filters['categories']);
+        $this->assertEquals([0, 1], array_keys($this->testClass->filters['categories']));
+    }
+
+    #[Test]
+    public function it_handles_string_numeric_filter_values()
+    {
+        $this->testClass->filters = [
+            'price' => '100',
+            'quantity' => '5',
+            'empty_string' => '',
+            'zero_string' => '0',
+        ];
+
+        // String numbers should be counted, but empty strings and '0' should not
+        $this->assertEquals(2, $this->testClass->getAppliedFiltersCount());
+    }
 }

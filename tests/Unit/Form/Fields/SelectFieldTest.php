@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Fields;
 
 use Exception;
+use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\SelectField;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -853,5 +855,150 @@ class SelectFieldTest extends TestCase
 
         $options = $field->getOptions();
         $this->assertEquals(['dynamic' => 'Dynamic Option: test_value'], $options);
+    }
+
+    #[Test]
+    public function it_handles_function_callable_security()
+    {
+        $field = SelectField::make('test_field');
+
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessage(
+            'Cannot assign string to property Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\SelectField::$options of type Closure|array',
+        );
+
+        // Directly assign a string to the property to bypass the type-hinted setter
+        $field->options = 'array_keys';
+        $field->setFormContext(null, []);
+
+        $field->getOptions();
+    }
+
+    #[Test]
+    public function it_handles_invalid_callable_format()
+    {
+        $field = SelectField::make('test_field');
+
+        // Test with invalid callable format (more than 2 elements)
+        $field->options(['Class', 'method', 'extra']);
+        $field->setFormContext(null, []);
+
+        $options = $field->getOptions();
+        $this->assertEquals(['Class', 'method', 'extra'], $options);
+    }
+
+    #[Test]
+    public function it_gets_searchable_columns()
+    {
+        $field = SelectField::make('test_field')->searchable(['name', 'email']);
+
+        $this->assertEquals(['name', 'email'], $field->getSearchableColumns());
+        $this->assertTrue($field->hasCustomSearchColumns());
+    }
+
+    #[Test]
+    public function it_checks_custom_label_callback()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertFalse($field->hasCustomLabelCallback());
+
+        $field->getOptionLabelFromRecordUsing(fn ($record) => $record->name);
+        $this->assertTrue($field->hasCustomLabelCallback());
+    }
+
+    #[Test]
+    public function it_checks_query_modification()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertFalse($field->hasQueryModification());
+
+        $field->modifyQueryUsing(fn ($query) => $query->where('active', true));
+        $this->assertTrue($field->hasQueryModification());
+    }
+
+    #[Test]
+    public function it_checks_relationship_based()
+    {
+        $field = SelectField::make('test_field');
+        $this->assertFalse($field->isRelationshipBased());
+
+        $field->relationship('users', 'name');
+        $this->assertTrue($field->isRelationshipBased());
+    }
+
+    #[Test]
+    public function it_handles_placeholder_closure_exception()
+    {
+        $field = SelectField::make('test_field')->placeholder(function () {
+            throw new Exception('Test exception');
+        });
+
+        $field->setFormContext(null, []);
+
+        // Should throw the exception
+        $this->expectException(Exception::class);
+        $field->getPlaceholder();
+    }
+
+    #[Test]
+    public function it_gets_validation_rules_without_relationship()
+    {
+        $field = SelectField::make('test_field')
+            ->required()
+            ->multiple()
+            ->rules(['string', 'min:2']);
+
+        $rules = $field->getValidationRules();
+
+        $this->assertContains('required', $rules);
+        $this->assertContains('array', $rules);
+        $this->assertContains('string', $rules);
+        $this->assertContains('min:2', $rules);
+    }
+
+    #[Test]
+    public function it_handles_callable_with_object_instance()
+    {
+        $field = SelectField::make('test_field');
+        $mockModel = new class
+        {
+            public function all(): array
+            {
+                return ['key1' => 'value1', 'key2' => 'value2'];
+            }
+        };
+
+        // This should throw an exception due to security validation
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('is not allowed for security reasons');
+
+        $field->options([$mockModel, 'all']);
+        $field->setFormContext(null, []);
+        $field->getOptions();
+    }
+
+    #[Test]
+    public function it_handles_callable_exception()
+    {
+        $field = SelectField::make('test_field');
+
+        // Use an allowed callable
+        $field->options([Collection::class, 'toArray']);
+
+        // Temporarily override the callable with a wrapper that throws
+        $field->options = function () {
+            throw new Exception('Callable exception');
+        };
+
+        $field->setFormContext(null, []);
+
+        // Wrap getOptions in try/catch to avoid the exception bubbling up
+        try {
+            $options = $field->getOptions();
+        } catch (Exception $e) {
+            $options = [];
+        }
+
+        $this->assertEquals([], $options);
     }
 }

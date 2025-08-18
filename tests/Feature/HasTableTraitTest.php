@@ -2,6 +2,7 @@
 
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Feature;
 
+use Illuminate\View\View;
 use Livewire\Livewire;
 use Milenmk\LaravelSimpleDatatablesAndForms\Exceptions\FilterConfigurationException;
 use Milenmk\LaravelSimpleDatatablesAndForms\Exceptions\InvalidFilterTypeException;
@@ -9,6 +10,8 @@ use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\Components\TestTableComponent;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\Models\TestModel;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class HasTableTraitTest extends BaseTest
 {
@@ -179,5 +182,158 @@ class HasTableTraitTest extends BaseTest
         $directComponent->toggleValue($model->id, 'is_active');
 
         $this->assertTrue($model->fresh()->is_active);
+    }
+
+    /**
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     */
+    #[Test]
+    public function it_can_get_model_by_id()
+    {
+        $model = TestModel::where('name', 'John Doe')->first();
+
+        $directComponent = new TestTableComponent;
+        $directComponent->mount();
+
+        $retrievedModel = $directComponent->getModel((string) $model->id);
+
+        $this->assertInstanceOf(TestModel::class, $retrievedModel);
+        $this->assertEquals($model->id, $retrievedModel->id);
+        $this->assertEquals('John Doe', $retrievedModel->name);
+    }
+
+    /**
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     */
+    #[Test]
+    public function it_returns_null_for_non_existent_model()
+    {
+        $directComponent = new TestTableComponent;
+        $directComponent->mount();
+
+        $retrievedModel = $directComponent->getModel('999999');
+
+        $this->assertNull($retrievedModel);
+    }
+
+    /**
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function it_can_get_table_property()
+    {
+        $directComponent = new TestTableComponent;
+        $directComponent->mount();
+
+        $tableView = $directComponent->getTableProperty();
+
+        $this->assertInstanceOf(View::class, $tableView);
+    }
+
+    /**
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     */
+    #[Test]
+    public function it_initializes_visible_columns_on_mount()
+    {
+        $directComponent = new TestTableComponent;
+        $directComponent->mount();
+
+        $this->assertNotEmpty($directComponent->visibleColumns);
+        $this->assertIsArray($directComponent->visibleColumns);
+
+        // Check that component name is set
+        $this->assertNotNull($directComponent->componentName);
+        $this->assertEquals('test_table_component', (string) $directComponent->componentName);
+    }
+
+    /**
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     */
+    #[Test]
+    public function it_handles_search_with_relationships()
+    {
+        $directComponent = new TestTableComponent;
+        $directComponent->mount();
+
+        // Test search functionality
+        $directComponent->search = 'Electronics';
+        $directComponent->updatedSearch();
+
+        $this->assertEquals('Electronics', $directComponent->search);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function it_handles_grouping_in_table_property()
+    {
+        $directComponent = new TestTableComponent;
+        $directComponent->mount();
+
+        // Set a group
+        $directComponent->selectedGroup = 'category';
+
+        $tableView = $directComponent->getTableProperty();
+
+        $this->assertInstanceOf(View::class, $tableView);
+        $this->assertEquals('category', $directComponent->selectedGroup);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function it_handles_sorting_validation()
+    {
+        $directComponent = new TestTableComponent;
+        $directComponent->mount();
+
+        // Set valid sort field
+        $directComponent->sortField = 'name';
+        $directComponent->sortDir = 'ASC';
+
+        $tableView = $directComponent->getTableProperty();
+
+        $this->assertInstanceOf(View::class, $tableView);
+        $this->assertEquals('name', $directComponent->sortField);
+        $this->assertEquals('ASC', $directComponent->sortDir);
+    }
+
+    /**
+     * @throws FilterConfigurationException
+     * @throws InvalidFilterTypeException
+     */
+    #[Test]
+    public function it_clears_cache_when_toggling_column_visibility()
+    {
+        $directComponent = new TestTableComponent;
+        $directComponent->mount();
+
+        $componentName = (string) $directComponent->componentName;
+        $prefixedKey = "{$componentName}.email";
+
+        // Get initial state
+        $initialState = $directComponent->visibleColumns[$prefixedKey] ?? true;
+
+        // Toggle visibility
+        $directComponent->toggleColumnVisibility('email');
+
+        // Verify state changed
+        $this->assertEquals(! $initialState, $directComponent->visibleColumns[$prefixedKey]);
     }
 }

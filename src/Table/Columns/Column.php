@@ -6,7 +6,7 @@ namespace Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns;
 
 class Column
 {
-    public string|array|null $label;
+    public mixed $label = null;
     public bool $sortable = false;
     public bool $searchable = false;
     public mixed $visible = true;
