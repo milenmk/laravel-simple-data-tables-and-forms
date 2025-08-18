@@ -5,6 +5,7 @@
 - [FIX] Form input field now also accepts float as min, max and step value
 - Improved table filter handling
 - Improved form actions blade template
+- minor bug fixes
 
 ## 2.1.6
 
