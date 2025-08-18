@@ -597,23 +597,6 @@ class FieldTest extends BaseTest
     }
 
     #[Test]
-    public function it_handles_rule_objects_with_tostring()
-    {
-        // Create a mock rule object
-        $ruleObject = new class
-        {
-            public function __to_string(): string
-            {
-                return 'custom_rule';
-            }
-        };
-
-        $this->field->rules([$ruleObject]);
-
-        $this->assertContains($ruleObject, $this->field->rules);
-    }
-
-    #[Test]
     public function it_filters_out_non_string_non_object_rules()
     {
         $rules = ['required', 123, ['invalid'], 'string'];

@@ -3,6 +3,7 @@
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Feature;
 
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Livewire\Livewire;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\Components\TestFormComponent;
@@ -214,5 +215,228 @@ class HasFormTraitTest extends BaseTest
 
         $emailField = collect($fields)->firstWhere('name', 'email');
         $this->assertEquals('email', $emailField->type);
+    }
+
+    #[Test]
+    public function it_can_get_form_data()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $directComponent->setFormData([
+            'name' => 'Test Name',
+            'email' => 'test@example.com',
+        ]);
+
+        $formData = $directComponent->getFormData();
+
+        $this->assertIsArray($formData);
+        $this->assertEquals('Test Name', $formData['name']);
+        $this->assertEquals('test@example.com', $formData['email']);
+    }
+
+    #[Test]
+    public function it_can_get_form_property()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $formView = $directComponent->getFormProperty();
+
+        $this->assertInstanceOf(View::class, $formView);
+    }
+
+    #[Test]
+    public function it_can_refresh_form()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $directComponent->refreshForm();
+
+        // If we get here without exception, the test passes
+        $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function it_can_get_form_listeners()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $listeners = $directComponent->getFormListeners();
+
+        $this->assertIsArray($listeners);
+        $this->assertArrayHasKey('refreshForm', $listeners);
+        $this->assertEquals('refreshForm', $listeners['refreshForm']);
+    }
+
+    #[Test]
+    public function it_can_handle_updated_form_data()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $directComponent->formData = [
+            'name' => 'Updated Name',
+            'email' => 'updated@example.com',
+        ];
+
+        $directComponent->updatedFormData();
+
+        // Should sanitize and validate the data
+        $this->assertEquals('Updated Name', $directComponent->formData['name']);
+        $this->assertEquals('updated@example.com', $directComponent->formData['email']);
+    }
+
+    #[Test]
+    public function it_can_debug_form_data()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $directComponent->setFormData([
+            'name' => 'Debug Name',
+            'email' => 'debug@example.com',
+        ]);
+
+        $debug = $directComponent->debugFormData();
+
+        $this->assertIsArray($debug);
+        $this->assertArrayHasKey('formData', $debug);
+        $this->assertArrayHasKey('fieldNames', $debug);
+        $this->assertArrayHasKey('fieldDefaults', $debug);
+        $this->assertEquals('Debug Name', $debug['formData']['name']);
+    }
+
+    #[Test]
+    public function it_can_get_form_fields_data()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $directComponent->setFormData([
+            'name' => 'Field Name',
+            'email' => 'field@example.com',
+        ]);
+
+        $fieldsData = $directComponent->getFormFieldsData();
+
+        $this->assertIsArray($fieldsData);
+        $this->assertEquals('Field Name', $fieldsData['name']);
+        $this->assertEquals('field@example.com', $fieldsData['email']);
+    }
+
+    #[Test]
+    public function it_can_get_fillable_form_data_without_model()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $directComponent->setFormData([
+            'name' => 'Fillable Name',
+            'email' => 'fillable@example.com',
+        ]);
+
+        $fillableData = $directComponent->getFillableFormData();
+
+        $this->assertIsArray($fillableData);
+        $this->assertEquals('Fillable Name', $fillableData['name']);
+        $this->assertEquals('fillable@example.com', $fillableData['email']);
+    }
+
+    #[Test]
+    public function it_can_get_fillable_form_data_with_model()
+    {
+        $model = TestModel::create([
+            'name' => 'Model Name',
+            'email' => 'model@example.com',
+            'category' => 'Books',
+            'is_active' => true,
+            'price' => 29.99,
+        ]);
+
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+        $directComponent->loadFormModel($model);
+
+        $fillableData = $directComponent->getFillableFormData();
+
+        $this->assertIsArray($fillableData);
+        $this->assertEquals('Model Name', $fillableData['name']);
+        $this->assertEquals('model@example.com', $fillableData['email']);
+    }
+
+    #[Test]
+    public function it_handles_form_fields_with_missing_data()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        // Don't set any form data, so fields will use defaults
+        $fieldsData = $directComponent->getFormFieldsData();
+
+        $this->assertIsArray($fieldsData);
+        // Should have default values for boolean fields
+        $this->assertTrue($fieldsData['is_active']); // default true
+        $this->assertFalse($fieldsData['notifications']); // default false
+    }
+
+    #[Test]
+    public function it_filters_out_non_form_fields_when_setting_data()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $directComponent->setFormData([
+            'name' => 'Valid Field',
+            'email' => 'valid@example.com',
+            'invalid_field' => 'Should be filtered out',
+            'another_invalid' => 'Also filtered',
+        ]);
+
+        $this->assertEquals('Valid Field', $directComponent->formData['name']);
+        $this->assertEquals('valid@example.com', $directComponent->formData['email']);
+        $this->assertArrayNotHasKey('invalid_field', $directComponent->formData);
+        $this->assertArrayNotHasKey('another_invalid', $directComponent->formData);
+    }
+
+    #[Test]
+    public function it_filters_out_non_form_fields_when_filling_form()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        $directComponent->fillForm([
+            'name' => 'Valid Field',
+            'email' => 'valid@example.com',
+            'invalid_field' => 'Should be filtered out',
+            'another_invalid' => 'Also filtered',
+        ]);
+
+        $this->assertEquals('Valid Field', $directComponent->formData['name']);
+        $this->assertEquals('valid@example.com', $directComponent->formData['email']);
+        $this->assertArrayNotHasKey('invalid_field', $directComponent->formData);
+        $this->assertArrayNotHasKey('another_invalid', $directComponent->formData);
+    }
+
+    #[Test]
+    public function it_removes_non_form_fields_on_updated_form_data()
+    {
+        $directComponent = new TestFormComponent;
+        $directComponent->mount();
+
+        // Manually set invalid fields (simulating potential security issue)
+        $directComponent->formData = [
+            'name' => 'Valid Field',
+            'email' => 'valid@example.com',
+            'invalid_field' => 'Should be removed',
+        ];
+
+        $directComponent->updatedFormData();
+
+        $this->assertEquals('Valid Field', $directComponent->formData['name']);
+        $this->assertEquals('valid@example.com', $directComponent->formData['email']);
+        $this->assertArrayNotHasKey('invalid_field', $directComponent->formData);
     }
 }

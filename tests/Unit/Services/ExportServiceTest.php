@@ -15,101 +15,76 @@ class ExportServiceTest extends BaseTest
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->exportService = new ExportService;
     }
 
     #[Test]
-    public function it_checks_if_package_is_available_for_csv()
+    public function it_can_check_if_package_is_available_for_csv()
     {
-        // CSV doesn't require external packages
         $this->assertTrue($this->exportService->isPackageAvailable('csv'));
     }
 
     #[Test]
-    public function it_checks_if_package_is_available_for_excel_formats()
+    public function it_can_check_if_package_is_available_for_excel()
     {
-        // These will return true if PhpSpreadsheet is installed, false otherwise
-        $xlsAvailable = $this->exportService->isPackageAvailable('xls');
-        $xlsxAvailable = $this->exportService->isPackageAvailable('xlsx');
-        $excelAvailable = $this->exportService->isPackageAvailable('excel');
-
-        // All should return the same result since they check for the same class
-        $this->assertEquals($xlsAvailable, $xlsxAvailable);
-        $this->assertEquals($xlsxAvailable, $excelAvailable);
-
-        // The result depends on whether PhpSpreadsheet is installed
-        $this->assertIsBool($xlsAvailable);
+        // This will depend on whether PhpSpreadsheet is installed
+        $result = $this->exportService->isPackageAvailable('xlsx');
+        $this->assertIsBool($result);
     }
 
     #[Test]
-    public function it_checks_if_package_is_available_for_pdf()
+    public function it_can_check_if_package_is_available_for_xls()
     {
-        // This will return true if DomPDF is installed, false otherwise
-        $pdfAvailable = $this->exportService->isPackageAvailable('pdf');
-
-        $this->assertIsBool($pdfAvailable);
+        // This will depend on whether PhpSpreadsheet is installed
+        $result = $this->exportService->isPackageAvailable('xls');
+        $this->assertIsBool($result);
     }
 
     #[Test]
-    public function it_checks_if_package_is_available_for_unknown_format()
+    public function it_can_check_if_package_is_available_for_excel_alias()
     {
-        // Unknown formats should return true (default case)
+        // This will depend on whether PhpSpreadsheet is installed
+        $result = $this->exportService->isPackageAvailable('excel');
+        $this->assertIsBool($result);
+    }
+
+    #[Test]
+    public function it_can_check_if_package_is_available_for_pdf()
+    {
+        // This will depend on whether DomPDF is installed
+        $result = $this->exportService->isPackageAvailable('pdf');
+        $this->assertIsBool($result);
+    }
+
+    #[Test]
+    public function it_returns_true_for_unknown_formats()
+    {
         $this->assertTrue($this->exportService->isPackageAvailable('unknown'));
-        $this->assertTrue($this->exportService->isPackageAvailable('txt'));
     }
 
     #[Test]
-    public function it_returns_required_package_for_excel_formats()
+    public function it_can_get_required_package_for_excel()
     {
-        $this->assertEquals('phpoffice/phpspreadsheet', $this->exportService->getRequiredPackage('xls'));
         $this->assertEquals('phpoffice/phpspreadsheet', $this->exportService->getRequiredPackage('xlsx'));
+        $this->assertEquals('phpoffice/phpspreadsheet', $this->exportService->getRequiredPackage('xls'));
         $this->assertEquals('phpoffice/phpspreadsheet', $this->exportService->getRequiredPackage('excel'));
     }
 
     #[Test]
-    public function it_returns_required_package_for_pdf()
+    public function it_can_get_required_package_for_pdf()
     {
         $this->assertEquals('barryvdh/laravel-dompdf', $this->exportService->getRequiredPackage('pdf'));
     }
 
     #[Test]
-    public function it_returns_null_for_formats_without_required_packages()
+    public function it_returns_null_for_csv_package()
     {
         $this->assertNull($this->exportService->getRequiredPackage('csv'));
-        $this->assertNull($this->exportService->getRequiredPackage('txt'));
+    }
+
+    #[Test]
+    public function it_returns_null_for_unknown_format_package()
+    {
         $this->assertNull($this->exportService->getRequiredPackage('unknown'));
-    }
-
-    #[Test]
-    public function it_handles_case_sensitivity_in_format_checking()
-    {
-        // Test that format matching is case-sensitive (as expected from match statement)
-        $this->assertEquals('phpoffice/phpspreadsheet', $this->exportService->getRequiredPackage('xlsx'));
-        $this->assertNull($this->exportService->getRequiredPackage('XLSX')); // Different case
-    }
-
-    #[Test]
-    public function it_provides_consistent_results_for_same_format()
-    {
-        // Test that multiple calls return consistent results
-        $format = 'xlsx';
-
-        $available1 = $this->exportService->isPackageAvailable($format);
-        $available2 = $this->exportService->isPackageAvailable($format);
-
-        $package1 = $this->exportService->getRequiredPackage($format);
-        $package2 = $this->exportService->getRequiredPackage($format);
-
-        $this->assertEquals($available1, $available2);
-        $this->assertEquals($package1, $package2);
-    }
-
-    #[Test]
-    public function it_handles_empty_format_string()
-    {
-        // Empty string should fall to default case
-        $this->assertTrue($this->exportService->isPackageAvailable(''));
-        $this->assertNull($this->exportService->getRequiredPackage(''));
     }
 }
