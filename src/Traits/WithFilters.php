@@ -49,21 +49,21 @@ trait WithFilters
 
     public function resetFilters(): void
     {
-        foreach ($this->table(new Table)->getFilters() as $filter) {
-            unset($this->filters[$filter->name]);
-            if ($filter->persistInSession) {
-                session()->forget("filters.{$filter->name}");
-            }
-        }
-
+        $this->filters = [];
         $this->appliedFiltersCount = 0;
 
-        $this->resetPage();
-    }
+        // Clear session filters if table has filters defined
+        try {
+            foreach ($this->table(new Table)->getFilters() as $filter) {
+                if ($filter->persistInSession) {
+                    session()->forget("filters.{$filter->name}");
+                }
+            }
+        } catch (Throwable $e) {
+            // Ignore if table method is not properly implemented
+        }
 
-    public function getAppliedFiltersCount(): int
-    {
-        return $this->appliedFiltersCount;
+        $this->resetPage();
     }
 
     public function removeFilter(string $filterName, string|int $filterValue): void
@@ -92,6 +92,19 @@ trait WithFilters
     public function updatedFilters(): void
     {
         $this->resetPage();
+    }
+
+    public function getAppliedFiltersCount(): int
+    {
+        $count = 0;
+        foreach ($this->filters as $value) {
+            if ($this->isFilterValueNotEmpty($value)) {
+                $count++;
+            }
+        }
+        $this->appliedFiltersCount = $count;
+
+        return $count;
     }
 
     protected function prepareFilterViews(): array
@@ -165,6 +178,7 @@ trait WithFilters
 
     protected function applyFiltersToQuery($query): void
     {
+
         $this->appliedFiltersCount = 0;
 
         foreach ($this->table(new Table)->getFilters() as $filter) {
@@ -176,5 +190,17 @@ trait WithFilters
                 $this->appliedFiltersCount++;
             }
         }
+    }
+
+    private function isFilterValueNotEmpty($value): bool
+    {
+        if (is_array($value)) {
+            return ! empty($value);
+        }
+        if (is_bool($value)) {
+            return true; // Boolean values are always considered "applied"
+        }
+
+        return ! empty($value);
     }
 }
