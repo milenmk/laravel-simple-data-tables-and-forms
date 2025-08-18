@@ -183,14 +183,25 @@ class SelectField extends Field
     {
         $rules = [];
 
+        // Add basic validation rules from parent
+        if ($this->required) {
+            $rules[] = 'required';
+        }
+
+        // For multiple selects, add array validation
+        if ($this->multiple) {
+            $rules[] = 'array';
+        }
+
         // Add relationship-specific validation rules
         if ($this->relationship && $this->titleAttribute) {
-            $rules = $this->getRelationshipValidationRules();
+            $relationshipRules = $this->getRelationshipValidationRules();
+            $rules = array_merge($rules, $relationshipRules);
         }
 
         // Add any custom rules that were set
         if (! empty($this->rules)) {
-            $rules = array_merge($rules, $this->rules);
+            $rules = array_merge($rules, $this->validateRules($this->rules));
         }
 
         return $rules;

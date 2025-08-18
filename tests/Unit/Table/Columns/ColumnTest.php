@@ -266,4 +266,223 @@ class ColumnTest extends BaseTest
 
         $this->assertEquals('test.view', $column->getView());
     }
+
+    #[Test]
+    public function it_can_get_visibility_with_boolean()
+    {
+        $column = Column::make('test');
+
+        // Test default visibility
+        $this->assertTrue($column->getVisibility());
+
+        // Test setting visibility to false
+        $column->visible(false);
+        $this->assertFalse($column->getVisibility());
+
+        // Test setting visibility to true
+        $column->visible();
+        $this->assertTrue($column->getVisibility());
+    }
+
+    #[Test]
+    public function it_can_get_visibility_with_callable()
+    {
+        $column = Column::make('test');
+
+        // Test with callable returning true
+        $column->visible(fn () => true);
+        $this->assertTrue($column->getVisibility());
+
+        // Test with callable returning false
+        $column->visible(fn () => false);
+        $this->assertFalse($column->getVisibility());
+
+        // Test with callable using optional parameters
+        $column->visible(fn ($record = null, $data = null) => $record !== null);
+        $this->assertFalse($column->getVisibility()); // false since $record is null
+    }
+
+    #[Test]
+    public function it_can_get_value_with_custom_value_set()
+    {
+        $column = Column::make('test');
+        $column->value('custom_value');
+        $item = (object) ['test' => 'original_value'];
+
+        $value = $column->getValue($item);
+
+        // Should return custom value, not the item property
+        $this->assertEquals('custom_value', $value);
+    }
+
+    #[Test]
+    public function it_can_get_value_from_nested_property()
+    {
+        $column = Column::make('user.name');
+        $item = (object) [
+            'user' => (object) ['name' => 'John Doe'],
+        ];
+
+        $value = $column->getValue($item);
+
+        $this->assertEquals('John Doe', $value);
+    }
+
+    #[Test]
+    public function it_returns_null_for_missing_nested_property()
+    {
+        $column = Column::make('user.email');
+        $item = (object) [
+            'user' => (object) ['name' => 'John Doe'],
+        ];
+
+        $value = $column->getValue($item);
+
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_returns_null_for_missing_parent_in_nested_property()
+    {
+        $column = Column::make('user.name');
+        $item = (object) ['other_field' => 'value'];
+
+        $value = $column->getValue($item);
+
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_returns_null_for_array_item()
+    {
+        $column = Column::make('name');
+        $item = ['name' => 'John Doe', 'email' => 'john@example.com'];
+
+        $value = $column->getValue($item);
+
+        // getNestedValue only handles objects, not arrays
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_returns_null_for_nested_array()
+    {
+        $column = Column::make('user.name');
+        $item = [
+            'user' => ['name' => 'John Doe', 'email' => 'john@example.com'],
+        ];
+
+        $value = $column->getValue($item);
+
+        // getNestedValue only handles objects, not arrays
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_returns_null_for_missing_array_key()
+    {
+        $column = Column::make('missing_key');
+        $item = ['name' => 'John Doe'];
+
+        $value = $column->getValue($item);
+
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_returns_null_for_mixed_object_array_nesting()
+    {
+        $column = Column::make('user.profile.name');
+        $item = (object) [
+            'user' => [
+                'profile' => (object) ['name' => 'John Doe'],
+            ],
+        ];
+
+        $value = $column->getValue($item);
+
+        // getNestedValue stops at array level, can't continue to nested object
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_can_set_searchable_with_empty_array()
+    {
+        $column = Column::make('test');
+        $result = $column->searchable([]);
+
+        $this->assertTrue($column->searchable);
+        $this->assertEquals([], $column->searchFields);
+        $this->assertSame($column, $result);
+    }
+
+    #[Test]
+    public function it_can_chain_multiple_configurations()
+    {
+        $column = Column::make('test')
+            ->label('Test Column')
+            ->sortable()
+            ->searchable(['field1', 'field2'])
+            ->align('center')
+            ->headerAlign('right')
+            ->color('blue')
+            ->background('gray')
+            ->weight('bold')
+            ->wrap()
+            ->description('Test description')
+            ->visible(false);
+
+        $this->assertEquals('Test Column', $column->label);
+        $this->assertTrue($column->sortable);
+        $this->assertTrue($column->searchable);
+        $this->assertEquals(['field1', 'field2'], $column->searchFields);
+        $this->assertEquals('center', $column->align);
+        $this->assertEquals('right', $column->headerAlign);
+        $this->assertEquals('blue', $column->color);
+        $this->assertEquals('gray', $column->backgroundColor);
+        $this->assertEquals('bold', $column->weight);
+        $this->assertEquals('text-wrap', $column->wrap);
+        $this->assertEquals('Test description', $column->description);
+        $this->assertFalse($column->visible);
+    }
+
+    #[Test]
+    public function it_handles_null_item_gracefully()
+    {
+        $column = Column::make('test');
+
+        $value = $column->getValue(null);
+
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_handles_scalar_item_gracefully()
+    {
+        $column = Column::make('test');
+
+        $value = $column->getValue('string_value');
+
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_can_set_wrap_with_custom_value()
+    {
+        $column = Column::make('test');
+        $result = $column->wrap(false);
+
+        $this->assertEquals('text-nowrap', $column->wrap);
+        $this->assertSame($column, $result);
+    }
+
+    #[Test]
+    public function it_can_set_default_wrap_value()
+    {
+        $column = Column::make('test');
+        $result = $column->wrap();
+
+        $this->assertEquals('text-wrap', $column->wrap);
+        $this->assertSame($column, $result);
+    }
 }

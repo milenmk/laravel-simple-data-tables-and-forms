@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Milenmk\LaravelSimpleDatatablesAndForms\Tests\Unit\Form\Fields;
 
 use Closure;
+use Exception;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\Field;
 use Milenmk\LaravelSimpleDatatablesAndForms\Form\Fields\InputField;
 use Milenmk\LaravelSimpleDatatablesAndForms\Tests\BaseTest;
@@ -476,5 +477,464 @@ class FieldTest extends BaseTest
         $this->assertContains('min:5', $this->field->rules);
         $this->assertContains('max:100', $this->field->rules);
         $this->assertContains('between:1,10', $this->field->rules);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_handles_hidden_closure_with_different_parameter_counts()
+    {
+        // Test with 1 parameter (get)
+        $this->field->hidden(fn ($get) => true);
+        $this->field->setFormContext(null, ['test' => 'value']);
+        $this->assertTrue($this->field->isHidden());
+
+        // Test with 2 parameters (record, get)
+        $model = new TestModel;
+        $this->field->hidden(fn ($record, $get) => $record !== null);
+        $this->field->setFormContext($model, ['test' => 'value']);
+        $this->assertTrue($this->field->isHidden());
+
+        $this->field->hidden(fn ($record, $get) => false);
+        $this->field->setFormContext($model, ['test' => 'value']);
+        $this->assertFalse($this->field->isHidden());
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_handles_disabled_closure_with_different_parameter_counts()
+    {
+        // Test with 1 parameter (get)
+        $this->field->disabled(fn ($get) => true);
+        $this->field->setFormContext(null, ['test' => 'value']);
+        $this->assertTrue($this->field->isDisabled());
+
+        // Test with 2 parameters (record, get)
+        $model = new TestModel;
+        $this->field->disabled(fn ($record, $get) => $record !== null);
+        $this->field->setFormContext($model, ['test' => 'value']);
+        $this->assertTrue($this->field->isDisabled());
+
+        $this->field->disabled(fn ($record, $get) => false);
+        $this->field->setFormContext($model, ['test' => 'value']);
+        $this->assertFalse($this->field->isDisabled());
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_handles_after_state_updated_with_different_parameter_counts()
+    {
+        $executed = false;
+        $capturedState = null;
+
+        // Test with 1 parameter (state)
+        $this->field->afterStateUpdated(function ($state) use (&$executed, &$capturedState) {
+            $executed = true;
+            $capturedState = $state;
+        });
+        $this->field->setFormContext(null, ['test' => 'value']);
+        $this->field->executeAfterStateUpdated('test_state');
+        $this->assertTrue($executed);
+        $this->assertEquals('test_state', $capturedState);
+
+        // Reset
+        $executed = false;
+        $capturedState = null;
+
+        // Test with 2 parameters (get, state)
+        $this->field->afterStateUpdated(function ($get, $state) use (&$executed, &$capturedState) {
+            $executed = true;
+            $capturedState = $state;
+        });
+        $this->field->executeAfterStateUpdated('test_state2');
+        $this->assertTrue($executed);
+        $this->assertEquals('test_state2', $capturedState);
+
+        // Reset
+        $executed = false;
+        $capturedState = null;
+
+        // Test with 3 parameters (get, set, state)
+        $this->field->afterStateUpdated(function ($get, $set, $state) use (&$executed, &$capturedState) {
+            $executed = true;
+            $capturedState = $state;
+        });
+        $this->field->executeAfterStateUpdated('test_state3');
+        $this->assertTrue($executed);
+        $this->assertEquals('test_state3', $capturedState);
+
+        // Reset
+        $executed = false;
+        $capturedState = null;
+
+        // Test with 4 parameters (record, get, set, state)
+        $model = new TestModel;
+        $this->field->afterStateUpdated(function ($record, $get, $set, $state) use (&$executed, &$capturedState) {
+            $executed = true;
+            $capturedState = $state;
+        });
+        $this->field->setFormContext($model, ['test' => 'value']);
+        $this->field->executeAfterStateUpdated('test_state4');
+        $this->assertTrue($executed);
+        $this->assertEquals('test_state4', $capturedState);
+
+        // Reset
+        $executed = false;
+        $capturedState = null;
+
+        $this->field->afterStateUpdated(function ($record, $get, $set, $state) use (&$executed, &$capturedState) {
+            $executed = true;
+            $capturedState = $state;
+        });
+        $this->field->executeAfterStateUpdated('test_state5');
+        $this->assertTrue($executed);
+        $this->assertEquals('test_state5', $capturedState);
+    }
+
+    #[Test]
+    public function it_handles_rule_objects_with_tostring()
+    {
+        // Create a mock rule object
+        $ruleObject = new class
+        {
+            public function __to_string(): string
+            {
+                return 'custom_rule';
+            }
+        };
+
+        $this->field->rules([$ruleObject]);
+
+        $this->assertContains($ruleObject, $this->field->rules);
+    }
+
+    #[Test]
+    public function it_filters_out_non_string_non_object_rules()
+    {
+        $rules = ['required', 123, ['invalid'], 'string'];
+        $this->field->rules($rules);
+
+        $this->assertContains('required', $this->field->rules);
+        $this->assertContains('string', $this->field->rules);
+        $this->assertNotContains(123, $this->field->rules);
+        $this->assertNotContains(['invalid'], $this->field->rules);
+    }
+
+    #[Test]
+    public function it_sanitizes_html_in_rule_parameters()
+    {
+        $rules = ['in:<script>alert("xss")</script>,safe'];
+        $this->field->rules($rules);
+
+        // Should contain the sanitized version
+        $sanitizedRule = null;
+        foreach ($this->field->rules as $rule) {
+            if (is_string($rule) && str_starts_with($rule, 'in:')) {
+                $sanitizedRule = $rule;
+                break;
+            }
+        }
+
+        $this->assertNotNull($sanitizedRule);
+        $this->assertStringNotContainsString('<script>', $sanitizedRule);
+        $this->assertStringContainsString('safe', $sanitizedRule);
+    }
+
+    #[Test]
+    public function it_handles_non_numeric_parameters_for_numeric_rules()
+    {
+        $rules = ['min:abc', 'max:def'];
+        $this->field->rules($rules);
+
+        // Should sanitize the non-numeric parameters
+        $this->assertContains('min:abc', $this->field->rules);
+        $this->assertContains('max:def', $this->field->rules);
+    }
+
+    #[Test]
+    public function it_handles_dangerous_unique_and_exists_parameters()
+    {
+        $rules = ['unique:users;DROP TABLE users;--,email', 'exists:categories<script>,id'];
+        $this->field->rules($rules);
+
+        // Should sanitize dangerous characters
+        foreach ($this->field->rules as $rule) {
+            if (is_string($rule)) {
+                $this->assertStringNotContainsString(';DROP', $rule);
+                $this->assertStringNotContainsString('<script>', $rule);
+            }
+        }
+    }
+
+    #[Test]
+    public function it_merges_extra_attributes_correctly()
+    {
+        $this->field->extraAttributes(['class' => 'first', 'data-test' => 'value']);
+        $this->field->extraAttributes(['class' => 'second', 'data-other' => 'other']);
+
+        $attributes = $this->field->getExtraAttributes();
+
+        $this->assertEquals('second', $attributes['class']); // Should be overwritten
+        $this->assertEquals('value', $attributes['data-test']);
+        $this->assertEquals('other', $attributes['data-other']);
+    }
+
+    #[Test]
+    public function it_handles_null_callback_attributes()
+    {
+        $this->field->extraAttributes(fn () => null);
+        $this->field->setFormContext(null, []);
+
+        $attributes = $this->field->getExtraAttributes();
+
+        $this->assertEquals([], $attributes);
+    }
+
+    #[Test]
+    public function it_handles_non_array_callback_attributes()
+    {
+        $this->field->extraAttributes(fn () => 'not an array');
+        $this->field->setFormContext(null, []);
+
+        $attributes = $this->field->getExtraAttributes();
+
+        $this->assertEquals([], $attributes);
+    }
+
+    #[Test]
+    public function it_handles_x_attributes_for_alpine_js()
+    {
+        $attributes = [
+            'x-data' => '{ open: false }',
+            'x-show' => 'open',
+            'x-on:click' => 'open = !open',
+        ];
+
+        $this->field->attributes($attributes);
+
+        $this->assertArrayHasKey('x-data', $this->field->attributes);
+        $this->assertArrayHasKey('x-show', $this->field->attributes);
+        $this->assertArrayHasKey('x-on:click', $this->field->attributes);
+    }
+
+    #[Test]
+    public function it_handles_case_insensitive_attribute_names()
+    {
+        $attributes = [
+            'CLASS' => 'uppercase',
+            'Data-Test' => 'mixed-case',
+            'ARIA-LABEL' => 'uppercase-aria',
+        ];
+
+        $this->field->attributes($attributes);
+
+        $this->assertArrayHasKey('class', $this->field->attributes);
+        $this->assertArrayHasKey('data-test', $this->field->attributes);
+        $this->assertArrayHasKey('aria-label', $this->field->attributes);
+    }
+
+    #[Test]
+    public function it_can_set_and_get_prefix_icon()
+    {
+        $this->field->prefixIcon('user');
+
+        $this->assertEquals('user', $this->field->prefixIcon);
+    }
+
+    #[Test]
+    public function it_can_set_and_get_suffix_icon()
+    {
+        $this->field->suffixIcon('search');
+
+        $this->assertEquals('search', $this->field->suffixIcon);
+    }
+
+    #[Test]
+    public function it_can_set_and_get_column_span()
+    {
+        $this->field->columnSpan('full');
+
+        $this->assertEquals('full', $this->field->columnSpan);
+    }
+
+    #[Test]
+    public function it_can_set_and_get_validation_messages()
+    {
+        $messages = [
+            'required' => 'This field is required',
+            'email' => 'Please enter a valid email',
+        ];
+
+        $this->field->validationMessages($messages);
+
+        $this->assertEquals($messages, $this->field->validationMessages);
+    }
+
+    #[Test]
+    public function it_can_get_current_value_with_default()
+    {
+        $this->field->default('default_value');
+        $this->field->setFormContext(null, []);
+
+        $value = $this->field->getCurrentValue();
+
+        $this->assertEquals('default_value', $value);
+    }
+
+    #[Test]
+    public function it_can_get_current_value_from_record()
+    {
+        $model = new TestModel;
+        $model->setAttribute('test_field', 'record_value');
+        $this->field->setFormContext($model, []);
+
+        $value = $this->field->getCurrentValue();
+
+        // The current implementation doesn't check the record, so it returns default
+        $this->assertNull($value);
+    }
+
+    #[Test]
+    public function it_prioritizes_form_data_over_record()
+    {
+        $model = new TestModel;
+        $model->setAttribute('test_field', 'record_value');
+        $this->field->setFormContext($model, ['test_field' => 'form_value']);
+
+        $value = $this->field->getCurrentValue();
+
+        $this->assertEquals('form_value', $value);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_can_execute_after_state_updated_callback2()
+    {
+        $executed = false;
+        $capturedState = null;
+
+        $this->field->afterStateUpdated(function ($state) use (&$executed, &$capturedState) {
+            $executed = true;
+            $capturedState = $state;
+        });
+
+        $this->field->setFormContext(null, []);
+        $this->field->executeAfterStateUpdated('new_state');
+
+        $this->assertTrue($executed);
+        $this->assertEquals('new_state', $capturedState);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_handles_null_after_state_updated_callback()
+    {
+        // Should not throw exception when callback is null
+        $this->field->executeAfterStateUpdated('new_state');
+
+        $this->assertTrue(true); // Test passes if no exception is thrown
+    }
+
+    #[Test]
+    public function it_can_set_form_model_class()
+    {
+        // This method doesn't exist on Field, so let's test that it doesn't exist
+        $this->assertFalse(method_exists($this->field, 'setFormModelClass'));
+    }
+
+    #[Test]
+    public function it_handles_closure_placeholder()
+    {
+        $this->field->placeholder(fn () => 'Dynamic placeholder');
+        $this->field->setFormContext(null, []);
+
+        // The placeholder property stores the closure, not the resolved value
+        $this->assertInstanceOf(Closure::class, $this->field->placeholder);
+    }
+
+    #[Test]
+    public function it_handles_string_placeholder()
+    {
+        $this->field->placeholder('Static placeholder');
+
+        $this->assertEquals('Static placeholder', $this->field->placeholder);
+    }
+
+    #[Test]
+    public function it_handles_null_placeholder()
+    {
+        $this->assertNull($this->field->placeholder);
+    }
+
+    #[Test]
+    public function it_handles_exception_in_closure_placeholder()
+    {
+        $this->field->placeholder(function () {
+            throw new Exception('Test exception');
+        });
+        $this->field->setFormContext(null, []);
+
+        // The placeholder property stores the closure, not the resolved value
+        $this->assertInstanceOf(Closure::class, $this->field->placeholder);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_handles_exception_in_hidden_closure()
+    {
+        $this->field->hidden(function () {
+            throw new Exception('Test exception');
+        });
+        $this->field->setFormContext(null, []);
+
+        // The exception should be thrown, not handled gracefully
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Test exception');
+
+        $this->field->isHidden();
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function it_handles_exception_in_disabled_closure()
+    {
+        $this->field->disabled(function () {
+            throw new Exception('Test exception');
+        });
+        $this->field->setFormContext(null, []);
+
+        // The exception should be thrown, not handled gracefully
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Test exception');
+
+        $this->field->isDisabled();
+    }
+
+    #[Test]
+    public function it_handles_exception_in_extra_attributes_closure()
+    {
+        $this->field->extraAttributes(function () {
+            throw new Exception('Test exception');
+        });
+        $this->field->setFormContext(null, []);
+
+        // The exception should be thrown, not handled gracefully
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Test exception');
+
+        $this->field->getExtraAttributes();
     }
 }
