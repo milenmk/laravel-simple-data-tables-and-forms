@@ -15,9 +15,9 @@ class InputField extends Field
     public ?int $minLength = null;
     public ?int $maxLength = null;
     public ?string $pattern = null;
-    public ?int $min = null;
-    public ?int $max = null;
-    public ?int $step = null;
+    public int|null|float $min = null;
+    public int|null|float $max = null;
+    public int|null|float $step = null;
 
     public function email(): static
     {
@@ -97,21 +97,21 @@ class InputField extends Field
         return $this;
     }
 
-    public function min(int $min): static
+    public function min(int|float $min): static
     {
         $this->min = $min;
 
         return $this;
     }
 
-    public function max(int $max): static
+    public function max(int|float $max): static
     {
         $this->max = $max;
 
         return $this;
     }
 
-    public function step(int $step): static
+    public function step(int|float $step): static
     {
         $this->step = $step;
 

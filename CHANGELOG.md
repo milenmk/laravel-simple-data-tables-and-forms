@@ -1,3 +1,9 @@
+## 2.1.7
+
+#### Published at: 2025-08-17
+
+- [FIX] Form input field now also accepts float as min, max and step value
+
 ## 2.1.6
 
 #### Published at: 2025-08-17
