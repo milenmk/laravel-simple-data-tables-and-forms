@@ -61,7 +61,7 @@
     @endif
 
     <div {!! $attributesString !!}>
-        <div class="mb-4 flex flex-wrap items-center justify-between">
+        <div class="flex flex-wrap items-center justify-between">
             <div
                 class="relative mr-2 mb-2 sm:mb-0"
                 x-data="{ columnDropdown: false }"
@@ -202,7 +202,7 @@
             <div class="dataTable-top">
                 <!-- Filters Panel -->
                 @if ($showFilters)
-                    <div class="mb-4 w-full">
+                    <div class="w-full">
                         <div class="mt-4 rounded-md border bg-gray-50 p-4 dark:bg-(--color-white-dark)">
                             <div class="{{ $gridClasses }}">
                                 <!-- Dynamic grid container -->
@@ -243,7 +243,7 @@
 
             <!-- Active Filters Display -->
             @if (! empty($filters))
-                <div class="mb-4 flex flex-wrap items-center">
+                <div class="flex flex-wrap items-center">
                     @foreach ($filters as $filterName => $filterValues)
                         @if (! empty($filterValues))
                             @php

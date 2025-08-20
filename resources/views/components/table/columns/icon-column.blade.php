@@ -8,7 +8,7 @@
 
 <td
     @class([
-        'items-center px-4 py-2',
+        'items-center px-2 py-1.5',
         $column->backgroundColor => $column->backgroundColor ?: '',
         'text-wrap' => $column->wrap,
         'text-nowrap' => ! $column->wrap,

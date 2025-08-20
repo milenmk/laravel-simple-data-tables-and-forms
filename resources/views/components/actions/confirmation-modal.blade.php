@@ -9,9 +9,9 @@
             x-show="actionConfirmModal"
             x-transition
             x-transition.duration.300
-            class="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0"
+            class="my-8 w-full max-w-lg overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-900"
         >
-            <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+            <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 text-wrap dark:bg-[#121c2c]">
                 <h5 class="text-lg font-bold uppercase" x-html="modalData.heading"></h5>
                 <div class="text-danger h-6 w-6">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -25,10 +25,12 @@
                 </div>
             </div>
             <div class="p-5">
-                <h6 class="text-md mb-4 font-bold uppercase" x-html="modalData.description"></h6>
+                <template x-if="modalData.description">
+                    <div class="text-md mb-4 font-bold text-wrap uppercase" x-html="modalData.description"></div>
+                </template>
                 <template x-if="modalData.content">
                     <div
-                        class="dark:text-white-dark/70 text-base font-medium text-[#1f2937]"
+                        class="dark:text-white-dark/70 text-base font-medium text-wrap text-[#1f2937]"
                         x-html="modalData.content"
                     ></div>
                 </template>

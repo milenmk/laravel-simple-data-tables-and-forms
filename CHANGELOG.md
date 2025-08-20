@@ -1,3 +1,11 @@
+## 2.1.8
+
+#### Published at: 2025-08-19
+
+- [FIX] Action confirmation modal heading, description and content do not fit the modal when text is too long
+- Some margins removed from table view to make ot more compact
+- Reduced padding for table cells
+
 ## 2.1.7
 
 #### Published at: 2025-08-17

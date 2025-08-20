@@ -12,7 +12,7 @@
     id="td-{{ $column->key }}"
     data-column="{{ $column->key }}"
     @class([
-        'items-center px-4 py-2',
+        'items-center px-2 py-1.5',
         $column->textColor => $column->textColor ?: 'text-gray-500',
         $column->backgroundColor => $column->backgroundColor ?: '',
         'text-wrap' => $column->wrap,
