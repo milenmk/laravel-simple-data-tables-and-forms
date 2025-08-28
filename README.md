@@ -1,17 +1,17 @@
 # Laravel Simple Datatables And Forms
 
-<p align="center">
+<div align="center">
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square)](https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms)
-[![Total Downloads](https://img.shields.io/packagist/dt/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square)](https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms)
-[![GitHub User's stars](https://img.shields.io/github/stars/milenmk/laravel-simple-datatables-and-forms)](https://github.com/milenmk/laravel-simple-datatables-and-forms)
-[![Laravel 10 Support](https://img.shields.io/badge/Laravel-10.x|11.x|12.x-orange?style=flat-square&logo=laravel)](https://laravel.com/docs)
-[![PHP Version Support](https://img.shields.io/packagist/php-v/milenmk/laravel-simple-datatables-and-forms?style=flat-square)](https://www.php.net)
-[![License](https://img.shields.io/packagist/l/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square)](https://github.com/milenmk/laravel-simple-datatables-and-forms/blob/develop/LICENSE.md)
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues)
-[![Sponsor me](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ff69b4?style=flat-square)](https://www.patreon.com/c/LaravelAddonsbyMilen)
+<a href="https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms">![Latest Version on Packagist](https://img.shields.io/packagist/v/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square)</a>
+<a href="https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms">![Total Downloads](https://img.shields.io/packagist/dt/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square)</a>
+<a href="https://github.com/milenmk/laravel-simple-datatables-and-forms">![GitHub User's stars](https://img.shields.io/github/stars/milenmk/laravel-simple-datatables-and-forms)</a>
+<a href="https://laravel.com/docs">![Laravel 10 Support](https://img.shields.io/badge/Laravel-10.x|11.x|12.x-orange?style=flat-square&logo=laravel)</a>
+<a href="https://www.php.net">![PHP Version Support](https://img.shields.io/packagist/php-v/milenmk/laravel-simple-datatables-and-forms?style=flat-square)</a>
+<a href="https://github.com/milenmk/laravel-simple-datatables-and-forms/blob/develop/LICENSE.md">![License](https://img.shields.io/packagist/l/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square)</a>
+<a href="https://github.com/milenmk/laravel-simple-datatables-and-forms/issues">![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)</a>
+<a href="https://www.patreon.com/c/LaravelAddonsbyMilen">![Sponsor me](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ff69b4?style=flat-square)</a>
 
-</p>
+</div>
 
 A lightweight, easy-to-use Laravel package for creating interactive data tables and dynamic forms with Livewire
 integration.
