@@ -1,28 +1,28 @@
 # Laravel Simple Datatables And Forms
 
-<p style="display: flex; justify-content: center; gap: 8px;">
-    <a href="https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms" target="_blank">
+<p style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; text-align: center;">
+    <a href="https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms" target="_blank" style="text-decoration: none;">
         <img src="https://img.shields.io/packagist/v/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square" alt="Latest Version on Packagist" />
     </a>
-    <a href="https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms" target="_blank">
+    <a href="https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms" target="_blank" style="text-decoration: none;">
         <img src="https://img.shields.io/packagist/dt/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square" alt="Total Downloads" />
     </a>
-    <a href="https://github.com/milenmk/laravel-simple-datatables-and-forms" target="_blank">
+    <a href="https://github.com/milenmk/laravel-simple-datatables-and-forms" target="_blank" style="text-decoration: none;">
         <img alt="GitHub User's stars" src="https://img.shields.io/github/stars/milenmk/laravel-simple-datatables-and-forms">
     </a>
-    <a href="https://laravel.com/docs" target="_blank">
+    <a href="https://laravel.com/docs" target="_blank" style="text-decoration: none;">
         <img src="https://img.shields.io/badge/Laravel-10.x|11.x|12.x-orange?style=flat-square&logo=laravel" alt="Laravel 10 Support" />
     </a>
-    <a href="https://www.php.net" target="_blank">
+    <a href="https://www.php.net" target="_blank" style="text-decoration: none;">
         <img src="https://img.shields.io/packagist/php-v/milenmk/laravel-simple-datatables-and-forms?style=flat-square" alt="PHP Version Support" />
     </a>
-    <a href="https://github.com/milenmk/laravel-simple-datatables-and-forms/blob/develop/LICENSE.md" target="_blank">
+    <a href="https://github.com/milenmk/laravel-simple-datatables-and-forms/blob/develop/LICENSE.md" target="_blank" style="text-decoration: none;">
         <img src="https://img.shields.io/packagist/l/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square" alt="License" />
     </a>
-    <a href="https://github.com/milenmk/laravel-simple-datatables-and-forms/issues" target="_blank">
+    <a href="https://github.com/milenmk/laravel-simple-datatables-and-forms/issues" target="_blank" style="text-decoration: none;">
         <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square" alt="Contributions Welcome" />
     </a>
-    <a href="https://www.patreon.com/c/LaravelAddonsbyMilen" target="_blank">
+    <a href="https://www.patreon.com/c/LaravelAddonsbyMilen" target="_blank" style="text-decoration: none;">
         <img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ff69b4?style=flat-square" alt="Sponsor me" />
     </a>
 </p>
