@@ -185,7 +185,3 @@ Found an error or want to improve the documentation? We welcome contributions!
 - 💡 **[Request a feature](https://github.com/milenmk/laravel-simple-datatables-and-forms/issues/new)** - Describe your
   use case
 - 📧 **[Email support](mailto:support@minkov.dev)** - For complex integration questions
-
----
-
-_This documentation is continuously updated. Last updated: Version 2.0.0_

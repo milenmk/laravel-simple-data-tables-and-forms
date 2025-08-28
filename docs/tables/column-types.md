@@ -311,33 +311,6 @@ BadgeColumn::make('category')
     }),
 ```
 
-## TagsColumn
-
-Display multiple tags or labels for a single record.
-
-### Basic Usage
-
-```php
-use Milenmk\LaravelSimpleDatatablesAndForms\Table\Columns\TagsColumn;
-
-TagsColumn::make('tags')
-    ->label('Tags')
-    ->separator(',')               // How tags are separated in data
-    ->limit(3),                    // Maximum tags to display
-```
-
-### Tags Configuration
-
-```php
-TagsColumn::make('skills')
-    ->label('Skills')
-    ->color('blue')
-    ->size('sm')
-    ->limit(5)
-    ->moreText('and {count} more')  // Text for additional tags
-    ->expandable(),                 // Allow expanding to see all tags
-```
-
 ## Common Column Options
 
 All column types support these common options:
