@@ -1,6 +1,6 @@
 # Laravel Simple Datatables And Forms
 
-<p style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; text-align: center;">
+<p align="center">
     <a href="https://packagist.org/packages/milenmk/laravel-simple-datatables-and-forms" target="_blank" style="text-decoration: none;">
         <img src="https://img.shields.io/packagist/v/milenmk/laravel-simple-datatables-and-forms.svg?style=flat-square" alt="Latest Version on Packagist" />
     </a>
