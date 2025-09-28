@@ -1,3 +1,9 @@
+## v2.1.12 2025-09-28
+
+- [FIX] Table actions with action names (strings) were not passing the record ID to the Livewire method for
+  non-confirmation actions, causing the method to be called without parameters. Updated the action view to include the
+  item ID: `wire:click="@if($actionName) {{ $actionName }}({{ $item->id }}) @else {{ $actionString }} @endif"`
+
 ## v2.1.11 2025-09-28
 
 - Fix: Make formData public and add rules method to HasForm trait

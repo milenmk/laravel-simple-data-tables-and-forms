@@ -181,7 +181,12 @@
                 @if ($requiresConfirmation)
                     @click="{{ $getActionClick() }}"
                 @else
-                    wire:click="{{ $actionString }}"
+                    wire:click="
+                @if ($actionName)
+                 {{ $actionName }}({{ $item->id }})
+                @else
+                 {{ $actionString }}
+                @endif"
                 @endif
                 @class([
                     "badge cursor-pointer text-sm",
@@ -221,7 +226,12 @@
                 @if ($requiresConfirmation)
                     @click="{{ $getActionClick() }}"
                 @else
-                    wire:click="{{ $actionString }}"
+                    wire:click="
+                @if ($actionName)
+                 {{ $actionName }}({{ $item->id }})
+                @else
+                 {{ $actionString }}
+                @endif"
                 @endif
                 @class([
                     "btn flex cursor-pointer justify-center px-1.5 py-1 !font-semibold",
@@ -309,7 +319,12 @@
                 @if ($requiresConfirmation)
                     @click="{{ $getActionClick() }}"
                 @else
-                    wire:click="{{ $actionString }}"
+                    wire:click="
+                @if ($actionName)
+                 {{ $actionName }}({{ $item->id }})
+                @else
+                 {{ $actionString }}
+                @endif"
                 @endif
                 @class(["flex cursor-pointer items-center justify-start font-semibold ltr:mr-2 rtl:ml-2", $colorClass])
             >
