@@ -63,7 +63,7 @@
     <div {!! $attributesString !!}>
         <div class="flex flex-wrap items-center justify-between">
             <div
-                class="relative mr-2 mb-2 sm:mb-0"
+                class="dataTable-column-dropdown relative mr-2 mb-2 sm:mb-0"
                 x-data="{ columnDropdown: false }"
                 @click.outside="columnDropdown = false"
             >
@@ -110,7 +110,7 @@
                 </div>
             </div>
 
-            <div class="mb-2 flex space-x-2 sm:mb-0">
+            <div class="dataTable-grouping-dropdown mb-2 flex space-x-2 sm:mb-0">
                 <select
                     wire:model.live="selectedGroup"
                     key="grouping-select"
