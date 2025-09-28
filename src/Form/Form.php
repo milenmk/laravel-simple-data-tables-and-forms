@@ -21,11 +21,12 @@ class Form
     public array $extraAttributes = [];
     public ?Closure $extraAttributesCallback = null;
 
+    public array $formData = [];
+
     protected array $fields = [];
     protected array $sections = [];
     protected ?string $modelClass = null;
     protected ?Model $model = null;
-    protected array $formData = [];
 
     public function schema(array $fields): self
     {

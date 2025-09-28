@@ -265,6 +265,11 @@ trait HasForm
         return $formFieldsData;
     }
 
+    public function rules(): array
+    {
+        return $this->getValidationRulesFromForm();
+    }
+
     protected function initializeFormData(): void
     {
         $form = new Form;
