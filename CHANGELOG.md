@@ -1,3 +1,13 @@
+## v2.1.11 2025-09-28
+
+- Fix: Make formData public and add rules method to HasForm trait
+
+## v2.1.10
+
+#### Published: 2025-09-28
+
+- Adds custom classes to the columns dropdown and the grouping dropdown, so users can set their own CSS
+
 ## v2.1.9
 
 #### Published: 2025-08-29
