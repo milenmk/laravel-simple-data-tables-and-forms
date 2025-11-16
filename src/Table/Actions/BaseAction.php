@@ -186,7 +186,7 @@ class BaseAction
             'hasAction' => $this->hasAction(),
             'url' => $this->getUrl($record),
             'actionName' => $this->actionName,
-            'actionString' => $this->getActionString($record),
+            'actionString' => $this->actionClosure ? $this->getActionString($record) : null,
         ];
     }
 
